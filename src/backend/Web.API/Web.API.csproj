@@ -21,5 +21,6 @@
 
     <ItemGroup>
         <Protobuf Include="../IdentityService/IdentityService.gRPC/Protos/auth.proto" GrpcServices="Client" />
+        <Protobuf Include="../IdentityService/IdentityService.gRPC/Protos/token.proto" GrpcServices="Client" />
     </ItemGroup>
 </Project>

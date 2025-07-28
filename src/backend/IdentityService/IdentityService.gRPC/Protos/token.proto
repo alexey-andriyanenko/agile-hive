@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "IdentityService.Contracts.Protos";
+
+package Token;
+
+service Token {
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+}
+
+message RefreshTokenRequest {
+  string refreshToken = 1;
+}
+
+message RefreshTokenResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+}

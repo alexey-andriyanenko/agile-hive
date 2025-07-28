@@ -19,6 +19,11 @@ public class Program
         {
             options.Address = new Uri("http://localhost:5243");
         });
+        builder.Services.AddGrpcClient<Token.TokenClient>(options =>
+        {
+            options.Address = new Uri("http://localhost:5243");
+        });
+        
         builder.Services.AddServices(builder.Configuration);
         builder.Services.AddControllers();
         

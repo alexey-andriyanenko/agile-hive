@@ -11,6 +11,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     { }
     
     public DbSet<Tenant>  Tenants { get; set; }
+    
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
+
+        optionsBuilder.UseSeeding((context, _) => { });
         
         optionsBuilder.UseAsyncSeeding(async (context, _, cancellationToken) =>
         {

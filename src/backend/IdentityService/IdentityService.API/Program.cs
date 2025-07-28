@@ -27,7 +27,8 @@ public class Program
         }
         
         app.MapGrpcService<AuthService>();
+        app.MapGrpcService<TokenService>();
         
-        app.Run();
+        await app.RunAsync();
     }
 }

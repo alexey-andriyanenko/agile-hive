@@ -4,14 +4,13 @@ using IdentityService.Application.Exceptions;
 using IdentityService.Contracts.Protos;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
-using IdentityService.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Application.Services;
 
 public class AuthService(ApplicationDbContext dbContext,
-    JwtTokenGenerator jwtTokenGenerator,
+    TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
     IValidator<LoginRequest> loginRequestValidator) : Auth.AuthBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
@@ -49,18 +48,19 @@ public class AuthService(ApplicationDbContext dbContext,
         
         await dbContext.SaveChangesAsync();
 
-        var token = jwtTokenGenerator.GenerateToken(user);
+        var tokens = await tokenService.GenerateTokensAsync(user);
         
         return new RegisterResponse()
         {
             UserId = user.Id.ToString(),
-            Token = token
+            AccessToken = tokens.AccessToken,
+            RefreshToken = tokens.RefreshToken,
         };
     }
 
     public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
     {
-        var validationResult = loginRequestValidator.Validate(request);
+        var validationResult = await loginRequestValidator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
         {
@@ -73,7 +73,7 @@ public class AuthService(ApplicationDbContext dbContext,
 
         if (user is null)
         {
-            throw new UserNotFoundException(request.Email);
+            throw new UserNotFoundByEmailException(request.Email);
         }
         
         
@@ -84,12 +84,13 @@ public class AuthService(ApplicationDbContext dbContext,
             throw new UnauthorizedException();
         }
         
-        var  token = jwtTokenGenerator.GenerateToken(user);
+        var tokens = await tokenService.GenerateTokensAsync(user);
 
         return new LoginResponse()
         {
             UserId = user.Id.ToString(),
-            Token = token
+            AccessToken = tokens.AccessToken,
+            RefreshToken = tokens.RefreshToken,
         };
     }
 }

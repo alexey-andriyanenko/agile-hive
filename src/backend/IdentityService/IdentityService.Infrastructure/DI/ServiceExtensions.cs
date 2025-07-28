@@ -1,5 +1,4 @@
 ﻿using IdentityService.Domain.Entities;
-using IdentityService.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +17,6 @@ public static class ServiceExtensions
         services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
-        services.AddScoped<JwtTokenGenerator>();
 
         return services;
     }
