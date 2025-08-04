@@ -1,5 +1,6 @@
 using IdentityService.Contracts.Protos;
 using Web.API.DI;
+using Web.API.Middlewares;
 
 namespace Web.API;
 
@@ -38,9 +39,13 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseMiddleware<RpcExceptionHandlingMiddleware>();
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+        
+        
 
         app.Run();
     }

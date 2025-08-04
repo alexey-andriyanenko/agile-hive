@@ -1,6 +1,8 @@
-﻿namespace IdentityService.Application.Exceptions;
+﻿using Grpc.Core;
 
-public class RefreshTokenAlreadyRevokedException() : Exception("Refresh token has already been revoked.")
+namespace IdentityService.Application.Exceptions;
+
+public class RefreshTokenAlreadyRevokedException() : RpcException(new Status(StatusCode.PermissionDenied, "Refresh token has already been revoked."))
 {
     
 }

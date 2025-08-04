@@ -1,6 +1,8 @@
-﻿namespace IdentityService.Application.Exceptions;
+﻿using Grpc.Core;
 
-public class RefreshTokenExpiredException() : Exception("Refresh token has expired.")
+namespace IdentityService.Application.Exceptions;
+
+public class RefreshTokenExpiredException() : RpcException(new Status(StatusCode.Unauthenticated, "Refresh token has expired."))
 {
     
 }

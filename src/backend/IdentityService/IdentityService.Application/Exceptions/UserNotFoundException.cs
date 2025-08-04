@@ -1,15 +1,17 @@
-﻿namespace IdentityService.Application.Exceptions;
+﻿using Grpc.Core;
 
-public class UserNotFoundException(Guid userId) : Exception($"User with userId {userId} not found")
+namespace IdentityService.Application.Exceptions;
+
+public class UserNotFoundException(Guid userId) : RpcException(new Status(StatusCode.NotFound, $"User with userId {userId} not found"))
 {
     
 }
 
-public class UserNotFoundByEmailException(string email) : Exception($"User with email {email} not found")
+public class UserNotFoundByEmailException(string email) : RpcException(new Status(StatusCode.NotFound, $"User with email {email} not found"))
 {
 }
 
-public class UserNotFoundByUserNameException(string username) : Exception($"User with username {username} not found")
+public class UserNotFoundByUserNameException(string username) : RpcException(new Status(StatusCode.NotFound, $"User with username {username} not found"))
 {
     
 }
