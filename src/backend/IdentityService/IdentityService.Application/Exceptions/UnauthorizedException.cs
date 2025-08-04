@@ -1,6 +1,8 @@
-﻿namespace IdentityService.Application.Exceptions;
+﻿using Grpc.Core;
 
-public class UnauthorizedException() : Exception("Provided credentials are invalid")
+namespace IdentityService.Application.Exceptions;
+
+public class UnauthorizedException() : RpcException(new Status(StatusCode.Unauthenticated, "Provided credentials are invalid"))
 {
     
 }

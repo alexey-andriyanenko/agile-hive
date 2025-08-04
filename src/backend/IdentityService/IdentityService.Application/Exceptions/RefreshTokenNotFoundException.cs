@@ -1,6 +1,8 @@
-﻿namespace IdentityService.Application.Exceptions;
+﻿using Grpc.Core;
 
-public class RefreshTokenNotFoundException() : Exception("Refresh token not found.")
+namespace IdentityService.Application.Exceptions;
+
+public class RefreshTokenNotFoundException() : RpcException(new Status(StatusCode.NotFound, "Refresh token not found."))
 {
     
 }
