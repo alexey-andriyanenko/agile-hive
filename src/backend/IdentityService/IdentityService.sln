@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.gRPC", "IdentityService.gRPC\IdentityService.gRPC.csproj", "{0427E67D-E51A-42A9-A6D9-C03064ABB5BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Contracts", "IdentityService.Contracts\IdentityService.Contracts.csproj", "{431E26F6-81B4-45F8-92A7-4B99C053EEB8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

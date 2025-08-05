@@ -14,7 +14,7 @@ public class User : IdentityUser<Guid>
     
     public Guid RoleId { get; set; }
     
-    public Role Role { get; set; }
+    public Role Role { get; set; } = new();
     
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

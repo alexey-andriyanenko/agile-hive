@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Grpc.Core;
 using IdentityService.Application.Exceptions;
-using IdentityService.Contracts.Protos;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
+using IdentityService.gRPC;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

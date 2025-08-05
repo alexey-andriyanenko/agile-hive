@@ -7,14 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IdentityService.Contracts\IdentityService.Contracts.csproj" />
       <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
       <ProjectReference Include="..\IdentityService.gRPC\IdentityService.gRPC.csproj" />
       <ProjectReference Include="..\IdentityService.Infrastructure\IdentityService.Infrastructure.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="12.0.0" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="MassTransit" Version="8.5.1" />
+      <PackageReference Include="MassTransit.Kafka" Version="8.5.1" />
     </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "IdentityService.Contracts.Protos";
+option csharp_namespace = "IdentityService.gRPC";
 
 package Auth;
 
