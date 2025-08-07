@@ -37,10 +37,8 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             .MaximumLength(100)
             .WithMessage("Username cannot exceed 100 characters");
         
-        RuleFor(x => x.TenantName)
-            .NotEmpty()
-            .WithMessage("Tenant name is required")
+        RuleFor(x => x.OrganizationName)
             .MaximumLength(200)
-            .WithMessage("Tenant name cannot exceed 200 characters");
+            .WithMessage("Organization name cannot exceed 200 characters");
     }
 }

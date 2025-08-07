@@ -10,15 +10,12 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
         base(options)
     { }
     
-    public DbSet<Tenant>  Tenants { get; set; }
-    
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new UserConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
-        builder.ApplyConfiguration(new TenantConfiguration());
         
         base.OnModelCreating(builder);
     }

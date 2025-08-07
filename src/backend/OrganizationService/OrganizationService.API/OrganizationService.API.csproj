@@ -9,6 +9,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7"/>
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\IdentityMessages\IdentityMessages.csproj" />
+        <ProjectReference Include="..\OrganizationService.Application\OrganizationService.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

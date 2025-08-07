@@ -8,9 +8,7 @@ public class User : IdentityUser<Guid>
 
     public string LastName { get; set; } = string.Empty;
     
-    public Guid? TenantId { get; set; }
-    
-    public Tenant? Tenant { get; set; }
+    // public ICollection<Guid> OrganizationIds { get; set; } = new List<Guid>();
     
     public Guid RoleId { get; set; }
     

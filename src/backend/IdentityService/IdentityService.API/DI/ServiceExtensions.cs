@@ -5,6 +5,7 @@ using IdentityService.Application.Consumers;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using OrganizationMessages.Commands;
 using OrganizationMessages.Messages;
 using OrganizationMessages.Topics;
 
@@ -22,11 +23,14 @@ public static class ServiceExtensions
             {
                 rider.AddConsumer<OrganizationMessagesConsumer>();
                 rider.AddProducer<UserCreatedMessage>(IdentityTopics.IdentityMessages);
+                rider.AddProducer<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands
+);
 
                 rider.UsingKafka((context, k) =>
                 {
                     k.Host("localhost:9092");
 
+                    // TODO: figure out where to move message bus configuration and where to keep groupId names?
                     k.TopicEndpoint<OrganizationCreatedMessage>(OrganizationTopics.OrganizationMessages, "organization-messages-consumers", e =>
                     {
                         e.ConfigureConsumer<OrganizationMessagesConsumer>(context);

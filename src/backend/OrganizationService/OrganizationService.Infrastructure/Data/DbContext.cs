@@ -11,10 +11,13 @@ public class ApplicationDbContext : DbContext
     { }
     
     public DbSet<Organization> Organizations { get; set; }
+    
+    public DbSet<OrganizationUser> OrganizationUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new OrganizationConfiguration());
+        builder.ApplyConfiguration(new OrganizationUserConfiguration());
         
         base.OnModelCreating(builder);
     }

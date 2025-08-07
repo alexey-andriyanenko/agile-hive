@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "OrganizationService.gRPC";
+
+package Organization;
+
+service Organization {
+  rpc Create (CreateOrganizationRequest) returns (CreateOrganizationResponse);
+}
+
+message CreateOrganizationRequest {
+  string UserId = 1;
+  string OrganizationName = 2;
+}
+
+message CreateOrganizationResponse {
+  string OrganizationId = 1;
+  string OrganizationName = 2;
+  string OwnerUserId = 3;
+}
+
+message UpdateOrganizationRequest {
+  string OrganizationId = 1;
+  string OrganizationName = 2;
+}
+
+message UpdateOrganizationResponse {
+  string OrganizationId = 1;
+  string OrganizationName = 2;
+}

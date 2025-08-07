@@ -1,4 +1,4 @@
-using IdentityService.Contracts.Protos;
+using IdentityService.gRPC;
 using Web.API.DI;
 using Web.API.Middlewares;
 

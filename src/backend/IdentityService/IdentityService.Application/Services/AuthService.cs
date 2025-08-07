@@ -4,15 +4,18 @@ using IdentityService.Application.Exceptions;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
 using IdentityService.gRPC;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OrganizationMessages.Commands;
 
 namespace IdentityService.Application.Services;
 
 public class AuthService(ApplicationDbContext dbContext,
     TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
-    IValidator<LoginRequest> loginRequestValidator) : Auth.AuthBase {
+    IValidator<LoginRequest> loginRequestValidator,
+    ITopicProducer<CreateOrganizationByOwnerUserCommand> topicProducer) : Auth.AuthBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);
@@ -23,12 +26,6 @@ public class AuthService(ApplicationDbContext dbContext,
         }
 
         var passwordHasher = new PasswordHasher<User>();
-        
-        var tenant = new Tenant()
-        {
-            Id = Guid.NewGuid(),
-            Name = request.TenantName
-        };
 
         var user = new User()
         {
@@ -44,9 +41,17 @@ public class AuthService(ApplicationDbContext dbContext,
         user.PasswordHash = passwordHash;
         
         dbContext.Users.Add(user);
-        dbContext.Tenants.Add(tenant);
         
         await dbContext.SaveChangesAsync();
+
+        if (!string.IsNullOrEmpty(request.OrganizationName))
+        {
+            await topicProducer.Produce(new CreateOrganizationByOwnerUserCommand()
+            {
+                OwnerUserId = user.Id,
+                OrganizationName = request.OrganizationName
+            });
+        }
 
         var tokens = await tokenService.GenerateTokensAsync(user);
         

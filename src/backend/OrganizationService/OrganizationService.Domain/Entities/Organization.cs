@@ -6,11 +6,13 @@ namespace OrganizationService.Domain.Entities;
 public sealed class Organization : Entity<Guid>
 {
     public OrganizationName Name { get; private set; }
+    
     public Guid OwnerUserId { get; private set; }
-
-    private Organization(Guid id, OrganizationName name, Guid ownerUserId)
+    
+    public ICollection<OrganizationUser> Users { get; private set; } = new List<OrganizationUser>();
+    
+    private Organization(Guid id, OrganizationName name, Guid ownerUserId) : base(id)
     {
-        Id = id;
         Name = name;
         OwnerUserId = ownerUserId;
     }
