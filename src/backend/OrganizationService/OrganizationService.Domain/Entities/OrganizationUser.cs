@@ -2,11 +2,11 @@
 
 namespace OrganizationService.Domain.Entities;
 
-public class OrganizationUser(Guid id, Guid organizationId, Guid userId) : Entity<Guid>(id)
+public class OrganizationUser(Guid id) : Entity<Guid>(id)
 {
-    public Guid OrganizationId { get; set; } = organizationId;
+    public required Guid OrganizationId { get; set; }
 
-    public Guid UserId { get; set; } = userId;
+    public required Guid UserId { get; set; }
     
     // in far future
     // public Guid UserRoleId { get; set; }

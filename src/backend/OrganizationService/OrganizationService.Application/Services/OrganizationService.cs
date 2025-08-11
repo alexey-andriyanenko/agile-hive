@@ -1,8 +1,10 @@
 ﻿using Grpc.Core;
 using MassTransit;
 using OrganizationMessages.Messages;
+using OrganizationService.Domain.Entities;
 using OrganizationService.gRPC;
 using OrganizationService.Infrastructure.Data;
+using Organization = OrganizationService.gRPC.Organization;
 
 namespace OrganizationService.Application.Services;
 
@@ -21,8 +23,14 @@ public class OrganizationService(ApplicationDbContext dbContext, ITopicProducer<
         {
             var name = new Domain.ValueObjects.OrganizationName(request.OrganizationName);
             var organization = Domain.Entities.Organization.Create(name, parsedUserId);
+            var organizationUser = new OrganizationUser(Guid.NewGuid())
+            {
+                UserId = parsedUserId,
+                OrganizationId = organization.Id,
+            };
 
             dbContext.Organizations.Add(organization);
+            dbContext.OrganizationUsers.Add(organizationUser);
 
             await dbContext.SaveChangesAsync();
             

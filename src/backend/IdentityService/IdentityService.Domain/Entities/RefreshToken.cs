@@ -16,7 +16,7 @@ public class RefreshToken
 
     public Guid UserId { get; set; }
     
-    public User User { get; set; } = new();
+    public User? User { get; set; }
     
     public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
     

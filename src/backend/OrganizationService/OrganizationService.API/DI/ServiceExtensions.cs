@@ -9,7 +9,7 @@ namespace OrganizationService.API.DI;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddOrganizationService(this IServiceCollection services)
+    public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(x =>
         {
@@ -17,7 +17,7 @@ public static class ServiceExtensions
 
             x.AddRider(rider =>
             {
-                rider.AddConsumer<IdentityCommandsConsumer>();
+                rider.AddConsumer<OrganizationCommandsConsumer>();
                 rider.AddProducer<OrganizationCreatedMessage>(OrganizationTopics.OrganizationMessages);
 
                 rider.UsingKafka((context, k) =>
@@ -25,9 +25,9 @@ public static class ServiceExtensions
                     k.Host("localhost:9092");
 
                     // TODO: figure out where to move message bus configuration and where to keep groupId names?
-                    k.TopicEndpoint<CreateOrganizationByOwnerUserCommand>(IdentityTopics.IdentityMessages, "identity-commands-consumers", e =>
+                    k.TopicEndpoint<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands, "organization-commands-consumers", e =>
                     {
-                        e.ConfigureConsumer<IdentityCommandsConsumer>(context);
+                        e.ConfigureConsumer<OrganizationCommandsConsumer>(context);
                     });
                 });
             });

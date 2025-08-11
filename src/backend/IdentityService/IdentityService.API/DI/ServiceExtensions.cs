@@ -23,8 +23,7 @@ public static class ServiceExtensions
             {
                 rider.AddConsumer<OrganizationMessagesConsumer>();
                 rider.AddProducer<UserCreatedMessage>(IdentityTopics.IdentityMessages);
-                rider.AddProducer<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands
-);
+                rider.AddProducer<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands);
 
                 rider.UsingKafka((context, k) =>
                 {

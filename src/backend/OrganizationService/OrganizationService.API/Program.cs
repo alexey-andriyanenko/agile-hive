@@ -1,7 +1,14 @@
+using OrganizationService.API.DI;
+using OrganizationService.Application.DI;
+using OrganizationService.Infrastructure.DI;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddGrpc();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddApiServices(builder.Configuration);
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

@@ -24,9 +24,15 @@ public class AuthService(ApplicationDbContext dbContext,
         {
             throw new ValidationException(validationResult.Errors);
         }
+        
+        var role = await dbContext.Roles
+            .SingleOrDefaultAsync(x => x.Id == AppRoles.Admin.Id);
 
-        var passwordHasher = new PasswordHasher<User>();
-
+        if (role is null)
+        {
+            throw new Exception("Admin role not found. Please ensure the application is seeded with roles.");
+        }
+        
         var user = new User()
         {
             Id = Guid.NewGuid(),
@@ -34,9 +40,10 @@ public class AuthService(ApplicationDbContext dbContext,
             LastName = request.LastName,
             Email = request.Email,
             UserName = request.UserName,
-            RoleId = AppRoles.Admin.Id
+            RoleId = role.Id,
         };
         
+        var passwordHasher = new PasswordHasher<User>();
         var passwordHash = passwordHasher.HashPassword(user, request.Password);
         user.PasswordHash = passwordHash;
         
