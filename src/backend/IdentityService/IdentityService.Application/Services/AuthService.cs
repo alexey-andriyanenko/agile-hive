@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Grpc.Core;
+using IdentityMessages.Messages;
 using IdentityService.Application.Exceptions;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
@@ -15,7 +16,9 @@ public class AuthService(ApplicationDbContext dbContext,
     TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
     IValidator<LoginRequest> loginRequestValidator,
-    ITopicProducer<CreateOrganizationByOwnerUserCommand> topicProducer) : Auth.AuthBase {
+    ITopicProducer<CreateOrganizationByOwnerUserCommand> createOrganizationByOwnerUserCommandProducer,
+    ITopicProducer<UserCreationSucceededMessage> userCreationSucceededMessageProducer>,
+    ITopicProducer<UserCreationFailedMessage> userCreationFailedMessageProducer) : Auth.AuthBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);
@@ -48,12 +51,31 @@ public class AuthService(ApplicationDbContext dbContext,
         user.PasswordHash = passwordHash;
         
         dbContext.Users.Add(user);
-        
-        await dbContext.SaveChangesAsync();
+
+        try
+        {
+            await dbContext.SaveChangesAsync();
+            
+            await userCreationSucceededMessageProducer.Produce(new UserCreationSucceededMessage()
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            });
+        }
+        catch (DbUpdateException e)
+        {
+            await userCreationFailedMessageProducer.Produce(new UserCreationFailedMessage()
+            {
+                ErrorMessage = e.Message,
+            });
+
+            throw;
+        }
 
         if (!string.IsNullOrEmpty(request.OrganizationName))
         {
-            await topicProducer.Produce(new CreateOrganizationByOwnerUserCommand()
+            await createOrganizationByOwnerUserCommandProducer.Produce(new CreateOrganizationByOwnerUserCommand()
             {
                 OwnerUserId = user.Id,
                 OrganizationName = request.OrganizationName

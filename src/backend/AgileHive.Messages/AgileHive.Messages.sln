@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityMessages", "Identit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationMessages", "OrganizationMessages\OrganizationMessages.csproj", "{86A09A9F-A451-45D7-ACDD-42DFBA238C72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{0A1DE034-00DB-4DE9-A4E0-6CF932F2E632}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A1DE034-00DB-4DE9-A4E0-6CF932F2E632}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A1DE034-00DB-4DE9-A4E0-6CF932F2E632}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A1DE034-00DB-4DE9-A4E0-6CF932F2E632}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A1DE034-00DB-4DE9-A4E0-6CF932F2E632}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

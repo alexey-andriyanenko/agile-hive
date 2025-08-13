@@ -22,7 +22,8 @@ public static class ServiceExtensions
             x.AddRider(rider =>
             {
                 rider.AddConsumer<OrganizationMessagesConsumer>();
-                rider.AddProducer<UserCreatedMessage>(IdentityTopics.IdentityMessages);
+                rider.AddProducer<UserCreationSucceededMessage>(IdentityTopics.IdentityMessages);
+                rider.AddProducer<UserCreationFailedMessage>(IdentityTopics.IdentityMessages);
                 rider.AddProducer<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands);
 
                 rider.UsingKafka((context, k) =>
@@ -30,9 +31,22 @@ public static class ServiceExtensions
                     k.Host("localhost:9092");
 
                     // TODO: figure out where to move message bus configuration and where to keep groupId names?
-                    k.TopicEndpoint<OrganizationCreatedMessage>(OrganizationTopics.OrganizationMessages, "organization-messages-consumers", e =>
+                    k.TopicEndpoint<OrganizationCreationSucceededMessage>(OrganizationTopics.OrganizationMessages, "organization-messages-consumers", e =>
                     {
                         e.ConfigureConsumer<OrganizationMessagesConsumer>(context);
+                        e.UseMessageRetry(r =>
+                        {
+                            r.Interval(3, TimeSpan.FromSeconds(5));
+                        });
+                    });
+                    
+                    k.TopicEndpoint<OrganizationCreationFailedMessage>(OrganizationTopics.OrganizationMessages, "organization-messages-consumers", e =>
+                    {
+                        e.ConfigureConsumer<OrganizationMessagesConsumer>(context);
+                        e.UseMessageRetry(r =>
+                        {
+                            r.Interval(3, TimeSpan.FromSeconds(5));
+                        });
                     });
                 });
             });

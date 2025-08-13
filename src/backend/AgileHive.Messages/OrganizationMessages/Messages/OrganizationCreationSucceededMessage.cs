@@ -1,6 +1,6 @@
 ﻿namespace OrganizationMessages.Messages;
 
-public class OrganizationCreatedMessage
+public class OrganizationCreationSucceededMessage
 {
     public Guid OrganizationId { get; set; }
     

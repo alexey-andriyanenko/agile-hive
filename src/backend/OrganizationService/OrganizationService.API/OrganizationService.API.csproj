@@ -13,9 +13,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\OrganizationService.Application\OrganizationService.Application.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\IdentityMessages\IdentityMessages.csproj" />
-        <ProjectReference Include="..\OrganizationService.Application\OrganizationService.Application.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

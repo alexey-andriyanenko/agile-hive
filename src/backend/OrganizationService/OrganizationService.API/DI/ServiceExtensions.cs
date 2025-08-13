@@ -1,5 +1,4 @@
-﻿using IdentityMessages.Topics;
-using MassTransit;
+﻿using MassTransit;
 using OrganizationMessages.Commands;
 using OrganizationMessages.Messages;
 using OrganizationMessages.Topics;
@@ -18,7 +17,8 @@ public static class ServiceExtensions
             x.AddRider(rider =>
             {
                 rider.AddConsumer<OrganizationCommandsConsumer>();
-                rider.AddProducer<OrganizationCreatedMessage>(OrganizationTopics.OrganizationMessages);
+                rider.AddProducer<OrganizationCreationSucceededMessage>(OrganizationTopics.OrganizationMessages);
+                rider.AddProducer<OrganizationCreationFailedMessage>(OrganizationTopics.OrganizationMessages);
 
                 rider.UsingKafka((context, k) =>
                 {
@@ -28,7 +28,12 @@ public static class ServiceExtensions
                     k.TopicEndpoint<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands, "organization-commands-consumers", e =>
                     {
                         e.ConfigureConsumer<OrganizationCommandsConsumer>(context);
+                        e.UseMessageRetry(r =>
+                        {
+                            r.Interval(3, TimeSpan.FromSeconds(5));
+                        });
                     });
+                   
                 });
             });
         });

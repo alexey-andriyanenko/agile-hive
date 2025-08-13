@@ -1,6 +1,6 @@
 ﻿namespace IdentityMessages.Messages;
 
-public class UserCreatedMessage
+public class UserCreationSucceededMessage
 {
     public Guid UserId { get; set; }
     
