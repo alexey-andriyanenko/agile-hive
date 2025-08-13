@@ -33,11 +33,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithMany(x => x.Users)
             .HasForeignKey(x => x.RoleId)
             .IsRequired();
-
-        builder
-            .HasOne(x => x.Tenant)
-            .WithMany(x => x.Users)
-            .HasForeignKey(x => x.TenantId)
-            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

@@ -3,6 +3,7 @@ using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
 {
@@ -10,15 +11,12 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
         base(options)
     { }
     
-    public DbSet<Tenant>  Tenants { get; set; }
-    
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new UserConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
-        builder.ApplyConfiguration(new TenantConfiguration());
         
         base.OnModelCreating(builder);
     }
@@ -44,5 +42,11 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
             await rolesContext.AddRangeAsync(roles, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
         });
+
+
+        optionsBuilder.EnableSensitiveDataLogging()
+            .LogTo(Console.WriteLine,
+                new[] { DbLoggerCategory.Database.Command.Name },
+                LogLevel.Information);
     }
 }

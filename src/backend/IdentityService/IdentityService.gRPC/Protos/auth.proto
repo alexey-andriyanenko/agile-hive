@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "IdentityService.Contracts.Protos";
+option csharp_namespace = "IdentityService.gRPC";
 
 package Auth;
 
@@ -15,7 +15,7 @@ message RegisterRequest {
   string userName = 3;
   string email = 4;
   string password  = 5;
-  string tenantName = 6;
+  string organizationName = 6;
 }
 
 message RegisterResponse {
@@ -27,7 +27,6 @@ message RegisterResponse {
 message LoginRequest {
   string email = 1;
   string password = 2;
-  string tenantName = 3;
 }
 
 message LoginResponse {

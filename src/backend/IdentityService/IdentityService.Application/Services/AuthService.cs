@@ -1,18 +1,21 @@
 ﻿using FluentValidation;
 using Grpc.Core;
 using IdentityService.Application.Exceptions;
-using IdentityService.Contracts.Protos;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
+using IdentityService.gRPC;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OrganizationMessages.Commands;
 
 namespace IdentityService.Application.Services;
 
 public class AuthService(ApplicationDbContext dbContext,
     TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
-    IValidator<LoginRequest> loginRequestValidator) : Auth.AuthBase {
+    IValidator<LoginRequest> loginRequestValidator,
+    ITopicProducer<CreateOrganizationByOwnerUserCommand> topicProducer) : Auth.AuthBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);
@@ -21,15 +24,15 @@ public class AuthService(ApplicationDbContext dbContext,
         {
             throw new ValidationException(validationResult.Errors);
         }
-
-        var passwordHasher = new PasswordHasher<User>();
         
-        var tenant = new Tenant()
-        {
-            Id = Guid.NewGuid(),
-            Name = request.TenantName
-        };
+        var role = await dbContext.Roles
+            .SingleOrDefaultAsync(x => x.Id == AppRoles.Admin.Id);
 
+        if (role is null)
+        {
+            throw new Exception("Admin role not found. Please ensure the application is seeded with roles.");
+        }
+        
         var user = new User()
         {
             Id = Guid.NewGuid(),
@@ -37,16 +40,25 @@ public class AuthService(ApplicationDbContext dbContext,
             LastName = request.LastName,
             Email = request.Email,
             UserName = request.UserName,
-            RoleId = AppRoles.Admin.Id
+            RoleId = role.Id,
         };
         
+        var passwordHasher = new PasswordHasher<User>();
         var passwordHash = passwordHasher.HashPassword(user, request.Password);
         user.PasswordHash = passwordHash;
         
         dbContext.Users.Add(user);
-        dbContext.Tenants.Add(tenant);
         
         await dbContext.SaveChangesAsync();
+
+        if (!string.IsNullOrEmpty(request.OrganizationName))
+        {
+            await topicProducer.Produce(new CreateOrganizationByOwnerUserCommand()
+            {
+                OwnerUserId = user.Id,
+                OrganizationName = request.OrganizationName
+            });
+        }
 
         var tokens = await tokenService.GenerateTokensAsync(user);
         

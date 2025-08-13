@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityMessages", "IdentityMessages\IdentityMessages.csproj", "{DA7A34E0-BD9C-4724-A366-5CF06C33C803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationMessages", "OrganizationMessages\OrganizationMessages.csproj", "{86A09A9F-A451-45D7-ACDD-42DFBA238C72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA7A34E0-BD9C-4724-A366-5CF06C33C803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7A34E0-BD9C-4724-A366-5CF06C33C803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7A34E0-BD9C-4724-A366-5CF06C33C803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7A34E0-BD9C-4724-A366-5CF06C33C803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86A09A9F-A451-45D7-ACDD-42DFBA238C72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

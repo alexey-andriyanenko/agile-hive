@@ -3,13 +3,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Grpc.Core;
+using IdentityService.Application.Dtos;
 using IdentityService.Application.Exceptions;
-using IdentityService.Contracts.Dtos;
 using IdentityService.Domain.Entities;
+using IdentityService.gRPC;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using IdentityService.Contracts.Protos;
 
 namespace IdentityService.Application.Services;
 
