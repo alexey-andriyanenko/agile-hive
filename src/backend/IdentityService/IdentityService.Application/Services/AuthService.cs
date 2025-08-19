@@ -17,7 +17,7 @@ public class AuthService(ApplicationDbContext dbContext,
     IValidator<RegisterRequest> registerRequestValidator,
     IValidator<LoginRequest> loginRequestValidator,
     ITopicProducer<CreateOrganizationByOwnerUserCommand> createOrganizationByOwnerUserCommandProducer,
-    ITopicProducer<UserCreationSucceededMessage> userCreationSucceededMessageProducer>,
+    ITopicProducer<UserCreationSucceededMessage> userCreationSucceededMessageProducer,
     ITopicProducer<UserCreationFailedMessage> userCreationFailedMessageProducer) : Auth.AuthBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {

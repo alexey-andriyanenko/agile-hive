@@ -1,23 +1,26 @@
-using IdentityService.API.DI;
-using IdentityService.Application.DI;
-using IdentityService.Application.Services;
-using IdentityService.Infrastructure.DI;
-using Microsoft.EntityFrameworkCore;
 
-namespace IdentityService.API;
+using Microsoft.EntityFrameworkCore;
+using ProjectService.API.DI;
+using ProjectService.Application.DI;
+using ProjectService.Infrastructure.Data;
+using ProjectService.Infrastructure.DI;
+
+namespace ProjectService.API;
 
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddGrpc();
-        builder.Services.AddInfrastructureServices(builder.Configuration);
-        builder.Services.AddApiServices(builder.Configuration);
-        builder.Services.AddApplicationServices();
         
+        builder.Services.AddInfrastructureServices(builder.Configuration);
+        builder.Services.AddApplicationServices();
+        builder.Services.AddApiServices();
+
         var app = builder.Build();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
         
         using (var scope = app.Services.CreateScope())
         {
@@ -25,9 +28,8 @@ public class Program
             await dbContext.Database.MigrateAsync();
         }
         
-        app.MapGrpcService<AuthService>();
-        app.MapGrpcService<TokenService>();
-        
+        app.MapGrpcService<Application.Services.ProjectService>();
+
         await app.RunAsync();
     }
 }
