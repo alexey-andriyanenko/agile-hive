@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Application.Services;
 
-public class TokenService(IConfiguration config, ApplicationDbContext dbContext) : Token.TokenBase
+public class TokenService(IConfiguration config, ApplicationDbContext dbContext) : gRPC.TokenService.TokenServiceBase
 {
     public async Task<GenerateTokensResult> GenerateTokensAsync(User user)
     {

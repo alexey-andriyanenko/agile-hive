@@ -24,6 +24,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Protobuf Include="../../IdentityService/IdentityService.gRPC/Protos/user.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\ProjectService.Domain\ProjectService.Domain.csproj" />
     </ItemGroup>
 

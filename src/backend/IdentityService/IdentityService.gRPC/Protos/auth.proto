@@ -2,9 +2,9 @@ syntax = "proto3";
 
 option csharp_namespace = "IdentityService.gRPC";
 
-package Auth;
+package identity.auth;
 
-service Auth {
+service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 option csharp_namespace = "IdentityService.gRPC";
 
-package Token;
+package identity.token;
 
-service Token {
+service TokenService {
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
 }
 

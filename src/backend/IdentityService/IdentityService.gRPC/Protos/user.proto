@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "IdentityService.gRPC";
+
+package identity.user;
+
+service UserService {
+  rpc GetById(GetUserByIdRequest) returns (UserDto);
+  rpc GetManyByIds (GetManyUsersByIdsRequest) returns (GetManyUsersByIdsResponse);
+}
+
+message UserDto {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 5;
+}
+
+message GetUserByIdRequest {
+  string userId = 1;
+}
+
+message GetManyUsersByIdsRequest {
+  repeated string userIds = 1;
+}
+
+message GetManyUsersByIdsResponse {
+  repeated UserDto users = 1;
+}

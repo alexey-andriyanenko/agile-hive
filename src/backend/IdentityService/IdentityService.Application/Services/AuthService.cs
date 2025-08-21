@@ -18,7 +18,7 @@ public class AuthService(ApplicationDbContext dbContext,
     IValidator<LoginRequest> loginRequestValidator,
     ITopicProducer<CreateOrganizationByOwnerUserCommand> createOrganizationByOwnerUserCommandProducer,
     ITopicProducer<UserCreationSucceededMessage> userCreationSucceededMessageProducer,
-    ITopicProducer<UserCreationFailedMessage> userCreationFailedMessageProducer) : Auth.AuthBase {
+    ITopicProducer<UserCreationFailedMessage> userCreationFailedMessageProducer) : gRPC.AuthService.AuthServiceBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);

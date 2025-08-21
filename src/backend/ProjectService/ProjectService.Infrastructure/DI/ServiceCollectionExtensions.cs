@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityService.gRPC;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectService.Infrastructure.Data;
@@ -25,6 +26,11 @@ public static class ServiceCollectionExtensions
         {
             options.Interceptors.Add<AuthInterceptor>();
             options.Interceptors.Add<ValidationInterceptor>();
+        });
+        
+        services.AddGrpcClient<UserService.UserServiceClient>(options =>
+        {
+            options.Address = new Uri("http://localhost:5243");
         });
         
         return services;

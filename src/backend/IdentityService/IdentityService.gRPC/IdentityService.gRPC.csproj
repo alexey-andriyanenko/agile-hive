@@ -9,6 +9,7 @@
     <ItemGroup>
         <Protobuf Include="Protos/auth.proto" GrpcServices="Server" />
         <Protobuf Include="Protos/token.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos/user.proto" GrpcServices="Server" />
     </ItemGroup>
     
     <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ProjectService.Domain.Entities;
 using ProjectService.Domain.Enums;
 
 namespace ProjectService.Infrastructure.Configurations;
@@ -14,7 +15,7 @@ public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember
         builder.Property(x => x.ProjectId).IsRequired();
 
 
-        builder.Property(x => x.ProjectRole)
+        builder.Property(x => x.Role)
             .IsRequired()
             .HasConversion(
                 v => v.ToString(),

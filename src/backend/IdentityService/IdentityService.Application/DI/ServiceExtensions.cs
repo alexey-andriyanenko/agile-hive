@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using IdentityService.Application.Services;
 using IdentityService.Application.Validations;
 using IdentityService.gRPC;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,9 +9,10 @@ public static class ServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<AuthService>();
-        services.AddScoped<TokenService>();
-
+        services.AddScoped<Services.AuthService>();
+        services.AddScoped<Services.TokenService>();
+        services.AddScoped<Services.UserService>();
+        
         services.AddScoped<IValidator<RegisterRequest>, RegisterRequestValidator>();
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
 

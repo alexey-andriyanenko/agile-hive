@@ -5,35 +5,13 @@ option csharp_namespace = "ProjectService.gRPC";
 package project;
 
 import "google/protobuf/empty.proto";
+import "Protos/project-types.proto";
 
 service ProjectService {
-  rpc CreateProject (CreateProjectRequest) returns (ProjectDto);
-  rpc GetProjectById (GetProjectByIdRequest) returns (ProjectDto);
-  rpc UpdateProject (UpdateProjectRequest) returns (ProjectDto);
-  rpc DeleteProject (DeleteProjectRequest) returns (google.protobuf.Empty);
-  
-  rpc AddUserToProject (AddUserToProjectRequest) returns (ProjectDto);
-  rpc RemoveUserFromProject (RemoveUserFromProjectRequest) returns (google.protobuf.Empty);
-}
-
-enum ProjectMemberRole {
-  Owner = 0;
-  Admin = 1;
-  Contributor = 2;
-  Viewer = 3;
-}
-
-enum ProjectVisibility {
-  Private = 0;
-  Public = 1;
-}
-
-message ProjectDto {
-  string id = 1;
-  string name = 2;
-  string slug = 3;
-  string description = 4;
-  string organizationId = 5;
+  rpc Create (CreateProjectRequest) returns (project.types.ProjectDto);
+  rpc GetById (GetProjectByIdRequest) returns (project.types.ProjectDto);
+  rpc Update (UpdateProjectRequest) returns (project.types.ProjectDto);
+  rpc Delete (DeleteProjectRequest) returns (google.protobuf.Empty);
 }
 
 message CreateProjectRequest {
@@ -41,14 +19,14 @@ message CreateProjectRequest {
   string description = 2;
   string organizationId = 3;
   string slug = 4;
-  ProjectVisibility visibility = 5;
+  project.types.ProjectVisibility visibility = 5;
   repeated CreateProjectWithUserItem members = 6;
 }
 
 message CreateProjectWithUserItem {
   string projectId = 1;
   string userId = 2;
-  ProjectMemberRole projectRole = 3;
+  project.types.ProjectMemberRole role = 3;
 }
 
 message GetProjectByIdRequest {
@@ -60,20 +38,9 @@ message UpdateProjectRequest {
   string name = 2;
   string description = 3;
   string slug = 4;
-  ProjectVisibility visibility = 5;
+  project.types.ProjectVisibility visibility = 5;
 }
 
 message DeleteProjectRequest {
   string id = 1;
-}
-
-message AddUserToProjectRequest {
-  string projectId = 1;
-  string userId = 2;
-  ProjectMemberRole projectRole = 3;
-}
-
-message RemoveUserFromProjectRequest {
-  string projectId = 1;
-  string userId = 2;
 }
