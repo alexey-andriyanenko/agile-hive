@@ -11,10 +11,6 @@ public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember
     {
         builder.HasKey(x => new { x.UserId, x.ProjectId });
 
-        builder.Property(x => x.UserId).IsRequired();
-        builder.Property(x => x.ProjectId).IsRequired();
-
-
         builder.Property(x => x.Role)
             .IsRequired()
             .HasConversion(

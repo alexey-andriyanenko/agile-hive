@@ -23,3 +23,9 @@ message ProjectDto {
   string description = 4;
   string organizationId = 5;
 }
+
+message ProjectMemberDto {
+  string projectId = 1;
+  string userId = 2;
+  ProjectMemberRole role = 3;
+}

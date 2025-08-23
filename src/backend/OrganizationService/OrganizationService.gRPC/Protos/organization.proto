@@ -2,10 +2,16 @@
 
 option csharp_namespace = "OrganizationService.gRPC";
 
-package Organization;
+package organization;
+
+import "Protos/organization-types.proto";
 
 service Organization {
-  rpc Create (CreateOrganizationRequest) returns (CreateOrganizationResponse);
+  rpc Create (CreateOrganizationRequest) returns (types.OrganizationDto);
+  rpc Update (UpdateOrganizationRequest) returns (types.OrganizationDto);
+  rpc GetById (GetOrganizationByIdRequest) returns (types.OrganizationDto);
+  rpc GetMany (GetManyOrganizationsRequest) returns (GetManyOrganizationsResponse);
+  rpc Delete (DeleteOrganizationRequest) returns (types.OrganizationDto);
 }
 
 message CreateOrganizationRequest {
@@ -13,10 +19,16 @@ message CreateOrganizationRequest {
   string OrganizationName = 2;
 }
 
-message CreateOrganizationResponse {
+message GetOrganizationByIdRequest {
   string OrganizationId = 1;
-  string OrganizationName = 2;
-  string OwnerUserId = 3;
+}
+
+message GetManyOrganizationsRequest {
+  repeated string OrganizationIds = 1;
+}
+
+message GetManyOrganizationsResponse {
+  repeated types.OrganizationDto Organizations = 1;
 }
 
 message UpdateOrganizationRequest {
@@ -24,7 +36,10 @@ message UpdateOrganizationRequest {
   string OrganizationName = 2;
 }
 
-message UpdateOrganizationResponse {
+message DeleteOrganizationRequest {
   string OrganizationId = 1;
-  string OrganizationName = 2;
+}
+
+message DeleteManyOrganizationsRequest {
+  repeated string OrganizationIds = 1;
 }

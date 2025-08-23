@@ -1,14 +1,13 @@
 ﻿using OrganizationService.Domain.Base;
+using OrganizationService.Domain.Enums;
 
 namespace OrganizationService.Domain.Entities;
 
-public class OrganizationUser(Guid id) : Entity<Guid>(id)
+public class OrganizationMember()
 {
     public required Guid OrganizationId { get; set; }
 
     public required Guid UserId { get; set; }
     
-    // in far future
-    // public Guid UserRoleId { get; set; }
-    // public string UserStatus { get; set; } = string.Empty;
+    public OrganizationMemberRole Role { get; set; }
 }

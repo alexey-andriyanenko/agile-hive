@@ -12,12 +12,12 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Organization> Organizations { get; set; }
     
-    public DbSet<OrganizationUser> OrganizationUsers { get; set; }
+    public DbSet<OrganizationMember> OrganizationMembers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new OrganizationConfiguration());
-        builder.ApplyConfiguration(new OrganizationUserConfiguration());
+        builder.ApplyConfiguration(new OrganizationMemberConfiguration());
         
         base.OnModelCreating(builder);
     }

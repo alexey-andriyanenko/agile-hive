@@ -8,10 +8,26 @@ import "google/protobuf/empty.proto";
 import "Protos/project-types.proto";
 
 service ProjectMemberService {
+  rpc Get (GetProjectMemberRequest) returns (project.types.ProjectMemberDto);
+  rpc GetMany (GetManyProjectMembersRequest) returns (GetManyProjectMembersResponse);
   rpc AddToProject (AddUserToProjectRequest) returns (google.protobuf.Empty);
   rpc AddManyToProject (AddManyUsersToProjectRequest) returns (google.protobuf.Empty);
   rpc RemoveFromProject (RemoveUserFromProjectRequest) returns (google.protobuf.Empty);
   rpc RemoveManyFromProject (RemoveManyUsersFromProjectRequest) returns (google.protobuf.Empty);
+}
+
+message GetProjectMemberRequest {
+  string projectId = 1;
+  string userId = 2;
+}
+
+message GetManyProjectMembersRequest {
+  string projectId = 1;
+  repeated string userIds = 2;
+}
+
+message GetManyProjectMembersResponse {
+  repeated project.types.ProjectMemberDto members = 1;
 }
 
 message AddUserToProjectRequest {

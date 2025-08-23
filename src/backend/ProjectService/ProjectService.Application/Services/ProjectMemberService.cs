@@ -2,6 +2,7 @@
 using Grpc.Core;
 using IdentityService.gRPC;
 using Microsoft.EntityFrameworkCore;
+using ProjectService.Application.Mappings;
 using ProjectService.gRPC;
 using ProjectService.Infrastructure.Data;
 
@@ -9,38 +10,60 @@ namespace ProjectService.Application.Services;
 
 public class ProjectMemberService(ApplicationDbContext dbContext, UserService.UserServiceClient userServiceClient) : gRPC.ProjectMemberService.ProjectMemberServiceBase
 {
-    public override async Task<Empty> AddToProject(AddUserToProjectRequest request, ServerCallContext context)
+    public override async Task<ProjectMemberDto> Get(GetProjectMemberRequest request, ServerCallContext context)
     {
         var projectId = Guid.Parse(request.ProjectId);
-        var project = await dbContext.Projects
-            .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.Id == projectId);
-        
-        if (project is null)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound, $"Project with ID '{request.ProjectId}' not found."));
-        }
-        
         var userId = Guid.Parse(request.UserId);
-        var user = await userServiceClient.GetByIdAsync(new GetUserByIdRequest { UserId = request.UserId });
         
-        if (user is null)
+        var projectMember = await dbContext.ProjectMembers
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.ProjectId == projectId && x.UserId == userId);
+        
+        if (projectMember is null)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, $"User with ID '{request.UserId}' not found."));
+            throw new RpcException(new Status(StatusCode.NotFound, $"Project member with Project ID '{request.ProjectId}' and User ID '{request.UserId}' not found."));
+        }
+
+        return projectMember.ToDto();
+    }
+
+    public override async Task<GetManyProjectMembersResponse> GetMany(GetManyProjectMembersRequest request, ServerCallContext context)
+    {
+        var query = dbContext.ProjectMembers.AsNoTracking().Where(x => x.ProjectId == Guid.Parse(request.ProjectId));
+        
+        if (request.UserIds.Count > 0)
+        {
+            var userIds = request.UserIds.Select(Guid.Parse).ToList();
+            query = query.Where(x => userIds.Contains(x.UserId));
         }
         
-        var projectMember = new Domain.Entities.ProjectMember
+        var projectMembers = await query.ToListAsync();
+        
+        return new GetManyProjectMembersResponse()
         {
-            ProjectId = projectId,
-            UserId = userId,
-            Role = (Domain.Enums.ProjectMemberRole)request.Role,
+            Members =
+            {
+                projectMembers.Select(x => x.ToDto())
+            }
         };
-        
-        project.Members.Add(projectMember);
-        
-        await dbContext.SaveChangesAsync();
-        
-        return new Empty();
+    }
+
+    public override async Task<Empty> AddToProject(AddUserToProjectRequest request, ServerCallContext context)
+    {
+        var addManyRequest = new AddManyUsersToProjectRequest
+        {
+            ProjectId = request.ProjectId,
+            Users =
+            {
+                new AddUserMessage()
+                {
+                    UserId = request.UserId,
+                    Role = request.Role
+                }
+            }
+        };
+
+        return await AddManyToProject(addManyRequest, context);
     }
 
     public override async Task<Empty> AddManyToProject(AddManyUsersToProjectRequest request, ServerCallContext context)
@@ -92,22 +115,13 @@ public class ProjectMemberService(ApplicationDbContext dbContext, UserService.Us
 
     public override async Task<Empty> RemoveFromProject(RemoveUserFromProjectRequest request, ServerCallContext context)
     {
-        var projectId = Guid.Parse(request.ProjectId);
-        var userId = Guid.Parse(request.UserId);
-        
-        var projectMember = dbContext.ProjectMembers
-            .SingleOrDefault(x => x.ProjectId == projectId && x.UserId == userId);
-        
-        if (projectMember is null)
+        var removeManyRequest = new RemoveManyUsersFromProjectRequest
         {
-            throw new RpcException(new Status(StatusCode.NotFound, $"Project member with User ID '{request.UserId}' not found in Project ID '{request.ProjectId}'."));
-        }
+            ProjectId = request.ProjectId,
+            UserIds = { request.UserId }
+        };
         
-        dbContext.ProjectMembers.Remove(projectMember);
-        
-        await dbContext.SaveChangesAsync();
-        
-        return new Empty();
+        return await RemoveManyFromProject(removeManyRequest, context);
     }
 
     public override async Task<Empty> RemoveManyFromProject(RemoveManyUsersFromProjectRequest request, ServerCallContext context)

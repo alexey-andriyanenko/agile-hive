@@ -18,15 +18,16 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
             var command = context.Message;
 
             var name = new Domain.ValueObjects.OrganizationName(command.OrganizationName);
-            var organization = Domain.Entities.Organization.Create(name, command.OwnerUserId);
-            var organizationUser = new OrganizationUser(Guid.NewGuid())
+            var organization = Organization.Create(name);
+            var member = new OrganizationMember(Guid.NewGuid())
             {
                 UserId = command.OwnerUserId,
                 OrganizationId = organization.Id,
+                Role = Domain.Enums.OrganizationMemberRole.Owner
             };
 
             dbContext.Organizations.Add(organization);
-            dbContext.OrganizationUsers.Add(organizationUser);
+            dbContext.OrganizationMembers.Add(member);
         
             await dbContext.SaveChangesAsync();
 
@@ -34,7 +35,6 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
             {
                 OrganizationId = organization.Id,
                 OrganizationName = organization.Name.Value,
-                OwnerUserId = organization.OwnerUserId
             });
         }
         catch (Exception e)

@@ -62,18 +62,13 @@ public class ProjectService(
 
     public override async Task<ProjectDto> GetById(GetProjectByIdRequest request, ServerCallContext context)
     {
-        if (!Guid.TryParse(request.Id, out var projectId))
-        {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, $"ProjectId '{request.Id}' is not a valid GUID."));
-        }
-
         var project = await dbContext.Projects
             .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.Id == projectId);
+            .SingleOrDefaultAsync(x => x.Id == Guid.Parse(request.ProjectId) && x.OrganizationId == Guid.Parse(request.OrganizationId));
 
         if (project is null)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, $"Project with ID '{request.Id}' not found."));
+            throw new RpcException(new Status(StatusCode.NotFound, $"Project with ID '{request.ProjectId}' not found in organization with ID '{request.OrganizationId}'."));
         }
         
         return project.ToDto();
@@ -81,15 +76,14 @@ public class ProjectService(
 
     public override async Task<ProjectDto> Update(UpdateProjectRequest request, ServerCallContext context)
     {
-        var requestedId = Guid.Parse(request.Id);
-        var project = await dbContext.Projects.SingleOrDefaultAsync(x => x.Id == requestedId);
+        var project = await dbContext.Projects.SingleOrDefaultAsync(x => x.Id == Guid.Parse(request.ProjectId) && x.OrganizationId == Guid.Parse(request.OrganizationId));
         
         if (project is null)
         {
             throw new RpcException(new Status(StatusCode.NotFound, "Project not found"));
         }
         
-        project.Name = request.Name;
+        project.Name = request.Name;  
         project.Slug = request.Slug;
         project.Description = request.Description;
         project.Visibility = (ProjectVisibility)request.Visibility;
@@ -102,8 +96,7 @@ public class ProjectService(
     
     public override async Task<Empty> Delete(DeleteProjectRequest request, ServerCallContext context)
     {
-        var requestedId = Guid.Parse(request.Id);
-        var project = await dbContext.Projects.SingleOrDefaultAsync(x => x.Id == requestedId);
+        var project = await dbContext.Projects.SingleOrDefaultAsync(x => x.Id == Guid.Parse(request.ProjectId) && x.OrganizationId == Guid.Parse(request.OrganizationId));
         
         if (project is null)
         {

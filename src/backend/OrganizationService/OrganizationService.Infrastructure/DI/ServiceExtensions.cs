@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityService.gRPC;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrganizationService.Infrastructure.Data;
@@ -12,6 +13,11 @@ public static class ServiceExtensions
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("OrganizationDb")));
+
+        services.AddGrpcClient<UserService.UserServiceClient>(options =>
+        {
+            options.Address = new Uri("http://localhost:5243");
+        });
         
         return services;
     }

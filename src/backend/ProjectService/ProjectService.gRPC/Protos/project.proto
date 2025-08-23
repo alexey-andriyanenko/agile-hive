@@ -10,6 +10,7 @@ import "Protos/project-types.proto";
 service ProjectService {
   rpc Create (CreateProjectRequest) returns (project.types.ProjectDto);
   rpc GetById (GetProjectByIdRequest) returns (project.types.ProjectDto);
+  rpc GetMany (GetManyProjectsRequest) returns (GetManyProjectsResponse);
   rpc Update (UpdateProjectRequest) returns (project.types.ProjectDto);
   rpc Delete (DeleteProjectRequest) returns (google.protobuf.Empty);
 }
@@ -30,17 +31,29 @@ message CreateProjectWithUserItem {
 }
 
 message GetProjectByIdRequest {
-  string id = 1;
+  string projectId = 1;
+  string organizationId = 2;
+}
+
+message GetManyProjectsRequest {
+  string organizationId = 1;
+  repeated string projectIds = 2;
+}
+
+message GetManyProjectsResponse {
+  repeated project.types.ProjectDto projects = 1;
 }
 
 message UpdateProjectRequest {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string slug = 4;
-  project.types.ProjectVisibility visibility = 5;
+  string projectId = 1;
+  string organizationId = 2;
+  string name = 3;
+  string description = 4;
+  string slug = 5;
+  project.types.ProjectVisibility visibility = 6;
 }
 
 message DeleteProjectRequest {
-  string id = 1;
+  string projectId = 1;
+  string organizationId = 2;
 }

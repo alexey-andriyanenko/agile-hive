@@ -1,0 +1,59 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "OrganizationService.gRPC";
+
+package organization.member;
+
+import "google/protobuf/empty.proto";
+import "Protos/organization-types.proto";
+
+service OrganizationMemberService {
+  rpc Get (GetOrganizationMemberRequest) returns (organization.types.OrganizationMemberDto);
+  rpc GetMany (GetManyOrganizationMembersRequest) returns (GetManyOrganizationMembersResponse);
+  rpc AddToOrganization (AddUserToOrganizationRequest) returns (google.protobuf.Empty);
+  rpc AddManyToOrganization (AddManyUsersToOrganizationRequest) returns (google.protobuf.Empty);
+  rpc RemoveFromOrganization (RemoveUserFromOrganizationRequest) returns (google.protobuf.Empty);
+  rpc RemoveManyFromOrganization (RemoveManyUsersFromOrganizationRequest) returns (google.protobuf.Empty);
+}
+
+message GetOrganizationMemberRequest {
+  string organizationId = 1;
+  string userId = 2;
+}
+
+message GetManyOrganizationMembersRequest {
+  string organizationId = 1;
+  repeated string userIds = 2;
+}
+
+message GetManyOrganizationMembersResponse {
+  repeated organization.types.OrganizationMemberDto members = 1;
+}
+
+message AddUserToOrganizationRequest {
+  string organizationId = 1;
+  string userId = 2;
+  organization.types.OrganizationMemberRole role = 3;
+} 
+
+message AddUserMessage {
+  string userId = 1;
+  organization.types.OrganizationMemberRole role = 2;
+}
+
+message AddManyUsersToOrganizationRequest {
+  string organizationId = 1;
+  repeated AddUserMessage users = 2;
+}
+
+message RemoveUserFromOrganizationRequest {
+  string organizationId = 1;
+  string userId = 2;
+}
+
+message RemoveManyUsersFromOrganizationRequest {
+  string organizationId = 1;
+  repeated string userIds = 2;
+}
+
+
