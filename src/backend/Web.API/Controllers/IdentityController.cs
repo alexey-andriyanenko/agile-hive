@@ -5,7 +5,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/identity")]
-public class IdentityController(Auth.AuthClient authClient)
+public class IdentityController(AuthService.AuthServiceClient authClient)
 {
     [HttpPost("login")]
     public async Task<LoginResponse> LoginAsync([FromBody] LoginRequest request)

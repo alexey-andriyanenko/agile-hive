@@ -16,9 +16,7 @@ public class AuthService(ApplicationDbContext dbContext,
     TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
     IValidator<LoginRequest> loginRequestValidator,
-    ITopicProducer<CreateOrganizationByOwnerUserCommand> createOrganizationByOwnerUserCommandProducer,
-    ITopicProducer<UserCreationSucceededMessage> userCreationSucceededMessageProducer,
-    ITopicProducer<UserCreationFailedMessage> userCreationFailedMessageProducer) : gRPC.AuthService.AuthServiceBase {
+    IPublishEndpoint publishEndpoint) : gRPC.AuthService.AuthServiceBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);
@@ -56,7 +54,7 @@ public class AuthService(ApplicationDbContext dbContext,
         {
             await dbContext.SaveChangesAsync();
             
-            await userCreationSucceededMessageProducer.Produce(new UserCreationSucceededMessage()
+            await publishEndpoint.Publish(new UserCreationSucceededMessage()
             {
                 UserId = user.Id,
                 FirstName = user.FirstName,
@@ -65,7 +63,7 @@ public class AuthService(ApplicationDbContext dbContext,
         }
         catch (DbUpdateException e)
         {
-            await userCreationFailedMessageProducer.Produce(new UserCreationFailedMessage()
+            await publishEndpoint.Publish(new UserCreationFailedMessage()
             {
                 ErrorMessage = e.Message,
             });
@@ -75,7 +73,7 @@ public class AuthService(ApplicationDbContext dbContext,
 
         if (!string.IsNullOrEmpty(request.OrganizationName))
         {
-            await createOrganizationByOwnerUserCommandProducer.Produce(new CreateOrganizationByOwnerUserCommand()
+            await publishEndpoint.Publish(new CreateOrganizationByOwnerUserCommand()
             {
                 OwnerUserId = user.Id,
                 OrganizationName = request.OrganizationName

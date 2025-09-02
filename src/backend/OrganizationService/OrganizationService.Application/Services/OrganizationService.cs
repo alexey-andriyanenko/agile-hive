@@ -12,8 +12,7 @@ namespace OrganizationService.Application.Services;
 
 public class OrganizationService(
     ApplicationDbContext dbContext,
-    ITopicProducer<OrganizationCreationSucceededMessage> organizationCreationSucceededMessageProducer,
-    ITopicProducer<OrganizationCreationFailedMessage> organizationCreationFailedMessageProducer
+    IPublishEndpoint publishEndpoint
 ) : Organization.OrganizationBase
 {
     public override async Task<OrganizationDto> Create(CreateOrganizationRequest request, ServerCallContext context)
@@ -41,7 +40,7 @@ public class OrganizationService(
 
             await dbContext.SaveChangesAsync();
 
-            await organizationCreationSucceededMessageProducer.Produce(new OrganizationCreationSucceededMessage()
+            await publishEndpoint.Publish(new OrganizationCreationSucceededMessage()
             {
                 OrganizationId = organization.Id,
                 OrganizationName = organization.Name.Value,
@@ -59,7 +58,7 @@ public class OrganizationService(
         }
         catch (DbUpdateException e)
         {
-            await organizationCreationFailedMessageProducer.Produce(new OrganizationCreationFailedMessage()
+            await publishEndpoint.Publish(new OrganizationCreationFailedMessage()
             {
                 ErrorMessage = e.Message
             });
@@ -68,7 +67,7 @@ public class OrganizationService(
         }
         catch (Exception e)
         {
-            await organizationCreationFailedMessageProducer.Produce(new OrganizationCreationFailedMessage()
+            await publishEndpoint.Publish(new OrganizationCreationFailedMessage()
             {
                 ErrorMessage = e.Message,
             });

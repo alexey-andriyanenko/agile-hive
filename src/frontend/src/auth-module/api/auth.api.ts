@@ -1,0 +1,15 @@
+import { appHttpClient } from "src/shared-module/api";
+
+import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from "./auth.types";
+
+class AuthApiService {
+  login(data: LoginRequest) {
+    return appHttpClient.post<LoginRequest, LoginResponse>("/identity/login").send(data);
+  }
+
+  register(data: RegisterRequest) {
+    return appHttpClient.post<RegisterRequest, RegisterResponse>("/identity/register").send(data);
+  }
+}
+
+export const authApiService = new AuthApiService();

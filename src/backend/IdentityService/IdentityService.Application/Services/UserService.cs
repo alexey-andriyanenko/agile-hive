@@ -1,12 +1,26 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using IdentityService.Application.Exceptions;
 using IdentityService.gRPC;
+using IdentityService.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Application.Services;
 
-public class UserService(ApplicationDbContext dbContext) : gRPC.UserService.UserServiceBase
+[Authorize]
+public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : gRPC.UserService.UserServiceBase
 {
+    public override Task<UserDto> GetMe(Empty request, ServerCallContext context)
+    {
+        var userContext = (UserContext)httpContextAccessor.HttpContext!.Items["UserContext"]!;
+        return GetById(new GetUserByIdRequest()
+        {
+            UserId = userContext.UserId.ToString()
+        }, context);
+    }
+
     public override async Task<UserDto> GetById(GetUserByIdRequest request, ServerCallContext context)
     {
         if (Guid.TryParse(request.UserId, out var userId))

@@ -13,10 +13,6 @@ public class OrganizationConfiguration : IEntityTypeConfiguration<Organization>
         builder.Property(o => o.Id)
             .ValueGeneratedNever();
         
-        builder.Property(o => o.OwnerUserId)
-            .IsRequired();
-        builder.HasIndex(o => o.OwnerUserId);
-        
         builder.Property(o => o.Name)
             .HasConversion(
                 name => name.Value,

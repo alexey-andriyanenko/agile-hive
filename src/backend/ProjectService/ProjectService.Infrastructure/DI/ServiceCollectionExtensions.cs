@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
             {
                 options.Authority = "https://localhost:5001";
             });
+        services.AddAuthorization();
         
         services.AddHttpContextAccessor();
         

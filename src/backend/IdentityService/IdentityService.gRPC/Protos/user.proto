@@ -4,7 +4,10 @@ option csharp_namespace = "IdentityService.gRPC";
 
 package identity.user;
 
+import "google/protobuf/empty.proto";
+
 service UserService {
+  rpc GetMe (google.protobuf.Empty) returns (UserDto);
   rpc GetById(GetUserByIdRequest) returns (UserDto);
   rpc GetManyByIds (GetManyUsersByIdsRequest) returns (GetManyUsersByIdsResponse);
 }

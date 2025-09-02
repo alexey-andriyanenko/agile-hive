@@ -12,28 +12,24 @@ public static class ServiceExtensions
     {
         services.AddMassTransit(x =>
         {
-            x.UsingInMemory();
+            x.AddConsumer<OrganizationCommandsConsumer>();
 
-            x.AddRider(rider =>
+            x.UsingRabbitMq((context, cfg) =>
             {
-                rider.AddConsumer<OrganizationCommandsConsumer>();
-                rider.AddProducer<OrganizationCreationSucceededMessage>(OrganizationTopics.OrganizationMessages);
-                rider.AddProducer<OrganizationCreationFailedMessage>(OrganizationTopics.OrganizationMessages);
-
-                rider.UsingKafka((context, k) =>
+                cfg.Host("localhost", "/", h =>
                 {
-                    k.Host("localhost:9092");
+                    h.Username("guest");
+                    h.Password("guest");
+                });
 
-                    // TODO: figure out where to move message bus configuration and where to keep groupId names?
-                    k.TopicEndpoint<CreateOrganizationByOwnerUserCommand>(OrganizationTopics.OrganizationCommands, "organization-commands-consumers", e =>
+                cfg.ReceiveEndpoint("organization-commands-queue", e =>
+                {
+                    e.ConfigureConsumer<OrganizationCommandsConsumer>(context);
+
+                    e.UseMessageRetry(r =>
                     {
-                        e.ConfigureConsumer<OrganizationCommandsConsumer>(context);
-                        e.UseMessageRetry(r =>
-                        {
-                            r.Interval(3, TimeSpan.FromSeconds(5));
-                        });
+                        r.Interval(3, TimeSpan.FromSeconds(5));
                     });
-                   
                 });
             });
         });

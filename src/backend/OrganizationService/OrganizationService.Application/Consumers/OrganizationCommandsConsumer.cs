@@ -7,8 +7,7 @@ using OrganizationService.Infrastructure.Data;
 namespace OrganizationService.Application.Consumers;
 
 public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
-    ITopicProducer<OrganizationCreationSucceededMessage> organizationCreationSucceededMessageProducer,
-    ITopicProducer<OrganizationCreationFailedMessage> organizationCreationFailedMessageProducer
+    IPublishEndpoint publishEndpoint
     ) : IConsumer<CreateOrganizationByOwnerUserCommand>
 {
     public async Task Consume(ConsumeContext<CreateOrganizationByOwnerUserCommand> context)
@@ -19,7 +18,7 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
 
             var name = new Domain.ValueObjects.OrganizationName(command.OrganizationName);
             var organization = Organization.Create(name);
-            var member = new OrganizationMember(Guid.NewGuid())
+            var member = new OrganizationMember()
             {
                 UserId = command.OwnerUserId,
                 OrganizationId = organization.Id,
@@ -31,7 +30,7 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
         
             await dbContext.SaveChangesAsync();
 
-            await organizationCreationSucceededMessageProducer.Produce(new OrganizationCreationSucceededMessage()
+            await publishEndpoint.Publish(new OrganizationCreationSucceededMessage()
             {
                 OrganizationId = organization.Id,
                 OrganizationName = organization.Name.Value,
@@ -39,7 +38,7 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
         }
         catch (Exception e)
         {
-            await organizationCreationFailedMessageProducer.Produce(new OrganizationCreationFailedMessage()
+            await publishEndpoint.Publish(new OrganizationCreationFailedMessage()
             {
                 ErrorMessage = e.Message,
             });

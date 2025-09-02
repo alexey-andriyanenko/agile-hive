@@ -50,7 +50,7 @@ namespace IdentityService.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("IdentityService.Domain.Entities.Role", b =>

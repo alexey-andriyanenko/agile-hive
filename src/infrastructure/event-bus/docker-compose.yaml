@@ -1,40 +1,17 @@
-﻿version: '3.8'
+﻿version: '3.9'
 
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
     ports:
-      - "2181:2181"
-
-  kafka:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
+      - "5672:5672"   # RabbitMQ (AMQP protocol)
+      - "15672:15672" # RabbitMQ Management UI
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
-  kafka-init-topics:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka-init-topics
-    depends_on:
-      - kafka
-    command: "bash -c 'echo Waiting for Kafka to be ready... && \
-                 cub kafka-ready -b kafka:29092 1 60 && \
-                 kafka-topics --create --topic identity-messages --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
-                 kafka-topics --create --topic identity-commands --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
-                 kafka-topics --create --topic organization-messages --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
-                 kafka-topics --create --topic organization-commands --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
-
+volumes:
+  rabbitmq_data:

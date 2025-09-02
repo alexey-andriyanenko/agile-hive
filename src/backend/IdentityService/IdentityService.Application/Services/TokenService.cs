@@ -7,6 +7,7 @@ using IdentityService.Application.Dtos;
 using IdentityService.Application.Exceptions;
 using IdentityService.Domain.Entities;
 using IdentityService.gRPC;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

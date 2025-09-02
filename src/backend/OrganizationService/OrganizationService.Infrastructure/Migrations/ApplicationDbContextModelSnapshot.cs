@@ -33,12 +33,7 @@ namespace OrganizationService.Infrastructure.Migrations
                         .HasColumnType("character varying(16)")
                         .HasColumnName("name");
 
-                    b.Property<Guid>("OwnerUserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("organizations", null, t =>
                         {
@@ -50,7 +45,7 @@ namespace OrganizationService.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationUser", b =>
+            modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationMember", b =>
                 {
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
@@ -58,22 +53,19 @@ namespace OrganizationService.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("OrganizationId", "UserId");
 
-                    b.HasIndex("OrganizationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OrganizationUsers");
+                    b.ToTable("OrganizationMembers");
                 });
 
-            modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationUser", b =>
+            modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationMember", b =>
                 {
                     b.HasOne("OrganizationService.Domain.Entities.Organization", null)
-                        .WithMany("Users")
+                        .WithMany("Members")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -81,7 +73,7 @@ namespace OrganizationService.Infrastructure.Migrations
 
             modelBuilder.Entity("OrganizationService.Domain.Entities.Organization", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }
