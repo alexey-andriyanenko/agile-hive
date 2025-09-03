@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectService.Domain", "Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectService.Infrastructure", "ProjectService.Infrastructure\ProjectService.Infrastructure.csproj", "{2031D30D-5457-494B-9CF7-4E9E1DF1EFED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectService.gRPC", "ProjectService.gRPC\ProjectService.gRPC.csproj", "{D32A513C-6692-4B32-9B1B-1A15BFB2B50E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectService.Contracts", "ProjectService.Contracts\ProjectService.Contracts.csproj", "{D32A513C-6692-4B32-9B1B-1A15BFB2B50E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿using IdentityService.gRPC;
+﻿using IdentityService.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.API.Controllers;

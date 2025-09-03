@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ProjectService.gRPC;
+using ProjectService.Contracts;
 
 namespace ProjectService.Application.Validations;
 

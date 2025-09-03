@@ -20,7 +20,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\OrganizationService.gRPC\OrganizationService.gRPC.csproj" />
+      <ProjectReference Include="..\OrganizationService.Contracts\OrganizationService.Contracts.csproj" />
       <ProjectReference Include="..\OrganizationService.Infrastructure\OrganizationService.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option csharp_namespace = "ProjectService.gRPC";
+option csharp_namespace = "ProjectService.Contracts";
 
 package project;
 
 import "google/protobuf/empty.proto";
-import "Protos/project-types.proto";
+import "project-types.proto";
 
 service ProjectService {
   rpc Create (CreateProjectRequest) returns (project.types.ProjectDto);
@@ -18,26 +18,26 @@ service ProjectService {
 message CreateProjectRequest {
   string name = 1;
   string description = 2;
-  string organizationId = 3;
+  string organization_id = 3;
   string slug = 4;
   project.types.ProjectVisibility visibility = 5;
   repeated CreateProjectWithUserItem members = 6;
 }
 
 message CreateProjectWithUserItem {
-  string projectId = 1;
-  string userId = 2;
+  string project_id = 1;
+  string user_id = 2;
   project.types.ProjectMemberRole role = 3;
 }
 
 message GetProjectByIdRequest {
-  string projectId = 1;
-  string organizationId = 2;
+  string project_id = 1;
+  string organization_id = 2;
 }
 
 message GetManyProjectsRequest {
-  string organizationId = 1;
-  repeated string projectIds = 2;
+  string organization_id = 1;
+  repeated string project_ids = 2;
 }
 
 message GetManyProjectsResponse {
@@ -45,8 +45,8 @@ message GetManyProjectsResponse {
 }
 
 message UpdateProjectRequest {
-  string projectId = 1;
-  string organizationId = 2;
+  string project_id = 1;
+  string organization_id = 2;
   string name = 3;
   string description = 4;
   string slug = 5;
@@ -54,6 +54,6 @@ message UpdateProjectRequest {
 }
 
 message DeleteProjectRequest {
-  string projectId = 1;
-  string organizationId = 2;
+  string project_id = 1;
+  string organization_id = 2;
 }

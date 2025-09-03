@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos/project-types.proto" GrpcServices="None" />
-        <Protobuf Include="Protos/project.proto" GrpcServices="Server" />
-        <Protobuf Include="Protos/project-member.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos/project-types.proto" ProtoRoot="Protos" GrpcServices="None" />
+        <Protobuf Include="Protos/project.proto" ProtoRoot="Protos" GrpcServices="Server" />
+        <Protobuf Include="Protos/project-member.proto" ProtoRoot="Protos" GrpcServices="Server" />
     </ItemGroup>
 
     <ItemGroup>

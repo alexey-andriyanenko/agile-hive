@@ -1,4 +1,4 @@
-﻿using ProjectService.gRPC;
+﻿using ProjectService.Contracts;
 
 namespace ProjectService.Application.Mappings;
 

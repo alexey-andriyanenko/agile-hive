@@ -1,14 +1,14 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 using Microsoft.EntityFrameworkCore;
 using ProjectService.Application.Mappings;
-using ProjectService.gRPC;
+using ProjectService.Contracts;
 using ProjectService.Infrastructure.Data;
 
 namespace ProjectService.Application.Services;
 
-public class ProjectMemberService(ApplicationDbContext dbContext, UserService.UserServiceClient userServiceClient) : gRPC.ProjectMemberService.ProjectMemberServiceBase
+public class ProjectMemberService(ApplicationDbContext dbContext, UserService.UserServiceClient userServiceClient) : Contracts.ProjectMemberService.ProjectMemberServiceBase
 {
     public override async Task<ProjectMemberDto> Get(GetProjectMemberRequest request, ServerCallContext context)
     {
@@ -55,7 +55,7 @@ public class ProjectMemberService(ApplicationDbContext dbContext, UserService.Us
             ProjectId = request.ProjectId,
             Users =
             {
-                new AddUserMessage()
+                new AddUserToProjectMessage()
                 {
                     UserId = request.UserId,
                     Role = request.Role

@@ -5,16 +5,15 @@ using System.Text;
 using Grpc.Core;
 using IdentityService.Application.Dtos;
 using IdentityService.Application.Exceptions;
+using IdentityService.Contracts;
 using IdentityService.Domain.Entities;
-using IdentityService.gRPC;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Application.Services;
 
-public class TokenService(IConfiguration config, ApplicationDbContext dbContext) : gRPC.TokenService.TokenServiceBase
+public class TokenService(IConfiguration config, ApplicationDbContext dbContext) : Contracts.TokenService.TokenServiceBase
 {
     public async Task<GenerateTokensResult> GenerateTokensAsync(User user)
     {

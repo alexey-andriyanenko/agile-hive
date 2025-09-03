@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Domain", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Infrastructure", "IdentityService.Infrastructure\IdentityService.Infrastructure.csproj", "{8137A57B-3C2D-4329-B710-5253D5EF02C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.gRPC", "IdentityService.gRPC\IdentityService.gRPC.csproj", "{0427E67D-E51A-42A9-A6D9-C03064ABB5BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Contracts", "IdentityService.Contracts\IdentityService.Contracts.csproj", "{0427E67D-E51A-42A9-A6D9-C03064ABB5BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

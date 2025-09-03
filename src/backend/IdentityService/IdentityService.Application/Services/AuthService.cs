@@ -2,9 +2,9 @@
 using Grpc.Core;
 using IdentityMessages.Messages;
 using IdentityService.Application.Exceptions;
+using IdentityService.Contracts;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
-using IdentityService.gRPC;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ public class AuthService(ApplicationDbContext dbContext,
     TokenService tokenService,
     IValidator<RegisterRequest> registerRequestValidator,
     IValidator<LoginRequest> loginRequestValidator,
-    IPublishEndpoint publishEndpoint) : gRPC.AuthService.AuthServiceBase {
+    IPublishEndpoint publishEndpoint) : Contracts.AuthService.AuthServiceBase {
     public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
     {
         var validationResult = await registerRequestValidator.ValidateAsync(request);

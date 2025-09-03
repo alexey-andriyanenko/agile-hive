@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ProjectService.Domain\ProjectService.Domain.csproj" />
-      <ProjectReference Include="..\ProjectService.gRPC\ProjectService.gRPC.csproj" />
+      <ProjectReference Include="..\ProjectService.Contracts\ProjectService.Contracts.csproj" />
       <ProjectReference Include="..\ProjectService.Infrastructure\ProjectService.Infrastructure.csproj" />
     </ItemGroup>
 

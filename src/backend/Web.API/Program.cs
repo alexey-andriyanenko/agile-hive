@@ -1,4 +1,3 @@
-using IdentityService.gRPC;
 using Web.API.DelegatingHandlers;
 using Web.API.DI;
 using Web.API.Middlewares;
@@ -28,24 +27,6 @@ public class Program
         builder.Services.AddAuthorization();
 
         builder.Services.AddOpenApi();
-
-        builder.Services.AddGrpcClient<AuthService.AuthServiceClient>(options =>
-            {
-                options.Address = new Uri("http://localhost:5243");
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
-        
-        builder.Services.AddGrpcClient<TokenService.TokenServiceClient>(options =>
-            {
-                options.Address = new Uri("http://localhost:5243");
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
-        
-        builder.Services.AddGrpcClient<UserService.UserServiceClient>(options =>
-            {
-                options.Address = new Uri("http://localhost:5243");
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
 
         builder.Services.AddServices(builder.Configuration);
         builder.Services.AddControllers();

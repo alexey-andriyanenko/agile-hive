@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="../../IdentityService/IdentityService.gRPC/Protos/user.proto" GrpcServices="Client" />
+        <Protobuf Include="../../IdentityService/IdentityService.Contracts/Protos/user.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using IdentityService.Application.Validations;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Application.DI;

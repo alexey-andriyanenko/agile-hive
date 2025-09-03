@@ -1,10 +1,10 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ProjectService.Application.Mappings;
-using ProjectService.gRPC;
+using ProjectService.Contracts;
 using ProjectService.Infrastructure;
 using ProjectService.Infrastructure.Data;
 using ProjectVisibility = ProjectService.Domain.Enums.ProjectVisibility;
@@ -15,7 +15,7 @@ public class ProjectService(
     ApplicationDbContext dbContext,
     UserService.UserServiceClient userServiceClient,
     IHttpContextAccessor httpContextAccessor
-    ) : gRPC.ProjectService.ProjectServiceBase
+    ) : Contracts.ProjectService.ProjectServiceBase
 {
     public override async Task<ProjectDto> Create(CreateProjectRequest request, ServerCallContext context)
     {

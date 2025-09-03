@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "IdentityService.gRPC";
+option csharp_namespace = "IdentityService.Contracts";
 
 package identity.user;
 
@@ -8,23 +8,23 @@ import "google/protobuf/empty.proto";
 
 service UserService {
   rpc GetMe (google.protobuf.Empty) returns (UserDto);
-  rpc GetById(GetUserByIdRequest) returns (UserDto);
+  rpc GetById (GetUserByIdRequest) returns (UserDto);
   rpc GetManyByIds (GetManyUsersByIdsRequest) returns (GetManyUsersByIdsResponse);
 }
 
 message UserDto {
   string id = 1;
-  string firstName = 2;
-  string lastName = 3;
-  string email = 5;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
 }
 
 message GetUserByIdRequest {
-  string userId = 1;
+  string user_id = 1;
 }
 
 message GetManyUsersByIdsRequest {
-  repeated string userIds = 1;
+  repeated string user_ids = 1;
 }
 
 message GetManyUsersByIdsResponse {

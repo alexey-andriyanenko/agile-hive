@@ -23,8 +23,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="../IdentityService/IdentityService.gRPC/Protos/auth.proto" GrpcServices="Client" />
-        <Protobuf Include="../IdentityService/IdentityService.gRPC/Protos/token.proto" GrpcServices="Client" />
-        <Protobuf Include="../IdentityService/IdentityService.gRPC/Protos/user.proto" GrpcServices="Client" />
+        <Protobuf Include="../IdentityService/IdentityService.Contracts/Protos/auth.proto" GrpcServices="Client" />
+        <Protobuf Include="../IdentityService/IdentityService.Contracts/Protos/token.proto" GrpcServices="Client" />
+        <Protobuf Include="../IdentityService/IdentityService.Contracts/Protos/user.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization-types.proto" GrpcServices="None" />
+        <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization.proto" GrpcServices="Client" />
+        <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization-member.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project-types.proto" GrpcServices="None" />
+        <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project.proto" GrpcServices="Client" />
+        <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project-member.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="IdentityServices\obj\IdentityServices.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="IdentityServices\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="IdentityServices\obj\project.packagespec.json" />
     </ItemGroup>
 </Project>

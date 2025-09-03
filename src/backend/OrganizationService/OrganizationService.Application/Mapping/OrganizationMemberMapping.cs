@@ -1,4 +1,5 @@
-﻿using OrganizationService.gRPC;
+﻿
+using OrganizationService.Contracts;
 
 namespace OrganizationService.Application.Mapping;
 

@@ -3,8 +3,8 @@ using Grpc.Core;
 using IdentityService.gRPC;
 using Microsoft.EntityFrameworkCore;
 using OrganizationService.Application.Mapping;
+using OrganizationService.Contracts;
 using OrganizationService.Domain.Entities;
-using OrganizationService.gRPC;
 using OrganizationService.Infrastructure.Data;
 
 namespace OrganizationService.Application.Services;
@@ -12,7 +12,7 @@ namespace OrganizationService.Application.Services;
 public class OrganizationMemberService(
     ApplicationDbContext dbContext,
     UserService.UserServiceClient userServiceClient
-) : gRPC.OrganizationMemberService.OrganizationMemberServiceBase
+) : Contracts.OrganizationMemberService.OrganizationMemberServiceBase
 {
     public override async Task<OrganizationMemberDto> Get(GetOrganizationMemberRequest request, ServerCallContext context)
     {
@@ -78,7 +78,7 @@ public class OrganizationMemberService(
             OrganizationId = request.OrganizationId,
             Users =
             {
-                new AddUserMessage()
+                new AddUserToOrganizationMessage()
                 {
                     UserId = request.UserId,
                     Role = request.Role

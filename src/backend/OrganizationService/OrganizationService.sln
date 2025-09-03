@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationService.Infrast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationService.Application", "OrganizationService.Application\OrganizationService.Application.csproj", "{0871E20A-B1B9-4774-B8C3-F2BF37381EB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationService.gRPC", "OrganizationService.gRPC\OrganizationService.gRPC.csproj", "{8C047AC9-4AB7-48E0-8EC3-C0FBE3BCCB2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizationService.Contracts", "OrganizationService.Contracts\OrganizationService.Contracts.csproj", "{8C047AC9-4AB7-48E0-8EC3-C0FBE3BCCB2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

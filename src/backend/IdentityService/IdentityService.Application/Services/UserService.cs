@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using IdentityService.Application.Exceptions;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 using IdentityService.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityService.Application.Services;
 
 [Authorize]
-public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : gRPC.UserService.UserServiceBase
+public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : Contracts.UserService.UserServiceBase
 {
     public override Task<UserDto> GetMe(Empty request, ServerCallContext context)
     {

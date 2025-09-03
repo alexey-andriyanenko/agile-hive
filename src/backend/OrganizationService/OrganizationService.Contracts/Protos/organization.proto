@@ -1,45 +1,47 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "OrganizationService.gRPC";
+option csharp_namespace = "OrganizationService.Contracts";
 
 package organization;
 
-import "Protos/organization-types.proto";
+import "google/protobuf/empty.proto";
+import "organization-types.proto";
 
-service Organization {
+service OrganizationService {
   rpc Create (CreateOrganizationRequest) returns (types.OrganizationDto);
   rpc Update (UpdateOrganizationRequest) returns (types.OrganizationDto);
   rpc GetById (GetOrganizationByIdRequest) returns (types.OrganizationDto);
   rpc GetMany (GetManyOrganizationsRequest) returns (GetManyOrganizationsResponse);
-  rpc Delete (DeleteOrganizationRequest) returns (types.OrganizationDto);
+  rpc Delete (DeleteOrganizationRequest) returns (google.protobuf.Empty);
+  rpc DeleteMany (DeleteManyOrganizationsRequest) returns (google.protobuf.Empty);
 }
 
 message CreateOrganizationRequest {
-  string UserId = 1;
-  string OrganizationName = 2;
+  string user_id = 1;
+  string organization_name = 2;
 }
 
 message GetOrganizationByIdRequest {
-  string OrganizationId = 1;
+  string organization_id = 1;
 }
 
 message GetManyOrganizationsRequest {
-  repeated string OrganizationIds = 1;
+  repeated string organization_ids = 1;
 }
 
 message GetManyOrganizationsResponse {
-  repeated types.OrganizationDto Organizations = 1;
+  repeated types.OrganizationDto organizations = 1;
 }
 
 message UpdateOrganizationRequest {
-  string OrganizationId = 1;
-  string OrganizationName = 2;
+  string organization_id = 1;
+  string organization_name = 2;
 }
 
 message DeleteOrganizationRequest {
-  string OrganizationId = 1;
+  string organization_id = 1;
 }
 
 message DeleteManyOrganizationsRequest {
-  repeated string OrganizationIds = 1;
+  repeated string organization_ids = 1;
 }

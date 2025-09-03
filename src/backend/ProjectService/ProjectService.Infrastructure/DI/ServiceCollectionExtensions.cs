@@ -1,4 +1,4 @@
-﻿using IdentityService.gRPC;
+﻿using IdentityService.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +14,10 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("ProjectDb")));
         
-        services.AddAuthentication("Bearer")
+        services.AddAuthentication("Bearer") 
             .AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "https://localhost:5001";
+                options.Authority = "https://localhost:5202";
             });
         services.AddAuthorization();
         
@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
         
         services.AddGrpcClient<UserService.UserServiceClient>(options =>
         {
-            options.Address = new Uri("http://localhost:5243");
+            options.Address = new Uri("http://localhost:5201");
         });
         
         return services;

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 
 namespace IdentityService.Application.Validations;
 

@@ -1,19 +1,19 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OrganizationMessages.Messages;
 using OrganizationService.Application.Mapping;
+using OrganizationService.Contracts;
 using OrganizationService.Domain.Entities;
-using OrganizationService.gRPC;
 using OrganizationService.Infrastructure.Data;
-using Organization = OrganizationService.gRPC.Organization;
 
 namespace OrganizationService.Application.Services;
 
 public class OrganizationService(
     ApplicationDbContext dbContext,
     IPublishEndpoint publishEndpoint
-) : Organization.OrganizationBase
+) : Contracts.OrganizationService.OrganizationServiceBase
 {
     public override async Task<OrganizationDto> Create(CreateOrganizationRequest request, ServerCallContext context)
     {
@@ -139,5 +139,15 @@ public class OrganizationService(
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, e.Message));
         }
+    }
+
+    public override Task<Empty> Delete(DeleteOrganizationRequest request, ServerCallContext context)
+    {
+        throw new RpcException(new Status(StatusCode.Unimplemented, "Delete organization is not implemented yet."));
+    }
+
+    public override Task<Empty> DeleteMany(DeleteManyOrganizationsRequest request, ServerCallContext context)
+    {
+        throw new RpcException(new Status(StatusCode.Unimplemented, "Delete many organizations is not implemented yet."));
     }
 }

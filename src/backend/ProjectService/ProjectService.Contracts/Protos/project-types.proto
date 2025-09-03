@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProjectService.Contracts";
+
+package project.types;
+
+enum ProjectMemberRole {
+  OWNER = 0;
+  ADMIN = 1;
+  CONTRIBUTOR = 2;
+  VIEWER = 3;
+}
+
+enum ProjectVisibility {
+  PRIVATE = 0;
+  PUBLIC = 1;
+}
+
+message ProjectDto {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  string organization_id = 5;
+}
+
+message ProjectMemberDto {
+  string project_id = 1;
+  string user_id = 2;
+  ProjectMemberRole role = 3;
+}

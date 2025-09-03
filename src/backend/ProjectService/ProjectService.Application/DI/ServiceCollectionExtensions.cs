@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectService.Application.Validations;
-using ProjectService.gRPC;
+using ProjectService.Contracts;
 
 namespace ProjectService.Application.DI;
 

@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option csharp_namespace = "ProjectService.gRPC";
+option csharp_namespace = "ProjectService.Contracts";
 
 package project.member;
 
 import "google/protobuf/empty.proto";
-import "Protos/project-types.proto";
+import "project-types.proto";
 
 service ProjectMemberService {
   rpc Get (GetProjectMemberRequest) returns (project.types.ProjectMemberDto);
@@ -17,13 +17,13 @@ service ProjectMemberService {
 }
 
 message GetProjectMemberRequest {
-  string projectId = 1;
-  string userId = 2;
+  string project_id = 1;
+  string user_id = 2;
 }
 
 message GetManyProjectMembersRequest {
-  string projectId = 1;
-  repeated string userIds = 2;
+  string project_id = 1;
+  repeated string user_ids = 2;
 }
 
 message GetManyProjectMembersResponse {
@@ -31,27 +31,27 @@ message GetManyProjectMembersResponse {
 }
 
 message AddUserToProjectRequest {
-  string projectId = 1;
-  string userId = 2;
+  string project_id = 1;
+  string user_id = 2;
   project.types.ProjectMemberRole role = 3;
 }
 
-message AddUserMessage {
-  string userId = 1;
+message AddUserToProjectMessage {
+  string user_id = 1;
   project.types.ProjectMemberRole role = 2;
 }
 
 message AddManyUsersToProjectRequest {
-  string projectId = 1;
-  repeated AddUserMessage users = 2;
+  string project_id = 1;
+  repeated AddUserToProjectMessage users = 2;
 }
 
 message RemoveUserFromProjectRequest {
-  string projectId = 1;
-  string userId = 2;
+  string project_id = 1;
+  string user_id = 2;
 }
 
 message RemoveManyUsersFromProjectRequest {
-  string projectId = 1;
-  repeated string userIds = 2;
+  string project_id = 1;
+  repeated string user_ids = 2;
 }
