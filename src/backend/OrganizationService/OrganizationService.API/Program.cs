@@ -1,5 +1,6 @@
 using OrganizationService.API.DI;
 using OrganizationService.Application.DI;
+using OrganizationService.Application.Services;
 using OrganizationService.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,5 +21,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapGrpcService<OrganizationService.Application.Services.OrganizationService>();
+app.MapGrpcService<OrganizationMemberService>();
 
 app.Run();

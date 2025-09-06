@@ -15,6 +15,8 @@ enum OrganizationMemberRole {
 message OrganizationDto {
   string id = 1;
   string name = 2;
+  string slug = 3;
+  OrganizationMemberRole my_role = 4;
 }
 
 message OrganizationMemberDto {

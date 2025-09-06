@@ -3,7 +3,8 @@ import React from "react";
 import { Card, Avatar, Button } from "@chakra-ui/react";
 
 import { pickColor } from "src/shared-module/utils";
-import { OrganizationModel } from "../../../models/organization.ts";
+import type { OrganizationModel } from "../../../models/organization.ts";
+import { OrganizationMemberRoleToNameMap } from "src/organization-module/models/organization-member-role.ts";
 
 type OrganizationCardProps = {
   organization: OrganizationModel;
@@ -20,7 +21,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({ organization
           <Avatar.Fallback name="organization name" />
         </Avatar.Root>
         <Card.Title mt="2">{organization.name}</Card.Title>
-        <Card.Description>{organization.description}</Card.Description>
+        <Card.Description>{OrganizationMemberRoleToNameMap[organization.myRole]}</Card.Description>
       </Card.Body>
       <Card.Footer justifyContent="flex-end">
         <Button variant="outline" onClick={handleSelect}>

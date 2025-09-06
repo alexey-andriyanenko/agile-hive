@@ -29,20 +29,20 @@ namespace OrganizationService.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("organizations", null, t =>
-                        {
-                            t.HasCheckConstraint("ck_organization_name_allowed_chars", "name ~ '^[A-Za-z0-9 \\-_.]+$'");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
-                            t.HasCheckConstraint("ck_organization_name_min_length", "char_length(name) >= 2");
-
-                            t.HasCheckConstraint("ck_organization_no_double_spaces", "name !~ ' {2,}'");
-                        });
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationMember", b =>

@@ -2,17 +2,26 @@ import { appHttpClient } from "src/shared-module/api";
 import type {
   CreateOrganizationRequest,
   CreateOrganizationResponse,
-  GetOrganizationsResponse,
+  GetManyOrganizationsResponse,
 } from "./organization.types.ts";
+import type { OrganizationModel } from "src/organization-module/models/organization.ts";
 
 class OrganizationApiService {
   getOrganizations() {
-    return appHttpClient.get<GetOrganizationsResponse>("/api/core/organizations").send();
+    return appHttpClient.get<GetManyOrganizationsResponse>("/organizations").send();
+  }
+
+  getOrganizationById(organizationId: string) {
+    return appHttpClient.get<CreateOrganizationResponse>(`/organizations/${organizationId}`).send();
+  }
+
+  getOrganizationBySlug(slug: string) {
+    return appHttpClient.get<OrganizationModel>(`/organizations/by-slug/${slug}`).send();
   }
 
   createOrganization(data: CreateOrganizationRequest) {
     return appHttpClient
-      .post<CreateOrganizationRequest, CreateOrganizationResponse>("/api/core/organizations")
+      .post<CreateOrganizationRequest, CreateOrganizationResponse>("/organizations")
       .send(data);
   }
 }

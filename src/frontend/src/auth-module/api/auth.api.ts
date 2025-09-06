@@ -1,10 +1,23 @@
 import { appHttpClient } from "src/shared-module/api";
 
-import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from "./auth.types";
+import type {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from "./auth.types";
 
 class AuthApiService {
   login(data: LoginRequest) {
     return appHttpClient.post<LoginRequest, LoginResponse>("/identity/login").send(data);
+  }
+
+  loginWithRefreshToken(data: RefreshTokenRequest) {
+    return appHttpClient
+      .post<RefreshTokenRequest, RefreshTokenResponse>("/identity/token/refresh-token")
+      .send(data);
   }
 
   register(data: RegisterRequest) {

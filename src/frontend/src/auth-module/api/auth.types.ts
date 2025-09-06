@@ -23,3 +23,12 @@ export type RegisterResponse = {
   accessToken: string;
   refreshToken: string;
 };
+
+export type RefreshTokenRequest = {
+  refreshToken: string;
+};
+
+export type RefreshTokenResponse = {
+  accessToken: string;
+  refreshToken: string;
+};

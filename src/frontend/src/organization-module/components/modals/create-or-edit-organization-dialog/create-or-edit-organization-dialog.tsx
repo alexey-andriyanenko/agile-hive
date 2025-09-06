@@ -1,17 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Dialog, Button, Portal, Stack, Field, Input, Textarea } from "@chakra-ui/react";
-import { ProjectModel } from "../../models/project.ts";
-import { ModalProps } from "src/modals-module";
-import { OrganizationModel } from "../../models/organization.ts";
+import { Dialog, Button, Portal, Stack, Field, Input } from "@chakra-ui/react";
+import type { ModalsPropsBase } from "src/modals-module";
+import type { OrganizationModel } from "src/organization-module/models/organization.ts";
 
 type OrganizationFormValues = {
   name: string;
-  description: string;
 };
 
-export type CreateOrEditOrganizationDialogProps = ModalProps & {
+export type CreateOrEditOrganizationDialogProps = ModalsPropsBase & {
   organization?: OrganizationModel;
 
   onCreate?: (data: OrganizationFormValues) => Promise<void>;
@@ -28,7 +26,6 @@ export const CreateOrEditOrganizationDialog: React.FC<CreateOrEditOrganizationDi
   const { formState, register, handleSubmit } = useForm<OrganizationFormValues>({
     defaultValues: {
       name: organization?.name || "",
-      description: organization?.description || "",
     },
   });
 
@@ -64,19 +61,6 @@ export const CreateOrEditOrganizationDialog: React.FC<CreateOrEditOrganizationDi
                     })}
                   />
                   <Field.ErrorText>{formState.errors.name?.message}</Field.ErrorText>
-                </Field.Root>
-
-                <Field.Root invalid={!!formState.errors.description}>
-                  <Field.Label>Organization Description</Field.Label>
-                  <Textarea
-                    {...register("description", {
-                      maxLength: {
-                        value: 250,
-                        message: "Description cannot exceed 250 characters",
-                      },
-                    })}
-                  />
-                  <Field.ErrorText>{formState.errors.description?.message}</Field.ErrorText>
                 </Field.Root>
               </Stack>
             </Dialog.Body>

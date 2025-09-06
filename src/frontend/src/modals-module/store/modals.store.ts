@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-import { ModalsStoreRegistryGuard } from "src/modals-module/modals.types";
+import type { ModalsStoreRegistryGuard } from "src/modals-module/modals.types";
 
 export class ModalsStore<
   ModalName extends string,

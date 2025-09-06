@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useModalsStore, useOrganizationStore } from "../../store";
 import { OrganizationCard } from "./organization-card";
-import { OrganizationModel } from "../../models/organization.ts";
+import type { OrganizationModel } from "../../models/organization.ts";
 import { AddOrganizationCard } from "./add-organization-card";
 
 const OrganizationSelection: React.FC = observer(() => {
@@ -26,19 +26,18 @@ const OrganizationSelection: React.FC = observer(() => {
         console.error("Failed to fetch organizations:", error);
         setLoading(false);
       });
-  }, []);
+  }, [organizationStore]);
 
   const handleSelect = (organization: OrganizationModel) => {
     organizationStore.setCurrentOrganization(organization);
-    navigate(`/organization/${organization.name}`);
+    navigate(`/organization/${organization.slug}`);
   };
 
   const handleCreate = () => {
     modalsStore.open("CreateOrEditOrganizationDialog", {
       onCreate: (values) =>
         organizationStore.createOrganization({
-          name: values.name,
-          description: values.description,
+          organizationName: values.name,
         }),
     });
   };

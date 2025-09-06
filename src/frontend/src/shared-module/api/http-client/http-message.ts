@@ -9,18 +9,29 @@ export class HttpMessage<
 > {
   private _request: XMLHttpRequest = new XMLHttpRequest();
 
-  private constructor(
-    private _url: string,
-    private _method: Method,
-  ) {}
+  private readonly _httpClient: HttpClient;
+
+  private readonly _method: Method;
+
+  private _url: string;
+
+  private constructor(_url: string, _method: Method, _httpClient: HttpClient) {
+    this._url = _url;
+    this._method = _method;
+    this._httpClient = _httpClient;
+  }
 
   public static create<
     Request,
     Response,
     Method extends "get" | "post" | "put" | "delete",
     Path extends string = string,
-  >(url: Path, method: Method): HttpMessage<Request, Response, Method, Path> {
-    return new HttpMessage<Request, Response, Method, Path>(url, method);
+  >(
+    url: Path,
+    method: Method,
+    httpClient: HttpClient,
+  ): HttpMessage<Request, Response, Method, Path> {
+    return new HttpMessage<Request, Response, Method, Path>(url, method, httpClient);
   }
 
   public setHeaders(headers: Record<string, string>): Omit<this, "setHeaders"> {
@@ -57,10 +68,16 @@ export class HttpMessage<
 
       this._request.setRequestHeader("Content-Type", "application/json");
 
-      if (HttpClient.token)
-        this._request.setRequestHeader("Authorization", `Bearer ${HttpClient.token}`);
+      if (HttpClient.accessToken)
+        this._request.setRequestHeader("Authorization", `Bearer ${HttpClient.accessToken}`);
 
-      this._request.onload = () => {
+      this._request.onload = async () => {
+        await Promise.all(
+          this._httpClient.interceptors.map((interceptor) => {
+            interceptor(this._request);
+          }),
+        );
+
         if (this._request.status >= 200 && this._request.status < 300) {
           const responseText = this._request.responseText ? this._request.responseText : "{}";
           resolve(JSON.parse(responseText));
@@ -68,6 +85,7 @@ export class HttpMessage<
           try {
             const result = JSON.parse(this._request.responseText);
             reject(result);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (e) {
             reject(this._request);
           }
@@ -78,6 +96,7 @@ export class HttpMessage<
         try {
           const result = JSON.parse(this._request.responseText);
           reject(result);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           reject(this._request);
         }

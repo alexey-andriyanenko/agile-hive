@@ -7,25 +7,29 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
-      <PackageReference Include="Grpc.Core.Api" Version="2.71.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.71.0"/>
+        <PackageReference Include="Grpc.Core.Api" Version="2.71.0"/>
+        <PackageReference Include="FluentValidation" Version="12.0.0"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="../../IdentityService/IdentityService.gRPC/Protos/user.proto" GrpcServices="Client" />
+        <Protobuf Include="../../IdentityService/IdentityService.Contracts/Protos/user.proto" GrpcServices="Client"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OrganizationService.Domain\OrganizationService.Domain.csproj" />
+        <ProjectReference Include="..\OrganizationService.Domain\OrganizationService.Domain.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
 import type { OrganizationModel } from "../models/organization.ts";
 
-export type GetOrganizationsResponse = OrganizationModel[];
+export type GetManyOrganizationsResponse = {
+  organizations: OrganizationModel[];
+};
 
 export type CreateOrganizationRequest = {
-  name: string;
-  description: string;
+  organizationName: string;
 };
 
 export type CreateOrganizationResponse = OrganizationModel;

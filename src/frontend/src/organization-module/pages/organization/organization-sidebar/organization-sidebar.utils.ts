@@ -1,24 +1,24 @@
-import { AppSidebarNavItemProps } from "src/shared-module/layout";
+import type { AppSidebarNavItemProps } from "src/shared-module/layout";
 
-export const getNavItems = (name: string): AppSidebarNavItemProps[] => [
+export const getNavItems = (slug: string): AppSidebarNavItemProps[] => [
   {
     href: "/organization-selection",
     name: "Change Organization",
   },
   {
-    href: `/organization/${name}`,
+    href: `/organization/${slug}`,
     name: "Home",
   },
   {
-    href: `/organization/${name}/projects`,
+    href: `/organization/${slug}/projects`,
     name: "Organization Projects",
   },
   {
-    href: `/organization/${name}/users`,
+    href: `/organization/${slug}/users`,
     name: "Organization Users",
   },
   {
-    href: `/organization/${name}/settings`,
+    href: `/organization/${slug}/settings`,
     name: "Organization Settings",
   },
 ];

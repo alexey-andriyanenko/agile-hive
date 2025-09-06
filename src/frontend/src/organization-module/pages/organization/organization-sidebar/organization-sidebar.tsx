@@ -11,7 +11,7 @@ export const OrganizationSidebar: React.FC = observer(() => {
 
   React.useEffect(() => {
     if (organizationStore.currentOrganization !== null) {
-      setNavItems(getNavItems(organizationStore.currentOrganization!.name));
+      setNavItems(getNavItems(organizationStore.currentOrganization.slug));
     }
   }, [organizationStore.currentOrganization]);
 

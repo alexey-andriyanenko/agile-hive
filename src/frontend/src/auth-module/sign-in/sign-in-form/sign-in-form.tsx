@@ -3,12 +3,15 @@ import React from "react";
 import { Stack, Field, Input, Button } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "src/auth-module/store";
 
 import type { SignInFormValues } from "./sign-in-form.types.ts";
+import { OrganizationRoutes } from "src/organization-module";
 
 export const SignInForm: React.FC = observer(() => {
+  const navigate = useNavigate();
   const authStore = useAuthStore();
   const { register, formState, setError, handleSubmit } = useForm<SignInFormValues>();
 
@@ -18,6 +21,8 @@ export const SignInForm: React.FC = observer(() => {
         email: data.email,
         password: data.password,
       });
+
+      navigate(OrganizationRoutes.select);
     } catch (error) {
       setError("email", { type: "manual", message: "Invalid email or password" });
       setError("password", { type: "manual", message: "Invalid email or password" });

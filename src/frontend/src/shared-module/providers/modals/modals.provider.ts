@@ -1,8 +1,8 @@
 import React from "react";
-import { ModalsFactory, ModalsProviderRegistryGuard } from "src/modals-module";
+import { ModalsFactory, type ModalsProviderRegistryGuard } from "src/modals-module";
 
-import { IModalsStoreRegistry, ModalName } from "src/shared-module/store/modals";
-import { IConfirmModalProps, ConfirmModal } from "src/shared-module/components/modals";
+import type { IModalsStoreRegistry, ModalName } from "src/shared-module/store/modals";
+import { type IConfirmModalProps, ConfirmModal } from "src/shared-module/components/modals";
 import { modalsStore } from "src/shared-module/store/modals/modals.store";
 
 interface IModalsProviderRegistry extends ModalsProviderRegistryGuard<ModalName> {

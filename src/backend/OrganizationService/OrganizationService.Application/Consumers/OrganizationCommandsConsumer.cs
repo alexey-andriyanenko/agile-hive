@@ -1,13 +1,17 @@
-﻿using MassTransit;
+﻿using FluentValidation;
+using MassTransit;
 using OrganizationMessages.Commands;
 using OrganizationMessages.Messages;
+using OrganizationService.Application.Extensions;
+using OrganizationService.Contracts;
 using OrganizationService.Domain.Entities;
 using OrganizationService.Infrastructure.Data;
 
 namespace OrganizationService.Application.Consumers;
 
 public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
-    IPublishEndpoint publishEndpoint
+    IPublishEndpoint publishEndpoint,
+    IValidator<CreateOrganizationRequest> validator
     ) : IConsumer<CreateOrganizationByOwnerUserCommand>
 {
     public async Task Consume(ConsumeContext<CreateOrganizationByOwnerUserCommand> context)
@@ -15,9 +19,21 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
         try
         {
             var command = context.Message;
-
-            var name = new Domain.ValueObjects.OrganizationName(command.OrganizationName);
-            var organization = Organization.Create(name);
+            var validationResult = await validator.ValidateAsync(new CreateOrganizationRequest()
+            {
+                OrganizationName = command.OrganizationName,
+            });
+         
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+         
+            var organization = new Organization(Guid.NewGuid())
+            {
+                Name = command.OrganizationName,
+                Slug = command.OrganizationName.ToSlug(),
+            };
             var member = new OrganizationMember()
             {
                 UserId = command.OwnerUserId,
@@ -33,7 +49,7 @@ public class OrganizationCommandsConsumer(ApplicationDbContext dbContext,
             await publishEndpoint.Publish(new OrganizationCreationSucceededMessage()
             {
                 OrganizationId = organization.Id,
-                OrganizationName = organization.Name.Value,
+                OrganizationName = organization.Name
             });
         }
         catch (Exception e)

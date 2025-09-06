@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using IdentityService.gRPC;
+using IdentityService.Contracts;
 using Microsoft.EntityFrameworkCore;
 using OrganizationService.Application.Mapping;
 using OrganizationService.Contracts;

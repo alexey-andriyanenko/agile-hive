@@ -38,6 +38,30 @@ class AuthStore {
       HttpClient.refreshToken = res.refreshToken;
     });
   }
+
+  async signInWithRefreshToken(): Promise<string> {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (!refreshToken) {
+      throw new Error("No refresh token found");
+    }
+
+    const res = await authApiService.loginWithRefreshToken({
+      refreshToken,
+    });
+
+    localStorage.setItem("accessToken", res.accessToken);
+    localStorage.setItem("refreshToken", res.refreshToken);
+
+    runInAction(() => {
+      this._isLogged = true;
+
+      HttpClient.accessToken = res.accessToken;
+      HttpClient.refreshToken = res.refreshToken;
+    });
+
+    return res.accessToken;
+  }
 }
 
 export const authStore = new AuthStore();

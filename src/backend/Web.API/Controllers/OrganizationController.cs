@@ -25,6 +25,15 @@ public class OrganizationController(OrganizationService.Contracts.OrganizationSe
         }).ResponseAsync;
     }
     
+    [HttpGet("by-slug/{organizationSlug}")]
+    public async Task<OrganizationDto> GetOrganizationBySlugAsync([FromRoute] string organizationSlug)
+    {
+        return await organizationClient.GetBySlugAsync(new GetOrganizationBySlugRequest() 
+        {
+            OrganizationSlug = organizationSlug
+        }).ResponseAsync;
+    }
+    
     [HttpGet]
     public async Task<GetManyOrganizationsResponse> GetManyOrganizationsAsync([FromQuery] List<string> organizationIds)
     {

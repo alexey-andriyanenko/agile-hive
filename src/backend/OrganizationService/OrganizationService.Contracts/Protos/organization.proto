@@ -11,18 +11,22 @@ service OrganizationService {
   rpc Create (CreateOrganizationRequest) returns (types.OrganizationDto);
   rpc Update (UpdateOrganizationRequest) returns (types.OrganizationDto);
   rpc GetById (GetOrganizationByIdRequest) returns (types.OrganizationDto);
+  rpc GetBySlug (GetOrganizationBySlugRequest) returns (types.OrganizationDto);
   rpc GetMany (GetManyOrganizationsRequest) returns (GetManyOrganizationsResponse);
   rpc Delete (DeleteOrganizationRequest) returns (google.protobuf.Empty);
   rpc DeleteMany (DeleteManyOrganizationsRequest) returns (google.protobuf.Empty);
 }
 
 message CreateOrganizationRequest {
-  string user_id = 1;
   string organization_name = 2;
 }
 
 message GetOrganizationByIdRequest {
   string organization_id = 1;
+}
+
+message GetOrganizationBySlugRequest {
+  string organization_slug = 1;
 }
 
 message GetManyOrganizationsRequest {

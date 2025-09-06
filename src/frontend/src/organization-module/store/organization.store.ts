@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import type { OrganizationModel } from "../models/organization.ts";
 import { organizationApiService } from "../api/organization.api.ts";
+import type { CreateOrganizationRequest } from "src/organization-module/api";
 
 class OrganizationStore {
   private _currentOrganization: OrganizationModel | null = null;
@@ -29,11 +30,19 @@ class OrganizationStore {
     const res = await organizationApiService.getOrganizations();
 
     runInAction(() => {
-      this._organizations = res;
+      this._organizations = res.organizations;
     });
   }
 
-  public async createOrganization(data: { name: string; description: string }): Promise<void> {
+  public async fetchCurrentOrganizationBySlug(slug: string): Promise<void> {
+    const res = await organizationApiService.getOrganizationBySlug(slug);
+
+    runInAction(() => {
+      this._currentOrganization = res;
+    });
+  }
+
+  public async createOrganization(data: CreateOrganizationRequest): Promise<void> {
     const res = await organizationApiService.createOrganization(data);
 
     runInAction(() => {
