@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 
 import { Flex, Button } from "@chakra-ui/react";
 
-import { ProjectSidebar } from "../project/project-sidebar";
+import { ProjectSidebar } from "src/project-module/components/modals/project-sidebar";
 import { UsersList } from "./users-list";
 import { useModalsStore } from "src/core-module/store";
 import { useModalsStore as useSharedModalsStore } from "../../../shared-module/store/modals";

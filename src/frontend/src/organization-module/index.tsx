@@ -13,7 +13,6 @@ export const OrganizationRoutes = {
   select: "/organization-selection",
   invalid: "/invalid-organization",
   home: "/organization/:organizationSlug",
-  projects: "/organization/:organizationSlug/projects",
   users: "/organization/:organizationSlug/users",
   settings: "/organization/:organizationSlug/settings",
 };

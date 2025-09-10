@@ -3,7 +3,7 @@ import React from "react";
 import { Card, Avatar, Button } from "@chakra-ui/react";
 
 import { pickColor } from "src/shared-module/utils";
-import { ProjectModel } from "../../../models/project.ts";
+import type { ProjectModel } from "src/project-module/models/project.ts";
 
 type ProjectCardProps = {
   project: ProjectModel;

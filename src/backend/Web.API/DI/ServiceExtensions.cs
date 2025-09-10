@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using OrganizationService.Contracts;
 using ProjectService.Contracts;
 using Web.API.DelegatingHandlers;
+using Web.API.Exceptions;
 
 namespace Web.API.DI;
 
@@ -50,24 +51,35 @@ public static class ServiceExtensions
         IConfiguration configuration)
     {
         var identityServiceAddress = new Uri(configuration["ServiceAddresses:IdentityService"]!);
-        
+
         services.AddGrpcClient<AuthService.AuthServiceClient>(options =>
             {
                 options.Address = identityServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
-
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            });
+        
         services.AddGrpcClient<TokenService.TokenServiceClient>(options =>
             {
                 options.Address = identityServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            });
+
 
         services.AddGrpcClient<UserService.UserServiceClient>(options =>
             {
                 options.Address = identityServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials();
         
         return services;
     }

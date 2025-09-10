@@ -6,7 +6,7 @@ import {
   type CreateOrEditProjectDialogProps,
   CreateOrEditProjectDialog,
 } from "src/project-module/components/modals/create-or-edit-project-dialog";
-import { modalsStore } from "src/project-module/store";
+import { modalsStore } from "src/project-module/store/modals.store.ts";
 
 interface IModalsProviderRegistry extends ModalsProviderRegistryGuard<ModalName> {
   CreateOrEditProjectDialog: React.FC<CreateOrEditProjectDialogProps>;

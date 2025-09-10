@@ -2,7 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 
 import { AppSidebar, type AppSidebarNavItemProps } from "src/shared-module/layout";
-import { getNavItems } from "./organization-sidebar.utils.ts";
+import { getNavItems } from "./organization-sidebar.utils";
 import { useOrganizationStore } from "src/organization-module/store";
 
 export const OrganizationSidebar: React.FC = observer(() => {

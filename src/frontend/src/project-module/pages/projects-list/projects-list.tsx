@@ -1,16 +1,19 @@
-import React from "react";
+﻿import React from "react";
 import { observer } from "mobx-react-lite";
 import { Flex, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 import { useModalsStore as useSharedModalsStore } from "src/shared-module/store/modals";
-import { OrganizationSidebar } from "../organization/organization-sidebar";
+
+import { useModalsStore, useProjectStore } from "src/project-module/store";
+import { useOrganizationStore } from "src/organization-module/store";
+import type { ProjectModel } from "src/project-module/models/project.ts";
+import { ProjectSidebar } from "src/project-module/components/modals/project-sidebar";
+
 import { ProjectCard } from "./project-card";
 import { AddProjectCard } from "./add-project-card";
-import { useOrganizationStore, useModalsStore, useProjectStore } from "../../store";
-import { ProjectModel } from "../../models/project.ts";
 
-const OrganizationProjects: React.FC = observer(() => {
+const ProjectsList: React.FC = observer(() => {
   const navigate = useNavigate();
   const organizationStore = useOrganizationStore();
   const projectStore = useProjectStore();
@@ -26,7 +29,7 @@ const OrganizationProjects: React.FC = observer(() => {
     setLoading(true);
 
     projectStore
-      .fetchProjects(organizationStore.currentOrganization!.id)
+      .fetchManyProjects(organizationStore.currentOrganization!.id)
       .then(() => {
         setLoading(false);
       })
@@ -34,12 +37,12 @@ const OrganizationProjects: React.FC = observer(() => {
         console.error("Failed to fetch projects:", error);
         setLoading(false);
       });
-  }, []);
+  }, [organizationStore.currentOrganization, projectStore]);
 
   const handleSelectProject = (project: ProjectModel) => {
     projectStore.setCurrentProject(project);
     navigate(
-      `/organization/${organizationStore.currentOrganization!.name}/projects/${project.name}`,
+      `/organization/${organizationStore.currentOrganization!.slug}/projects/${project.slug}`,
     );
   };
 
@@ -75,7 +78,7 @@ const OrganizationProjects: React.FC = observer(() => {
         await projectStore.deleteProject(organizationStore.currentOrganization!.id, project.id);
 
         if (projectStore.currentProject?.id === project.id) {
-          navigate(`/organizations/${organizationStore.currentOrganization!.name}/projects`);
+          navigate(`/organizations/${organizationStore.currentOrganization!.slug}/projects`);
         }
       },
     });
@@ -83,7 +86,7 @@ const OrganizationProjects: React.FC = observer(() => {
 
   return (
     <Flex flex="1" direction="row" width="100%">
-      <OrganizationSidebar />
+      <ProjectSidebar />
 
       <Box
         display="grid"
@@ -115,4 +118,4 @@ const OrganizationProjects: React.FC = observer(() => {
   );
 });
 
-export default OrganizationProjects;
+export default ProjectsList;

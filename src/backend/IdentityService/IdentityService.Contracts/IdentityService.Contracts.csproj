@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos/auth.proto" GrpcServices="Server" />
-        <Protobuf Include="Protos/token.proto" GrpcServices="Server" />
-        <Protobuf Include="Protos/user.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos/auth.proto" ProtoRoot="Protos" GrpcServices="Server" />
+        <Protobuf Include="Protos/token.proto" ProtoRoot="Protos" GrpcServices="Server" />
+        <Protobuf Include="Protos/user.proto" ProtoRoot="Protos" GrpcServices="Server" />
     </ItemGroup>
     
     <ItemGroup>

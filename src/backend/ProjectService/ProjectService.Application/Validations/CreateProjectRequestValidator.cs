@@ -9,19 +9,17 @@ public class CreateProjectRequestValidator : AbstractValidator<CreateProjectRequ
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name is required")
-            .MaximumLength(100)
-            .WithMessage("Name cannot contain more than 200 characters");
+            .WithMessage("Project name is required")
+            .MinimumLength(2)
+            .WithMessage("Project name must be at least 2 characters long")
+            .Matches(@"^[A-Za-z0-9 ]+$")
+            .WithMessage("Project name can only contain letters, numbers, and spaces")
+            .Matches(@"^(?!.* {2,}).*$")
+            .WithMessage("Project name cannot contain consecutive spaces");
         
         RuleFor(x => x.Description)
             .MaximumLength(500)
             .WithMessage("Description cannot contain more than 500 characters");
-        
-        RuleFor(x => x.Slug)
-            .NotEmpty()
-            .WithMessage("Slug is required")
-            .MaximumLength(200)
-            .WithMessage("Slug cannot contain more than 200 characters");
         
         RuleFor(x => x.OrganizationId)
             .NotEmpty().WithMessage("OrganizationId is required")

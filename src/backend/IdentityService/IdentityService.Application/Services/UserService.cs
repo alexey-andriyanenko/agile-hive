@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Application.Services;
 
-[Authorize]
 public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : Contracts.UserService.UserServiceBase
 {
     public override Task<UserDto> GetMe(Empty request, ServerCallContext context)
@@ -23,11 +22,7 @@ public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor ht
 
     public override async Task<UserDto> GetById(GetUserByIdRequest request, ServerCallContext context)
     {
-        if (Guid.TryParse(request.UserId, out var userId))
-        {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, $"UserId '{request.UserId}' is not a valid GUID."));
-        }
-        
+        var userId = Guid.Parse(request.UserId);
         var user = await dbContext.Users
             .AsNoTracking()
             .SingleOrDefaultAsync(x => x.Id == userId);
@@ -48,18 +43,7 @@ public class UserService(ApplicationDbContext dbContext, IHttpContextAccessor ht
 
     public override async Task<GetManyUsersByIdsResponse> GetManyByIds(GetManyUsersByIdsRequest request, ServerCallContext context)
     {
-        var userIds = new List<Guid>();
-        
-        foreach (var userId in request.UserIds)
-        {
-            if (!Guid.TryParse(userId, out var parsedUserId))
-            {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, $"UserId '{userId}' is not a valid GUID."));
-            }
-            
-            userIds.Add(parsedUserId);
-        }
-
+        var userIds = request.UserIds.Select(Guid.Parse);
         var users = await dbContext.Users
             .AsNoTracking()
             .Where(x => userIds.Contains(x.Id))

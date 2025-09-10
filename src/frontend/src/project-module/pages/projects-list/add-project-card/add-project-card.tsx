@@ -2,8 +2,7 @@ import React from "react";
 
 import { Card } from "@chakra-ui/react";
 import { HiOutlinePlus } from "react-icons/hi";
-
-import { useColorModeValue } from "src/components/ui/color-mode.tsx";
+import { useColorModeValue } from "src/shared-module/components/theme";
 
 type AddProjectCardProps = {
   onClick?: () => void;

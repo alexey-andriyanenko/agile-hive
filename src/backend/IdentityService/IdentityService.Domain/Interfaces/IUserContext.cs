@@ -3,5 +3,4 @@
 public interface IUserContext
 {
     Guid UserId { get; }
-    Guid OrganizationId { get; }
 }

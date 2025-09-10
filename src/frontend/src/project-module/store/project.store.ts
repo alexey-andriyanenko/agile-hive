@@ -24,11 +24,33 @@ class ProjectStore {
     this._currentProject = project;
   }
 
-  public async fetchProjects(organizationId: number): Promise<void> {
-    const res = await projectApiService.getProjects(organizationId);
+  public async fetchManyProjects(organizationId: string): Promise<void> {
+    const res = await projectApiService.getManyProjects(organizationId);
 
     runInAction(() => {
-      this._projects = res;
+      this._projects = res.projects;
+    });
+  }
+
+  public async fetchProjectById(organizationId: string, projectId: string): Promise<void> {
+    const res = await projectApiService.getProjectById(organizationId, projectId);
+    const index = this._projects.findIndex((p) => p.id === res.id);
+
+    if (index !== -1) {
+      runInAction(() => {
+        this._projects[index] = res;
+      });
+    }
+  }
+
+  public async fetchCurrentProjectBySlug(
+    organizationId: string,
+    projectSlug: string,
+  ): Promise<void> {
+    const res = await projectApiService.getProjectBySlug(organizationId, projectSlug);
+
+    runInAction(() => {
+      this._currentProject = res;
     });
   }
 
@@ -46,8 +68,6 @@ class ProjectStore {
     runInAction(() => {
       const index = this._projects.findIndex((p) => p.id === res.id);
 
-      console.log(index);
-
       if (index !== -1) {
         this._projects[index] = res;
 
@@ -58,7 +78,7 @@ class ProjectStore {
     });
   }
 
-  public async deleteProject(organizationId: number, projectId: number): Promise<void> {
+  public async deleteProject(organizationId: string, projectId: string): Promise<void> {
     await projectApiService.deleteProject(organizationId, projectId);
 
     runInAction(() => {

@@ -1,4 +1,6 @@
-﻿using Grpc.Core;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.AspNetCore.Http;
 
@@ -11,15 +13,39 @@ public class AuthInterceptor(IHttpContextAccessor httpContextAccessor) : Interce
         ServerCallContext context,
         UnaryServerMethod<TRequest, TResponse> continuation)
     {
-        var httpContext = httpContextAccessor.HttpContext;
+        var authHeader = context.RequestHeaders
+            .FirstOrDefault(h => h.Key.Equals("authorization", StringComparison.OrdinalIgnoreCase));
 
-        if (httpContext?.User?.Identity?.IsAuthenticated != true)
+        if (authHeader == null || string.IsNullOrWhiteSpace(authHeader.Value))
         {
-            throw new RpcException(new Status(StatusCode.Unauthenticated, "User is not authenticated"));
+            throw new RpcException(new Status(StatusCode.Unauthenticated, "Authorization header is missing."));
         }
-        
-        httpContext.Items["UserContext"] = new UserContext(httpContext.User);
-        
+
+        var token = authHeader.Value.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+            ? authHeader.Value.Substring("Bearer ".Length).Trim()
+            : authHeader.Value.Trim();
+
+        ClaimsPrincipal? principal;
+
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            
+            principal = new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims, "jwt"));
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Unauthenticated, $"Invalid token: {ex.Message}"));
+        }
+
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            httpContext.User = principal;
+            httpContext.Items["UserContext"] = new UserContext(principal);
+        }
+
         return await continuation(request, context);
     }
 }

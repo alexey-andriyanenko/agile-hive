@@ -10,7 +10,7 @@ public class UserContext : IUserContext
     
     public UserContext(ClaimsPrincipal user)
     {
-        var userIdClaim = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+        var userIdClaim = user.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub);
         if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
         {
             throw new ArgumentException("User ID claim is missing or invalid.");

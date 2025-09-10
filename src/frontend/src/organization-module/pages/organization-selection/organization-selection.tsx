@@ -44,10 +44,10 @@ const OrganizationSelection: React.FC = observer(() => {
 
   return (
     <Box
+      flex="1"
       display="grid"
       gridTemplateColumns="1fr 1fr 1fr"
       gridTemplateRows="repeat(auto-fill, 275px)"
-      height="100%"
       p={8}
       gap={8}
       overflowY="auto"

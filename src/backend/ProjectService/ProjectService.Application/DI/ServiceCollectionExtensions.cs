@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IValidator<UpdateProjectRequest>, UpdateProjectRequestValidator>();
 
         services.AddScoped<Services.ProjectService>();
+        services.AddScoped<Services.ProjectMemberService>();
         
         return services;
     }

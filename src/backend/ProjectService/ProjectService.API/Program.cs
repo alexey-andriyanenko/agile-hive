@@ -29,6 +29,7 @@ public class Program
         }
         
         app.MapGrpcService<Application.Services.ProjectService>();
+        app.MapGrpcService<Application.Services.ProjectMemberService>();
 
         await app.RunAsync();
     }

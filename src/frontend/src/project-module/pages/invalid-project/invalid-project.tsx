@@ -10,7 +10,7 @@ const InvalidProject: React.FC = observer(() => {
   const navigate = useNavigate();
 
   const handleGoToProjects = () => {
-    navigate(`/organization/${organizationStore.currentOrganization!.name}/projects`);
+    navigate(`/organization/${organizationStore.currentOrganization!.slug}/projects`);
   };
 
   return (

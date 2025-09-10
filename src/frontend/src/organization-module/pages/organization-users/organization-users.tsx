@@ -3,7 +3,7 @@ import React from "react";
 import { Flex, Button } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 
-import { OrganizationSidebar } from "../organization/organization-sidebar";
+import { OrganizationSidebar } from "src/organization-module/components/organization-sidebar";
 import { UsersList } from "./users-list";
 import { useModalsStore, useOrganizationStore } from "../../store";
 import { UserModel } from "src/core-module/models/user";

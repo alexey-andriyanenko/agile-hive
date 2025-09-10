@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectService.Contracts;
+using Web.API.Parameters.Project;
 
 namespace Web.API.Controllers;
 
@@ -10,10 +11,10 @@ namespace Web.API.Controllers;
 public class ProjectController(ProjectService.Contracts.ProjectService.ProjectServiceClient projectClient)
 {
     [HttpPost]
-    public async Task<ProjectDto> CreateAsync([FromRoute] string organizationId, [FromBody] CreateProjectRequest request)
+    public async Task<ProjectDto> CreateAsync([FromRoute] Guid organizationId, [FromBody] Web.API.Parameters.Project.CreateProjectRequest request)
     {
         request.OrganizationId = organizationId;
-        return await projectClient.CreateAsync(request);
+        return await projectClient.CreateAsync(request.ToGrpc());
     }
     
     [HttpGet("{projectId}")]
@@ -23,6 +24,16 @@ public class ProjectController(ProjectService.Contracts.ProjectService.ProjectSe
         {
             OrganizationId = organizationId,
             ProjectId = projectId
+        });
+    }
+    
+    [HttpGet("by-slug/{projectSlug}")]
+    public async Task<ProjectDto> GetBySlugAsync([FromRoute] string organizationId, [FromRoute] string projectSlug)
+    {
+        return await projectClient.GetBySlugAsync(new GetProjectBySlugRequest
+        {
+            OrganizationId = organizationId,
+            ProjectSlug = projectSlug
         });
     }
     

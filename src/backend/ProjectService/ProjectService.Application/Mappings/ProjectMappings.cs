@@ -4,7 +4,7 @@ namespace ProjectService.Application.Mappings;
 
 public static class ProjectMappings
 {
-    public static ProjectDto ToDto(this Domain.Entities.Project project)
+    public static ProjectDto ToDto(this Domain.Entities.Project project, Domain.Entities.ProjectMember member)
     {
         return new ProjectDto()
         {
@@ -13,6 +13,7 @@ public static class ProjectMappings
             Slug = project.Slug,
             Description = project.Description,
             OrganizationId = project.OrganizationId.ToString(),
+            MyRole = (ProjectMemberRole)member.Role
         };
     }
 }

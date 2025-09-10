@@ -7,6 +7,7 @@ import type {
   ModalsStoreRegistryGuard,
 } from "src/modals-module/modals.types";
 import type { ModalsPropsBase } from "src/modals-module";
+import { Portal } from "@chakra-ui/react";
 
 export interface IModalsProviderProps<ModalName extends string> {
   store: ModalsStore<ModalName, ModalsStoreRegistryGuard<ModalName>>;
@@ -16,7 +17,7 @@ export interface IModalsProviderProps<ModalName extends string> {
 export const ModalsProvider = observer(
   <ModalName extends string>({ store, providerRegistry }: IModalsProviderProps<ModalName>) => {
     return (
-      <>
+      <Portal>
         {Object.entries(store.registry).map(([name, props]) => {
           const ModalComponent = providerRegistry[name as ModalName] as React.FC<ModalsPropsBase>;
 
@@ -29,7 +30,7 @@ export const ModalsProvider = observer(
             />
           );
         })}
-      </>
+      </Portal>
     );
   },
 );

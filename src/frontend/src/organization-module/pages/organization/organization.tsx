@@ -2,7 +2,7 @@ import React from "react";
 
 import { Flex } from "@chakra-ui/react";
 
-import { OrganizationSidebar } from "./organization-sidebar";
+import { OrganizationSidebar } from "src/organization-module/components/organization-sidebar";
 
 const Organization: React.FC = () => {
   return (

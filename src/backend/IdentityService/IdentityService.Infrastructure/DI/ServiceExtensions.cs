@@ -38,15 +38,23 @@ public static class ServiceExtensions
 
                     ValidateLifetime = true,
                 };
+                
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Accept token from gRPC metadata
+                        if (context.Request.Headers.ContainsKey("Authorization"))
+                        {
+                            context.Token = context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
         
         services.AddAuthorization();
         services.AddHttpContextAccessor();
-        
-        services.AddGrpc(options =>
-        {
-            options.Interceptors.Add<AuthInterceptor>();
-        });
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("IdentityDb")));

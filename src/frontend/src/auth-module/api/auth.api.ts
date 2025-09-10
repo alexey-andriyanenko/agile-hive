@@ -16,7 +16,7 @@ class AuthApiService {
 
   loginWithRefreshToken(data: RefreshTokenRequest) {
     return appHttpClient
-      .post<RefreshTokenRequest, RefreshTokenResponse>("/identity/token/refresh-token")
+      .post<RefreshTokenRequest, RefreshTokenResponse>("/token/refresh")
       .send(data);
   }
 

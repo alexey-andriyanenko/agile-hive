@@ -9,7 +9,7 @@ const OrganizationRouteGuard: React.FC<React.PropsWithChildren> = observer(({ ch
   const navigate = useNavigate();
   const routeParams = useParams<{ organizationSlug: string }>();
   const organizationStore = useOrganizationStore();
-  const [verifyingOrganization, setVerifiyingOrganization] = React.useState(true);
+  const [verifyingOrganization, setVerifyingOrganization] = React.useState(true);
 
   React.useEffect(() => {
     if (!routeParams.organizationSlug) {
@@ -20,18 +20,18 @@ const OrganizationRouteGuard: React.FC<React.PropsWithChildren> = observer(({ ch
       organizationStore.currentOrganization &&
       organizationStore.currentOrganization.slug === routeParams.organizationSlug
     ) {
-      setVerifiyingOrganization(false);
+      setVerifyingOrganization(false);
       return;
     }
 
     organizationStore
       .fetchCurrentOrganizationBySlug(routeParams.organizationSlug)
-      .then(() => setVerifiyingOrganization(false))
+      .then(() => setVerifyingOrganization(false))
       .catch((error) => {
         navigate(OrganizationRoutes.invalid);
         console.error("Failed to fetch organization by slug:", error);
       });
-  }, [routeParams.organizationSlug, organizationStore, navigate]);
+  }, [organizationStore, navigate, routeParams]);
 
   return verifyingOrganization ? <div>Verifying organization...</div> : children;
 });
