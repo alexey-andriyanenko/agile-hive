@@ -10,6 +10,8 @@ service UserService {
   rpc GetMe (google.protobuf.Empty) returns (UserDto);
   rpc GetById (GetUserByIdRequest) returns (UserDto);
   rpc GetManyByIds (GetManyUsersByIdsRequest) returns (GetManyUsersByIdsResponse);
+  rpc Create (CreateUserRequest) returns (UserDto);
+  rpc Update (UpdateUserRequest) returns (UserDto);
 }
 
 message UserDto {
@@ -17,6 +19,7 @@ message UserDto {
   string first_name = 2;
   string last_name = 3;
   string email = 4;
+  string user_name = 5;
 }
 
 message GetUserByIdRequest {
@@ -29,4 +32,21 @@ message GetManyUsersByIdsRequest {
 
 message GetManyUsersByIdsResponse {
   repeated UserDto users = 1;
+}
+
+message CreateUserRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string user_name = 3;
+  string email = 4;
+  string password = 5;
+}
+
+message UpdateUserRequest {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string user_name = 5;
+  string password = 6;
 }

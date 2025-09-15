@@ -3,19 +3,20 @@ import { observer } from "mobx-react-lite";
 import { Table, Avatar, Menu, IconButton, Portal } from "@chakra-ui/react";
 import { HiDotsVertical } from "react-icons/hi";
 
-import { UserModel } from "src/core-module/models/user.ts";
 import { pickColor } from "src/shared-module/utils";
+import type { OrganizationUserModel } from "src/organization-module/models/organization-user.ts";
 
 import { USERS_LIST_COLUMNS } from "./users-list.constants.ts";
+import { OrganizationUserRoleToNameMap } from "src/organization-module/models/organization-user-role.ts";
 
 type UsersListProps = {
-  users: UserModel[];
-  onEdit: (user: UserModel) => void;
-  onDelete: (user: UserModel) => void;
+  users: OrganizationUserModel[];
+  onEdit: (user: OrganizationUserModel) => void;
+  onDelete: (user: OrganizationUserModel) => void;
 };
 
 export const UsersList: React.FC<UsersListProps> = observer(({ users, onEdit, onDelete }) => {
-  const handleMenu = (user: UserModel, value: string) => {
+  const handleMenu = (user: OrganizationUserModel, value: string) => {
     if (value === "edit") {
       onEdit(user);
     }
@@ -43,13 +44,17 @@ export const UsersList: React.FC<UsersListProps> = observer(({ users, onEdit, on
         {users.map((user) => (
           <Table.Row key={user.id}>
             <Table.Cell>
-              <Avatar.Root colorPalette={pickColor(user.fullName)}>
-                <Avatar.Fallback name={user.fullName} />
+              <Avatar.Root colorPalette={pickColor(`${user.firstName} ${user.lastName}`)} size="sm">
+                <Avatar.Fallback name={`${user.firstName} ${user.lastName}`} />
               </Avatar.Root>
             </Table.Cell>
 
             {USERS_LIST_COLUMNS.map((col) => (
-              <Table.Cell key={col.key}>{user[col.key as keyof UserModel]}</Table.Cell>
+              <Table.Cell key={col.key}>
+                {col.key === "role"
+                  ? OrganizationUserRoleToNameMap[user[col.key]]
+                  : user[col.key as keyof OrganizationUserModel]}
+              </Table.Cell>
             ))}
 
             <Table.Cell>

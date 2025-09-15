@@ -29,11 +29,12 @@
 
         <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization-types.proto" GrpcServices="None" />
         <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization.proto" GrpcServices="Client" />
-        <Protobuf Include="../OrganizationService/OrganizationService.Contracts/Protos/organization-member.proto" GrpcServices="Client" />
 
         <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project-types.proto" GrpcServices="None" />
         <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project.proto" GrpcServices="Client" />
-        <Protobuf Include="../ProjectService/ProjectService.Contracts/Protos/project-member.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../OrganizationUserService/OrganizationUserService.Contracts/Protos/organization-user-types.proto" GrpcServices="None" />
+        <Protobuf Include="../OrganizationUserService/OrganizationUserService.Contracts/Protos/organization-user.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

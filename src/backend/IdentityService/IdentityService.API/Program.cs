@@ -1,5 +1,6 @@
 using IdentityService.API.DI;
 using IdentityService.Application.DI;
+using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.DI;
 using IdentityService.Infrastructure.Interceptors;
 using Microsoft.EntityFrameworkCore;

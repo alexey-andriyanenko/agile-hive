@@ -3,8 +3,8 @@ using Grpc.Core;
 using IdentityMessages.Messages;
 using IdentityService.Application.Exceptions;
 using IdentityService.Contracts;
-using IdentityService.Domain.Constants;
 using IdentityService.Domain.Entities;
+using IdentityService.Infrastructure.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +26,6 @@ public class AuthService(ApplicationDbContext dbContext,
             throw new ValidationException(validationResult.Errors);
         }
         
-        var role = await dbContext.Roles
-            .SingleOrDefaultAsync(x => x.Id == AppRoles.Admin.Id);
-
-        if (role is null)
-        {
-            throw new Exception("Admin role not found. Please ensure the application is seeded with roles.");
-        }
-        
         var user = new User()
         {
             Id = Guid.NewGuid(),
@@ -41,7 +33,6 @@ public class AuthService(ApplicationDbContext dbContext,
             LastName = request.LastName,
             Email = request.Email,
             UserName = request.UserName,
-            RoleId = role.Id,
         };
         
         var passwordHasher = new PasswordHasher<User>();

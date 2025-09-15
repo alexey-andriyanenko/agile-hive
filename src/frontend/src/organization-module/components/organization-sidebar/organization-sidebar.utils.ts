@@ -14,10 +14,6 @@ export const getNavItems = (slug: string): AppSidebarNavItemProps[] => [
     name: "Organization Projects",
   },
   {
-    href: `/organization/${slug}/users`,
-    name: "Organization Users",
-  },
-  {
     href: `/organization/${slug}/settings`,
     name: "Organization Settings",
   },

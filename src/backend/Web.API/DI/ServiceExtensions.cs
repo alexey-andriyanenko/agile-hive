@@ -43,6 +43,7 @@ public static class ServiceExtensions
         services.AddIdentityServices(configuration);
         services.AddOrganizationServices(configuration);
         services.AddProjectServices(configuration);
+        services.AddOrganizationUserServices(configuration);
         
         return services;
     }
@@ -94,11 +95,6 @@ public static class ServiceExtensions
                 options.Address = organizationServiceAddress;
             })
             .AddHttpMessageHandler<AuthHeaderHandler>();
-       services.AddGrpcClient<OrganizationMemberService.OrganizationMemberServiceClient>(options =>
-            {
-                options.Address = organizationServiceAddress;
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
 
         return services;
     }
@@ -107,15 +103,25 @@ public static class ServiceExtensions
         IConfiguration configuration)
     {
         var projectServiceAddress = new Uri(configuration["ServiceAddresses:ProjectService"]!);
-        
+
         services.AddGrpcClient<ProjectService.Contracts.ProjectService.ProjectServiceClient>(options =>
             {
                 options.Address = projectServiceAddress;
             })
             .AddHttpMessageHandler<AuthHeaderHandler>();
-       services.AddGrpcClient<ProjectMemberService.ProjectMemberServiceClient>(options =>
+
+        return services;
+    }
+
+
+    private static IServiceCollection AddOrganizationUserServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var organizationServiceAddress = new Uri(configuration["ServiceAddresses:OrganizationUserService"]!);
+        
+        services.AddGrpcClient<OrganizationUserService.Contracts.OrganizationUserService.OrganizationUserServiceClient>(options =>
             {
-                options.Address = projectServiceAddress;
+                options.Address = organizationServiceAddress;
             })
             .AddHttpMessageHandler<AuthHeaderHandler>();
 

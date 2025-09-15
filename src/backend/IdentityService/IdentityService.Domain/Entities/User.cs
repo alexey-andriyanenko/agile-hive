@@ -8,11 +8,5 @@ public class User : IdentityUser<Guid>
 
     public string LastName { get; set; } = string.Empty;
     
-    // public ICollection<Guid> OrganizationIds { get; set; } = new List<Guid>();
-    
-    public Guid RoleId { get; set; }
-
-    public Role? Role { get; set; }
-    
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

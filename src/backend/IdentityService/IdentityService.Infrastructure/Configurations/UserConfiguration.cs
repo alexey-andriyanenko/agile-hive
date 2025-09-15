@@ -27,11 +27,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.LastName)
             .HasMaxLength(200)
             .IsRequired();
-            
-        builder
-            .HasOne(x => x.Role)
-            .WithMany(x => x.Users)
-            .HasForeignKey(x => x.RoleId)
-            .IsRequired();
     }
 }

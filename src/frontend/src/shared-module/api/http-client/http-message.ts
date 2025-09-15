@@ -42,7 +42,9 @@ export class HttpMessage<
     return this;
   }
 
-  public setSearchParams(qp: Record<string, string | number>): Omit<this, "setSearchParams"> {
+  public setSearchParams(
+    qp: Record<string, string | number | string[]>,
+  ): Omit<this, "setSearchParams"> {
     const params = new URLSearchParams(this._stringifySearchParams(qp));
     this._url += `?${params.toString()}`;
 
@@ -106,14 +108,21 @@ export class HttpMessage<
     });
   }
 
-  private _stringifySearchParams(params: Record<string, string | number>): Record<string, string> {
-    return Object.keys(params).reduce(
-      (acc, key) => {
-        if (params[key] === undefined || params[key] === null) return acc;
-        acc[key] = String(params[key]);
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
+  private _stringifySearchParams(
+    params: Record<string, string | number | string[]>,
+  ): Record<string, string> {
+    const result: Record<string, string> = {};
+
+    for (const key in params) {
+      const value = params[key];
+      if (value === undefined || value === null) continue;
+      if (Array.isArray(value)) {
+        result[key] = value.join(",");
+      } else {
+        result[key] = String(value);
+      }
+    }
+
+    return result;
   }
 }

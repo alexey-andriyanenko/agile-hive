@@ -14,60 +14,56 @@ public class OrganizationMemberService(
     UserService.UserServiceClient userServiceClient
 ) : Contracts.OrganizationMemberService.OrganizationMemberServiceBase
 {
-    public override async Task<OrganizationMemberDto> Get(GetOrganizationMemberRequest request, ServerCallContext context)
+    public override async Task<OrganizationMemberDto> GetById(GetOrganizationMemberByIdRequest request, ServerCallContext context)
     {
-        var organizationId = Guid.Parse(request.OrganizationId);
-        var userId = Guid.Parse(request.UserId);
-        
-        var organizationMember = await dbContext.OrganizationMembers
-            .AsNoTracking()
-            .SingleOrDefaultAsync(x => x.OrganizationId == organizationId && x.UserId == userId);
-        
-        if (organizationMember is null)
+        var members = await GetManyByIds(new GetManyOrganizationMembersByIdsRequest()
         {
-            throw new RpcException(new Status(StatusCode.NotFound, $"Organization member with Organization ID '{request.OrganizationId}' and User ID '{request.UserId}' not found."));
-        }
-
-        return organizationMember.ToDto();
+            OrganizationId = request.OrganizationId,
+            UserIds = { request.UserId }
+        }, context);
+        
+        return members.Members.Single();
     }
 
-    public override async Task<GetManyOrganizationMembersResponse> GetMany(GetManyOrganizationMembersRequest request, ServerCallContext context)
-    { 
+    public override async Task<GetManyOrganizationMembersResponse> GetManyByIds(GetManyOrganizationMembersByIdsRequest request, ServerCallContext context)
+    {
         var organizationId = Guid.Parse(request.OrganizationId);
         var userIds = request.UserIds.Select(Guid.Parse).ToList();
         
-        List<OrganizationMember> organizationMembers;
+        var organizationMembers = await dbContext.OrganizationMembers
+            .AsNoTracking()
+            .Where(x => x.OrganizationId == organizationId && userIds.Contains(x.UserId))
+            .ToListAsync();
         
-        if (userIds.Count > 0)
+        var organizationMemberIds = organizationMembers.Select(x => x.UserId).ToList();
+        var notFoundMemberIds = userIds
+            .Where(userId => !organizationMemberIds.Contains(userId))
+            .ToList();
+
+        if (notFoundMemberIds.Count > 0)
         {
-            organizationMembers = await dbContext.OrganizationMembers
-                .AsNoTracking()
-                .Where(x => x.OrganizationId == organizationId && userIds.Contains(x.UserId))
-                .ToListAsync();
-            var organizationMemberUserIds = organizationMembers.Select(x => x.UserId).ToList();
-            var notFoundUserIds = userIds
-                .Where(id => !organizationMemberUserIds.Contains(id))
-                .ToList();
-            
-            if (notFoundUserIds.Count > 0) 
-            {
-                throw new RpcException(new Status(StatusCode.NotFound, $"Organization members with User IDs '{string.Join(", ", notFoundUserIds)}' not found in Organization ID '{request.OrganizationId}'."));
-            }
-        }
-        else
-        {
-            organizationMembers = await dbContext.OrganizationMembers
-                .AsNoTracking()
-                .Where(x => x.OrganizationId == organizationId)
-                .ToListAsync();
+            throw new RpcException(new Status(StatusCode.NotFound, $"Organization members with User IDs '{string.Join(", ", notFoundMemberIds)}' not found in Organization ID '{request.OrganizationId}'."));
         }
         
         return new GetManyOrganizationMembersResponse
         {
-            Members =
-            {
-                organizationMembers.Select(m => m.ToDto())
-            }
+            Members = { organizationMembers.Select(om => om.ToDto()) }
+        };
+    }
+
+    public override async Task<GetManyOrganizationMembersResponse> GetMany(GetManyOrganizationMembersRequest request, ServerCallContext context)
+    {
+        var organizationId = Guid.Parse(request.OrganizationId);
+
+        var organizationMembers = await dbContext.OrganizationMembers
+            .AsNoTracking()
+            .Where(x => x.OrganizationId == organizationId)
+            .ToListAsync();
+        
+        
+        return new GetManyOrganizationMembersResponse
+        {
+            Members = { organizationMembers.Select(om => om.ToDto()) }
         };
     }
 
@@ -151,7 +147,27 @@ public class OrganizationMemberService(
 
         return new Empty();
     }
-    
+
+    public override async Task<OrganizationMemberDto> UpdateRole(UpdateUserRoleInOrganizationRequest request, ServerCallContext context)
+    {
+        var organizationId = Guid.Parse(request.OrganizationId);
+        var userId = Guid.Parse(request.UserId);
+        
+        var organizationMember = await dbContext.OrganizationMembers
+            .SingleOrDefaultAsync(x => x.OrganizationId == organizationId && x.UserId == userId);
+        
+        if (organizationMember is null)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, $"Organization member with Organization ID '{request.OrganizationId}' and User ID '{request.UserId}' not found."));
+        }
+
+        organizationMember.Role = (Domain.Enums.OrganizationMemberRole)request.Role;
+        
+        await dbContext.SaveChangesAsync();
+        
+        return organizationMember.ToDto();
+    }
+
     public override async Task<Empty> RemoveFromOrganization(RemoveUserFromOrganizationRequest request, ServerCallContext context)
     {
         var removeManyRequest = new RemoveManyUsersFromOrganizationRequest

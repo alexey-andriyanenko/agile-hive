@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+option csharp_namespace = "OrganizationUserService.Contracts";
+
+package organization.user;
+
+import "organization-user-types.proto";
+import "google/protobuf/empty.proto";
+
+service OrganizationUserService {
+  rpc GetById (GetOrganizationUserByIdRequest) returns (organization.user.types.OrganizationUserDto);
+  rpc GetManyByIds (GetManyOrganizationUsersByIdsRequest) returns (GetManyOrganizationUsersByIdsResponse);
+  rpc GetMany (GetManyOrganizationUsersRequest) returns (GetManyOrganizationUsersResponse);
+  rpc Create (CreateOrganizationUserRequest) returns (organization.user.types.OrganizationUserDto);
+  rpc CreateMany (CreateManyOrganizationUsersRequest) returns (CreateManyOrganizationUsersResponse);
+  rpc Update (UpdateOrganizationUserRequest) returns (organization.user.types.OrganizationUserDto);
+  rpc Remove (RemoveUserFromOrganizationRequest) returns (google.protobuf.Empty);
+  rpc RemoveMany (RemoveManyUsersFromOrganizationRequest) returns (google.protobuf.Empty);
+}
+
+message GetOrganizationUserByIdRequest {
+  string organization_id = 1;
+  string user_id = 2;
+}
+
+message GetManyOrganizationUsersByIdsRequest {
+  string organization_id = 1;
+  repeated string user_ids = 2;
+}
+
+message GetManyOrganizationUsersByIdsResponse {
+  repeated organization.user.types.OrganizationUserDto users = 1;
+}
+
+message GetManyOrganizationUsersRequest {
+  string organization_id = 1;
+}
+
+message GetManyOrganizationUsersResponse {
+  repeated organization.user.types.OrganizationUserDto users = 1;
+}
+
+message CreateOrganizationUserRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string email = 3;
+  string user_name = 4;
+  string password = 5;
+  organization.user.types.OrganizationUserRole role = 6;
+  string organization_id = 7;
+}
+
+message CreateManyOrganizationUsersRequest {
+  string organization_id = 1;
+  repeated CreateOrganizationUserItem users = 2;
+}
+
+message CreateOrganizationUserItem {
+  string first_name = 1;
+  string last_name = 2;
+  string email = 3;
+  string user_name = 4;
+  string password = 5;
+  organization.user.types.OrganizationUserRole role = 6;
+}
+
+message CreateManyOrganizationUsersResponse {
+  repeated organization.user.types.OrganizationUserDto users = 1;
+}
+
+message UpdateOrganizationUserRequest {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string user_name = 5;
+  string password = 6;
+  organization.user.types.OrganizationUserRole role = 7;
+  string organization_id = 8;
+}
+
+message RemoveUserFromOrganizationRequest {
+  string organization_id = 1;
+  string user_id = 2;
+}
+
+message RemoveManyUsersFromOrganizationRequest {
+  string organization_id = 1;
+  repeated string user_ids = 2;
+}

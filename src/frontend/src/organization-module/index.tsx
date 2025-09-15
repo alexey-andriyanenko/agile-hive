@@ -3,7 +3,6 @@
 import OrganizationSelection from "src/organization-module/pages/organization-selection";
 import InvalidOrganization from "src/organization-module/pages/invalid-organization";
 import Organization from "src/organization-module/pages/organization";
-import OrganizationUsers from "src/organization-module/pages/organization-users";
 import OrganizationSettings from "src/organization-module/pages/organization-settings";
 import { Providers as SharedProviders } from "src/shared-module/providers";
 import { Providers as OrganizationProviders } from "src/organization-module/providers";
@@ -13,7 +12,6 @@ export const OrganizationRoutes = {
   select: "/organization-selection",
   invalid: "/invalid-organization",
   home: "/organization/:organizationSlug",
-  users: "/organization/:organizationSlug/users",
   settings: "/organization/:organizationSlug/settings",
 };
 
@@ -47,19 +45,6 @@ const routes: RouteItem[] = [
         <SharedProviders>
           <OrganizationProviders>
             <Organization />
-          </OrganizationProviders>
-        </SharedProviders>
-      </OrganizationRouteGuard>
-    ),
-    isPrivate: true,
-  },
-  {
-    path: OrganizationRoutes.users,
-    element: (
-      <OrganizationRouteGuard>
-        <SharedProviders>
-          <OrganizationProviders>
-            <OrganizationUsers />
           </OrganizationProviders>
         </SharedProviders>
       </OrganizationRouteGuard>

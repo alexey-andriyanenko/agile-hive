@@ -1,22 +1,18 @@
-﻿using IdentityService.Domain.Constants;
-using IdentityService.Domain.Entities;
+﻿using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure.Configurations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
+namespace IdentityService.Infrastructure.Data;
+
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
-        base(options)
-    { }
-    
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new UserConfiguration());
-        builder.ApplyConfiguration(new RoleConfiguration());
         
         base.OnModelCreating(builder);
     }
@@ -24,29 +20,5 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-
-        optionsBuilder.UseSeeding((context, _) => { });
-        
-        optionsBuilder.UseAsyncSeeding(async (context, _, cancellationToken) =>
-        {
-            var rolesContext = context.Set<Role>();
-            var existingRoles = await rolesContext.ToListAsync(cancellationToken);
-
-            if (existingRoles.Count > 0)
-            {
-                return;
-            }
-
-            List<Role> roles = [AppRoles.Admin, AppRoles.Manager, AppRoles.Employee];
-
-            await rolesContext.AddRangeAsync(roles, cancellationToken);
-            await context.SaveChangesAsync(cancellationToken);
-        });
-
-
-        optionsBuilder.EnableSensitiveDataLogging()
-            .LogTo(Console.WriteLine,
-                new[] { DbLoggerCategory.Database.Command.Name },
-                LogLevel.Information);
     }
 }

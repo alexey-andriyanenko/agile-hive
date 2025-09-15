@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "OrganizationUserService.Contracts";
+
+package organization.user.types;
+
+
+enum OrganizationUserRole {
+  OWNER = 0;
+  ADMIN = 1;
+  MANAGER = 2;
+  MEMBER = 3;
+  GUEST = 4;
+}
+
+
+message OrganizationUserDto {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string userName = 5;
+  OrganizationUserRole role = 6;
+}

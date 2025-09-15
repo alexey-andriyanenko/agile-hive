@@ -1,9 +1,13 @@
-import { UserColumn } from "./users-list.types.ts";
+import type { UserColumn } from "./users-list.types.ts";
 
 export const USERS_LIST_COLUMNS: UserColumn[] = [
   {
-    key: "fullName",
-    label: "Full Name",
+    key: "firstName",
+    label: "First Name",
+  },
+  {
+    key: "lastName",
+    label: "Last Name",
   },
   {
     key: "username",

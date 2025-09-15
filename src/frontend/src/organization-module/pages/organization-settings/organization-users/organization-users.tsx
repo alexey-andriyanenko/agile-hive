@@ -1,26 +1,25 @@
 import React from "react";
 
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, Heading } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 
-import { OrganizationSidebar } from "src/organization-module/components/organization-sidebar";
 import { UsersList } from "./users-list";
-import { useModalsStore, useOrganizationStore } from "../../store";
-import { UserModel } from "src/core-module/models/user";
+import { useModalsStore, useOrganizationStore, useOrganizationUserStore } from "../../../store";
 import { useModalsStore as useSharedModalsStore } from "src/shared-module/store/modals";
 
 const OrganizationUsers: React.FC = observer(() => {
   const organizationStore = useOrganizationStore();
+  const organizationUserStore = useOrganizationUserStore();
   const modalsStore = useModalsStore();
   const sharedModalsStore = useSharedModalsStore();
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    organizationStore
-      .fetchUsersByOrganization()
+    organizationUserStore
+      .fetchManyUsers({ organizationId: organizationStore.currentOrganization!.id })
       .then(() => setLoading(false))
       .catch((error) => {
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch organization users:", error);
         setLoading(false);
       });
   }, []);
@@ -62,12 +61,12 @@ const OrganizationUsers: React.FC = observer(() => {
   };
 
   return (
-    <Flex flex="1" direction="row" width="100%">
-      <OrganizationSidebar />
+    <Flex flex="1" direction="column" width="100%">
+      <Heading> Organization Team </Heading>
 
       <Flex direction="column" width="100%" p={4}>
         {loading ? (
-          <div>loading users...</div>
+          <div>Loading users...</div>
         ) : (
           <>
             <Flex justify="flex-end">
@@ -77,7 +76,7 @@ const OrganizationUsers: React.FC = observer(() => {
             </Flex>
 
             <UsersList
-              users={organizationStore.users}
+              users={organizationUserStore.users}
               onEdit={handleEditUser}
               onDelete={handleDeleteUser}
             />

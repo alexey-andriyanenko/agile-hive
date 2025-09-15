@@ -8,22 +8,32 @@ import "google/protobuf/empty.proto";
 import "organization-types.proto";
 
 service OrganizationMemberService {
-  rpc Get (GetOrganizationMemberRequest) returns (organization.types.OrganizationMemberDto);
+  rpc GetById (GetOrganizationMemberByIdRequest) returns (organization.types.OrganizationMemberDto);
+  rpc GetManyByIds (GetManyOrganizationMembersByIdsRequest) returns (GetManyOrganizationMembersResponse);
   rpc GetMany (GetManyOrganizationMembersRequest) returns (GetManyOrganizationMembersResponse);
   rpc AddToOrganization (AddUserToOrganizationRequest) returns (google.protobuf.Empty);
   rpc AddManyToOrganization (AddManyUsersToOrganizationRequest) returns (google.protobuf.Empty);
+  rpc UpdateRole (UpdateUserRoleInOrganizationRequest) returns (organization.types.OrganizationMemberDto);
   rpc RemoveFromOrganization (RemoveUserFromOrganizationRequest) returns (google.protobuf.Empty);
   rpc RemoveManyFromOrganization (RemoveManyUsersFromOrganizationRequest) returns (google.protobuf.Empty);
 }
 
-message GetOrganizationMemberRequest {
+message GetOrganizationMemberByIdRequest {
   string organization_id = 1;
   string user_id = 2;
 }
 
-message GetManyOrganizationMembersRequest {
+message GetManyOrganizationMembersByIdsRequest {
   string organization_id = 1;
   repeated string user_ids = 2;
+}
+
+message GetManyOrganizationMembersByIdsResponse {
+  repeated organization.types.OrganizationMemberDto members = 1;
+}
+
+message GetManyOrganizationMembersRequest {
+  string organization_id = 1;
 }
 
 message GetManyOrganizationMembersResponse {
@@ -44,6 +54,12 @@ message AddUserToOrganizationMessage {
 message AddManyUsersToOrganizationRequest {
   string organization_id = 1;
   repeated AddUserToOrganizationMessage users = 2;
+}
+
+message UpdateUserRoleInOrganizationRequest {
+  string organization_id = 1;
+  string user_id = 2;
+  organization.types.OrganizationMemberRole role = 3;
 }
 
 message RemoveUserFromOrganizationRequest {
