@@ -5,6 +5,6 @@ export type OrganizationUserModel = {
   firstName: string;
   lastName: string;
   email: string;
-  userId: string;
+  userName: string;
   role: OrganizationUserRole;
 };

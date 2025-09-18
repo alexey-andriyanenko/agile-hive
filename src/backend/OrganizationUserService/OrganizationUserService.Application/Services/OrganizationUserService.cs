@@ -100,7 +100,8 @@ public class OrganizationUserService(
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            UserName = request.UserName
+            UserName = request.UserName,
+            Password = request.Password,
         }).ResponseAsync;
         
         await organizationMemberServiceClient.AddToOrganizationAsync(new AddUserToOrganizationRequest()

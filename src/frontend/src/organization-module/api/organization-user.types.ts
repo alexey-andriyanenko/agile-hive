@@ -1,4 +1,5 @@
 ﻿import type { OrganizationUserModel } from "src/organization-module/models/organization-user.ts";
+import type { OrganizationUserRole } from "src/organization-module/models/organization-user-role.ts";
 
 export type GetOrganizationUserByIdRequest = {
   organizationId: string;
@@ -29,8 +30,9 @@ export type CreateOrganizationUserRequest = {
   firstName: string;
   lastName: string;
   email: string;
+  userName: string;
   password: string;
-  role: string;
+  role: OrganizationUserRole;
 };
 
 export type CreateOrganizationUserResponse = OrganizationUserModel;

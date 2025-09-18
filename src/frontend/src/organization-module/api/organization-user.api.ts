@@ -1,12 +1,15 @@
 ﻿import { appHttpClient } from "src/shared-module/api";
 import type {
   CreateOrganizationUserRequest,
+  CreateOrganizationUserResponse,
   GetManyOrganizationUsersByIdsRequest,
   GetManyOrganizationUsersByIdsResponse,
   GetManyOrganizationUsersRequest,
+  GetManyOrganizationUsersResponse,
   GetOrganizationUserByIdRequest,
   GetOrganizationUserByIdResponse,
   UpdateOrganizationUserRequest,
+  UpdateOrganizationUserResponse,
 } from "./organization-user.types.ts";
 
 class OrganizationUserApiService {
@@ -31,7 +34,7 @@ class OrganizationUserApiService {
 
   getManyOrganizationUsers(data: GetManyOrganizationUsersRequest) {
     return appHttpClient
-      .get<GetManyOrganizationUsersByIdsResponse>(`/organizations/${data.organizationId}/users`)
+      .get<GetManyOrganizationUsersResponse>(`/organizations/${data.organizationId}/users`)
       .send();
   }
 
@@ -39,7 +42,7 @@ class OrganizationUserApiService {
     return appHttpClient
       .post<
         CreateOrganizationUserRequest,
-        GetOrganizationUserByIdResponse
+        CreateOrganizationUserResponse
       >(`/organizations/${data.organizationId}/users`)
       .send(data);
   }
@@ -48,7 +51,7 @@ class OrganizationUserApiService {
     return appHttpClient
       .put<
         UpdateOrganizationUserRequest,
-        GetOrganizationUserByIdResponse
+        UpdateOrganizationUserResponse
       >(`/organizations/${data.organizationId}/users/${data.id}`)
       .send(data);
   }

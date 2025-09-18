@@ -140,9 +140,12 @@ public class UserService(
         user.Email = request.Email;
         user.UserName = request.UserName;
         
-        var passwordHasher = new PasswordHasher<User>();
-        var passwordHash = passwordHasher.HashPassword(user, request.Password);
-        user.PasswordHash = passwordHash;
+        if (!string.IsNullOrEmpty(request.Password))
+        {
+            var passwordHasher = new PasswordHasher<User>();
+            var passwordHash = passwordHasher.HashPassword(user, request.Password);
+            user.PasswordHash = passwordHash;
+        }
 
         dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();

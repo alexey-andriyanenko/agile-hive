@@ -10,7 +10,7 @@ export const USERS_LIST_COLUMNS: UserColumn[] = [
     label: "Last Name",
   },
   {
-    key: "username",
+    key: "userName",
     label: "Username",
   },
   {

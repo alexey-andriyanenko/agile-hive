@@ -1,7 +1,7 @@
 export type UserModel = {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
-  role: "ADMIN" | "USER";
+  userName: string;
 };

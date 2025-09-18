@@ -6,7 +6,7 @@ import { type UserModel } from "../models";
 
 class AuthStore {
   private _isLogged: boolean | null = localStorage.getItem("token") !== null;
-  private _userId: number | null = null;
+  private _userId: string | null = null;
 
   private _currentUser: UserModel | null = null;
 
@@ -22,7 +22,7 @@ class AuthStore {
     return this._currentUser;
   }
 
-  public get userId(): number | null {
+  public get userId(): string | null {
     return this._userId;
   }
 
@@ -61,6 +61,26 @@ class AuthStore {
     });
 
     return res.accessToken;
+  }
+
+  async loadMe(): Promise<void> {
+    try {
+      const res = await authApiService.getMe();
+
+      runInAction(() => {
+        this._currentUser = res;
+        this._userId = res.id;
+        this._isLogged = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this._isLogged = false;
+        this._currentUser = null;
+        this._userId = null;
+      });
+
+      throw error;
+    }
   }
 }
 

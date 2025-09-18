@@ -6,6 +6,7 @@ import { observer } from "mobx-react-lite";
 import { UsersList } from "./users-list";
 import { useModalsStore, useOrganizationStore, useOrganizationUserStore } from "../../../store";
 import { useModalsStore as useSharedModalsStore } from "src/shared-module/store/modals";
+import type { OrganizationUserModel } from "src/organization-module/models/organization-user.ts";
 
 const OrganizationUsers: React.FC = observer(() => {
   const organizationStore = useOrganizationStore();
@@ -25,38 +26,46 @@ const OrganizationUsers: React.FC = observer(() => {
   }, []);
 
   const handleCreateUser = () => {
-    modalsStore.open("CreateOrEditUserDialog", {
+    modalsStore.open("CreateOrEditOrganizationUserDialog", {
       onCreate: (data) =>
-        organizationStore.createUser({
-          username: data.username,
+        organizationUserStore.createUser({
+          organizationId: organizationStore.currentOrganization!.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          userName: data.userName,
           email: data.email,
-          fullName: data.fullName,
+          role: Number(data.role[0]),
           password: data.password,
-          role: "USER",
-          orgId: organizationStore.currentOrganization!.id,
         }),
     });
   };
 
-  const handleEditUser = (user: UserModel) => {
-    modalsStore.open("CreateOrEditUserDialog", {
+  const handleEditUser = (user: OrganizationUserModel) => {
+    modalsStore.open("CreateOrEditOrganizationUserDialog", {
       user,
       onEdit: (data) =>
-        organizationStore.updateUser({
+        organizationUserStore.updateUser({
           id: user.id,
-          username: data.username,
+          organizationId: organizationStore.currentOrganization!.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
           email: data.email,
-          fullName: data.fullName,
-          role: user.role,
+          userName: data.userName,
+          role: Number(data.role[0]),
+          password: data.password,
         }),
     });
   };
 
-  const handleDeleteUser = (user: UserModel) => {
+  const handleDeleteUser = (user: OrganizationUserModel) => {
     sharedModalsStore.open("ConfirmModal", {
-      title: "Are you sure you want to delete this user?",
-      description: `This action cannot be undone. User: ${user.fullName}`,
-      onConfirm: () => organizationStore.deleteUser(user.id),
+      title: `Are you sure you want to remove this user from current organization (${organizationStore.currentOrganization?.name})?`,
+      description: `User: ${user.firstName} ${user.lastName} (${user.email})`,
+      onConfirm: () =>
+        organizationUserStore.removeUser({
+          id: user.id,
+          organizationId: organizationStore.currentOrganization!.id,
+        }),
     });
   };
 

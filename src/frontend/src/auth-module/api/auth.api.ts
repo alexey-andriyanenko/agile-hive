@@ -8,6 +8,7 @@ import type {
   RegisterRequest,
   RegisterResponse,
 } from "./auth.types";
+import type { UserModel } from "src/auth-module/models";
 
 class AuthApiService {
   login(data: LoginRequest) {
@@ -22,6 +23,10 @@ class AuthApiService {
 
   register(data: RegisterRequest) {
     return appHttpClient.post<RegisterRequest, RegisterResponse>("/identity/register").send(data);
+  }
+
+  getMe() {
+    return appHttpClient.get<UserModel>("/user/me").send();
   }
 }
 

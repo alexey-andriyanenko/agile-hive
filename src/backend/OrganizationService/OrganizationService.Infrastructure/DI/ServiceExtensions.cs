@@ -49,7 +49,12 @@ public static class ServiceExtensions
         services.AddGrpcClient<UserService.UserServiceClient>(options =>
         {
             options.Address = new Uri(configuration["ServiceAddresses:IdentityService"]!);
-        });
+        })
+        .ConfigureChannel(options =>
+        {
+            options.UnsafeUseInsecureChannelCallCredentials = true;
+        })
+        .AddJwtCallCredentials();
 
         services.AddGrpc(options =>
         {

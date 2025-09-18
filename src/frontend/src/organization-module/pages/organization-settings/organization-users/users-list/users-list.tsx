@@ -8,6 +8,7 @@ import type { OrganizationUserModel } from "src/organization-module/models/organ
 
 import { USERS_LIST_COLUMNS } from "./users-list.constants.ts";
 import { OrganizationUserRoleToNameMap } from "src/organization-module/models/organization-user-role.ts";
+import { useAuthStore } from "src/auth-module/store";
 
 type UsersListProps = {
   users: OrganizationUserModel[];
@@ -16,6 +17,8 @@ type UsersListProps = {
 };
 
 export const UsersList: React.FC<UsersListProps> = observer(({ users, onEdit, onDelete }) => {
+  const authStore = useAuthStore();
+
   const handleMenu = (user: OrganizationUserModel, value: string) => {
     if (value === "edit") {
       onEdit(user);
@@ -68,7 +71,10 @@ export const UsersList: React.FC<UsersListProps> = observer(({ users, onEdit, on
                   <Menu.Positioner>
                     <Menu.Content>
                       <Menu.Item value="edit">Edit</Menu.Item>
-                      <Menu.Item value="delete">Delete</Menu.Item>
+
+                      {authStore.currentUser!.id !== user.id ? (
+                        <Menu.Item value="delete">Delete</Menu.Item>
+                      ) : null}
                     </Menu.Content>
                   </Menu.Positioner>
                 </Portal>

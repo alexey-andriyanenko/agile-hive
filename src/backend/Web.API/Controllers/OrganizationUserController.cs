@@ -53,7 +53,7 @@ public class OrganizationUserController(
             FirstName = parameters.FirstName,
             LastName = parameters.LastName,
             UserName = parameters.UserName,
-            Email = parameters.LastName,
+            Email = parameters.Email,
             Password = parameters.Password,
             Role = parameters.Role
         }).ResponseAsync;
