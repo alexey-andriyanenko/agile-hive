@@ -1,4 +1,4 @@
-import type { ProjectMemberRole } from "src/project-module/models/project-member-role.ts";
+import type { ProjectUserRole } from "src/project-module/models/project-user-role.ts";
 
 export type ProjectModel = {
   id: string;
@@ -6,5 +6,5 @@ export type ProjectModel = {
   description: string;
   organizationId: string;
   slug: string;
-  myRole: ProjectMemberRole;
+  myRole: ProjectUserRole;
 };

@@ -14,7 +14,7 @@ export const PrivateRoute: React.FC<IPrivateRouteProps> = observer(({ children }
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (authStore.isLogged) {
+    if (authStore.currentUser) {
       setLoading(false);
       return;
     }

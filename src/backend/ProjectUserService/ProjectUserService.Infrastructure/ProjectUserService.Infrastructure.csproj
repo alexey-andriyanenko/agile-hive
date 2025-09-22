@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="12.0.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+        <PackageReference Include="Grpc.Core.Api" Version="2.71.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="../../ProjectService/ProjectService.Contracts/Protos/project-types.proto" GrpcServices="None" />
+        <Protobuf Include="../../ProjectService/ProjectService.Contracts/Protos/project-member.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../../IdentityService/IdentityService.Contracts/Protos/user.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ProjectUserService.Contracts\ProjectUserService.Contracts.csproj" />
+        <ProjectReference Include="..\ProjectUserService.Domain\ProjectUserService.Domain.csproj" />
+    </ItemGroup>
+</Project>

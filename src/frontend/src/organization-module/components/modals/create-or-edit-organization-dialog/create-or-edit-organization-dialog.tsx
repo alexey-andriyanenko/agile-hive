@@ -46,7 +46,9 @@ export const CreateOrEditOrganizationDialog: React.FC<CreateOrEditOrganizationDi
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Create/Edit Organization</Dialog.Title>
+              <Dialog.Title>
+                {organization ? "Edit organization" : "Create organization"}
+              </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb="4">
               <Stack gap="4">

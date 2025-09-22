@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OrganizationService.Application.Mapping;
 using OrganizationService.Contracts;
 using OrganizationService.Domain.Entities;
+using OrganizationService.Infrastructure;
 using OrganizationService.Infrastructure.Data;
 
 namespace OrganizationService.Application.Services;
@@ -150,8 +151,15 @@ public class OrganizationMemberService(
 
     public override async Task<OrganizationMemberDto> UpdateRole(UpdateUserRoleInOrganizationRequest request, ServerCallContext context)
     {
+        var userContext = (UserContext)context.GetHttpContext()!.Items["UserContext"]!;
+        
         var organizationId = Guid.Parse(request.OrganizationId);
         var userId = Guid.Parse(request.UserId);
+        
+        if (userContext.UserId == userId)
+        {
+            throw new RpcException(new Status(StatusCode.FailedPrecondition, "Users cannot change their own role in an organization."));
+        }
         
         var organizationMember = await dbContext.OrganizationMembers
             .SingleOrDefaultAsync(x => x.OrganizationId == organizationId && x.UserId == userId);
@@ -170,6 +178,13 @@ public class OrganizationMemberService(
 
     public override async Task<Empty> RemoveFromOrganization(RemoveUserFromOrganizationRequest request, ServerCallContext context)
     {
+        var userContext = (UserContext)context.GetHttpContext()!.Items["UserContext"]!;
+        
+        if (userContext.UserId == Guid.Parse(request.UserId))
+        {
+            throw new RpcException(new Status(StatusCode.FailedPrecondition, "Users cannot remove themselves from an organization."));
+        }
+        
         var removeManyRequest = new RemoveManyUsersFromOrganizationRequest
         {
             OrganizationId = request.OrganizationId,
@@ -181,8 +196,15 @@ public class OrganizationMemberService(
 
     public override async Task<Empty> RemoveManyFromOrganization(RemoveManyUsersFromOrganizationRequest request, ServerCallContext context)
     {
+        var userContext = (UserContext)context.GetHttpContext()!.Items["UserContext"]!;
+        
         var organizationId = Guid.Parse(request.OrganizationId);
         var userIds = request.UserIds.Select(Guid.Parse).ToList();
+        
+        if (userIds.Contains(userContext.UserId))
+        {
+            throw new RpcException(new Status(StatusCode.FailedPrecondition, "Users cannot remove themselves from an organization."));
+        }
         
         var organization = await dbContext.Organizations.SingleOrDefaultAsync(x => x.Id == organizationId);
         if (organization is null)

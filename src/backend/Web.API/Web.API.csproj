@@ -35,6 +35,9 @@
 
         <Protobuf Include="../OrganizationUserService/OrganizationUserService.Contracts/Protos/organization-user-types.proto" GrpcServices="None" />
         <Protobuf Include="../OrganizationUserService/OrganizationUserService.Contracts/Protos/organization-user.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../ProjectUserService/ProjectUserService.Contracts/Protos/project-user-types.proto" GrpcServices="None" />
+        <Protobuf Include="../ProjectUserService/ProjectUserService.Contracts/Protos/project-user.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

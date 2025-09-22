@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex } from "@chakra-ui/react";
 
-import { ProjectSidebar } from "src/project-module/components/modals/project-sidebar";
+import { ProjectSidebar } from "src/project-module/components/project-sidebar";
 import { useProjectStore } from "src/project-module/store";
 
 const Project: React.FC = () => {

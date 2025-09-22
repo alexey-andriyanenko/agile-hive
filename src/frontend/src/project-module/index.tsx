@@ -3,6 +3,7 @@
 import InvalidProject from "src/project-module/pages/invalid-project";
 import Project from "src/project-module/pages/project";
 import ProjectsList from "src/project-module/pages/projects-list";
+import ProjectSettings from "src/project-module/pages/project-settings";
 
 import { Providers as SharedProviders } from "src/shared-module/providers";
 import { Providers as ProjectProviders } from "src/project-module/providers";
@@ -13,6 +14,7 @@ export const ProjectRoutes = {
   invalid: "/organization/:organizationSlug/invalid-project",
   home: "/organization/:organizationSlug/projects/:projectSlug",
   projects: "/organization/:organizationSlug/projects",
+  settings: "/organization/:organizationSlug/projects/:projectSlug/settings",
 };
 
 const routes: RouteItem[] = [
@@ -50,6 +52,21 @@ const routes: RouteItem[] = [
           <SharedProviders>
             <ProjectProviders>
               <Project />
+            </ProjectProviders>
+          </SharedProviders>
+        </ProjectRouteGuard>
+      </OrganizationRouteGuard>
+    ),
+    isPrivate: true,
+  },
+  {
+    path: ProjectRoutes.settings,
+    element: (
+      <OrganizationRouteGuard>
+        <ProjectRouteGuard>
+          <SharedProviders>
+            <ProjectProviders>
+              <ProjectSettings />
             </ProjectProviders>
           </SharedProviders>
         </ProjectRouteGuard>

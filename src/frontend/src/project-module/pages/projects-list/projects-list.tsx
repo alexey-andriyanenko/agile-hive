@@ -8,7 +8,7 @@ import { useModalsStore as useSharedModalsStore } from "src/shared-module/store/
 import { useModalsStore, useProjectStore } from "src/project-module/store";
 import { useOrganizationStore } from "src/organization-module/store";
 import type { ProjectModel } from "src/project-module/models/project.ts";
-import { ProjectSidebar } from "src/project-module/components/modals/project-sidebar";
+import { ProjectSidebar } from "src/project-module/components/project-sidebar";
 
 import { ProjectCard } from "./project-card";
 import { AddProjectCard } from "./add-project-card";

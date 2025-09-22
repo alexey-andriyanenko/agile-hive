@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProjectUserService.Contracts";
+
+package project.user.types;
+
+enum ProjectUserRole {
+  OWNER = 0;
+  ADMIN = 1;
+  CONTRIBUTOR = 2;
+  VIEWER = 3;
+}
+
+message ProjectUserDto {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string userName = 5;
+  ProjectUserRole role = 6;
+}

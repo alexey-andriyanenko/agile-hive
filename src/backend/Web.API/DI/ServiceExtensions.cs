@@ -44,6 +44,7 @@ public static class ServiceExtensions
         services.AddOrganizationServices(configuration);
         services.AddProjectServices(configuration);
         services.AddOrganizationUserServices(configuration);
+        services.AddProjectUserServices(configuration);
         
         return services;
     }
@@ -89,12 +90,16 @@ public static class ServiceExtensions
         IConfiguration configuration)
     {
         var organizationServiceAddress = new Uri(configuration["ServiceAddresses:OrganizationService"]!);
-        
+
         services.AddGrpcClient<OrganizationService.Contracts.OrganizationService.OrganizationServiceClient>(options =>
             {
                 options.Address = organizationServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials();
 
         return services;
     }
@@ -108,7 +113,11 @@ public static class ServiceExtensions
             {
                 options.Address = projectServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials();
 
         return services;
     }
@@ -123,7 +132,29 @@ public static class ServiceExtensions
             {
                 options.Address = organizationServiceAddress;
             })
-            .AddHttpMessageHandler<AuthHeaderHandler>();
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddProjectUserServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var projectUserServiceAddress = new Uri(configuration["ServiceAddresses:ProjectUserService"]!);
+        
+        services.AddGrpcClient<ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient>(options =>
+            {
+                options.Address = projectUserServiceAddress;
+            })
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials();
 
         return services;
     }

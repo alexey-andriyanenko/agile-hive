@@ -1,5 +1,5 @@
 import type { ProjectModel } from "../models/project.ts";
-import type { ProjectMemberRole } from "src/project-module/models/project-member-role.ts";
+import type { ProjectUserRole } from "src/project-module/models/project-user-role.ts";
 import type { ProjectVisibility } from "src/project-module/models/project-visibility.ts";
 
 export type GetProjectsResponse = {
@@ -9,20 +9,20 @@ export type GetProjectsResponse = {
 export type CreateProjectRequest = {
   name: string;
   description: string;
-  organizationId: number;
+  organizationId: string;
   visibility: ProjectVisibility;
   members: CreateProjectMemberItem[];
 };
 
 export type CreateProjectMemberItem = {
-  userId: number;
-  role: ProjectMemberRole;
+  userId: string;
+  role: ProjectUserRole;
 };
 
 export type CreateProjectResponse = ProjectModel;
 
 export type UpdateProjectRequest = CreateProjectRequest & {
-  projectId: number;
+  projectId: string;
 };
 
 export type UpdateProjectResponse = ProjectModel;

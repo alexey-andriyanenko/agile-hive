@@ -8,22 +8,32 @@ import "google/protobuf/empty.proto";
 import "project-types.proto";
 
 service ProjectMemberService {
-  rpc Get (GetProjectMemberRequest) returns (project.types.ProjectMemberDto);
+  rpc GetById (GetProjectMemberByIdRequest) returns (project.types.ProjectMemberDto);
+  rpc GetManyByIds (GetManyProjectMembersByIdsRequest) returns (GetManyProjectMembersByIdsResponse);
   rpc GetMany (GetManyProjectMembersRequest) returns (GetManyProjectMembersResponse);
-  rpc AddToProject (AddUserToProjectRequest) returns (google.protobuf.Empty);
-  rpc AddManyToProject (AddManyUsersToProjectRequest) returns (google.protobuf.Empty);
+  rpc AddToProject (AddUserToProjectRequest) returns (project.types.ProjectMemberDto);
+  rpc AddManyToProject (AddManyUsersToProjectRequest) returns (AddManyUsersToProjectResponse);
+  rpc UpdateRole (UpdateProjectMemberRoleRequest) returns (project.types.ProjectMemberDto);
   rpc RemoveFromProject (RemoveUserFromProjectRequest) returns (google.protobuf.Empty);
   rpc RemoveManyFromProject (RemoveManyUsersFromProjectRequest) returns (google.protobuf.Empty);
 }
 
-message GetProjectMemberRequest {
+message GetProjectMemberByIdRequest {
   string project_id = 1;
   string user_id = 2;
 }
 
-message GetManyProjectMembersRequest {
+message GetManyProjectMembersByIdsRequest {
   string project_id = 1;
   repeated string user_ids = 2;
+}
+
+message GetManyProjectMembersByIdsResponse {
+  repeated project.types.ProjectMemberDto members = 1;
+}
+
+message GetManyProjectMembersRequest {
+  string project_id = 1;
 }
 
 message GetManyProjectMembersResponse {
@@ -44,6 +54,16 @@ message AddUserToProjectMessage {
 message AddManyUsersToProjectRequest {
   string project_id = 1;
   repeated AddUserToProjectMessage users = 2;
+}
+
+message AddManyUsersToProjectResponse {
+  repeated project.types.ProjectMemberDto members = 1;
+}
+
+message UpdateProjectMemberRoleRequest {
+  string project_id = 1;
+  string user_id = 2;
+  project.types.ProjectMemberRole role = 3;
 }
 
 message RemoveUserFromProjectRequest {

@@ -2,11 +2,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { Dialog, Button, Portal, Stack, Field, Input, Textarea } from "@chakra-ui/react";
-import { ProjectFormValues } from "src/project-module/components/modals/create-or-edit-project-dialog/create-or-edit-project-dialog.types.ts";
-import { ProjectModel } from "src/app-module/models/project.ts";
-import { ModalProps } from "src/modals-module";
+import type { ProjectFormValues } from "./create-or-edit-project-dialog.types.ts";
+import type { ProjectModel } from "src/project-module/models";
+import type { ModalsPropsBase } from "src/modals-module";
 
-export type CreateOrEditProjectDialogProps = ModalProps & {
+export type CreateOrEditProjectDialogProps = ModalsPropsBase & {
   onCreate?: (name: string, description: string) => Promise<void>;
   onEdit?: (name: string, description: string) => Promise<void>;
 
@@ -43,7 +43,7 @@ export const CreateOrEditProjectDialog: React.FC<CreateOrEditProjectDialogProps>
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Create/Edit Project</Dialog.Title>
+              <Dialog.Title>{project ? "Edit project" : "Create project"}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb="4">
               <Stack gap="4">

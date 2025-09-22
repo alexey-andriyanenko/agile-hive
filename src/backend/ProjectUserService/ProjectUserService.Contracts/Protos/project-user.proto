@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProjectUserService.Contracts";
+
+package project.user;
+
+import "project-user-types.proto";
+import "google/protobuf/empty.proto";
+
+service ProjectUserService {
+  rpc GetById (GetProjectUserByIdRequest) returns (project.user.types.ProjectUserDto);
+  rpc GetManyByIds (GetManyProjectUsersByIdsRequest) returns (GetManyProjectUsersByIdsResponse);
+  rpc GetMany (GetManyProjectUsersRequest) returns (GetManyProjectUsersResponse);
+  rpc Add (AddUserToProjectRequest) returns (project.user.types.ProjectUserDto);
+  rpc AddMany (AddManyUsersToProjectRequest) returns (AddManyUsersToProjectResponse);
+  rpc Update (UpdateProjectUserRequest) returns (project.user.types.ProjectUserDto);
+  rpc Remove (RemoveUserFromProjectRequest) returns (google.protobuf.Empty);
+  rpc RemoveMany (RemoveManyUsersFromProjectRequest) returns (google.protobuf.Empty);
+}
+
+message GetProjectUserByIdRequest {
+  string project_id = 1;
+  string user_id = 2;
+}
+
+message GetManyProjectUsersByIdsRequest {
+  string project_id = 1;
+  repeated string user_ids = 2;
+}
+
+message GetManyProjectUsersByIdsResponse {
+  repeated project.user.types.ProjectUserDto users = 1;
+}
+
+message GetManyProjectUsersRequest {
+  string project_id = 1;
+}
+
+message GetManyProjectUsersResponse {
+  repeated project.user.types.ProjectUserDto users = 1;
+}
+
+message AddUserToProjectRequest {
+  string user_id = 1;
+  string project_id = 2;
+  project.user.types.ProjectUserRole role = 3;
+}
+
+message AddManyUsersToProjectRequest {
+  string project_id = 1;
+  repeated AddUserToProjectItem users = 2;
+}
+
+message AddUserToProjectItem {
+  string user_id = 1;
+  project.user.types.ProjectUserRole role = 2;
+}
+
+message AddManyUsersToProjectResponse {
+  repeated project.user.types.ProjectUserDto users = 1;
+}
+
+message UpdateProjectUserRequest {
+  string user_id = 1;
+  string project_id = 2;
+  project.user.types.ProjectUserRole role = 3;
+}
+
+message RemoveUserFromProjectRequest {
+  string project_id = 1;
+  string user_id = 2;
+}
+
+message RemoveManyUsersFromProjectRequest {
+  string project_id = 1;
+  repeated string user_ids = 2;
+}
