@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Dialog, Button, Portal, Stack, Field, Input } from "@chakra-ui/react";
 import type { ModalsPropsBase } from "src/modals-module";
 import type { OrganizationModel } from "src/organization-module/models/organization.ts";
+import { toSlug } from "src/shared-module/utils/to-slug/to-slug.ts";
 
 type OrganizationFormValues = {
   name: string;
@@ -23,11 +24,12 @@ export const CreateOrEditOrganizationDialog: React.FC<CreateOrEditOrganizationDi
   onCreate,
   onEdit,
 }) => {
-  const { formState, register, handleSubmit } = useForm<OrganizationFormValues>({
+  const { formState, register, watch, handleSubmit } = useForm<OrganizationFormValues>({
     defaultValues: {
       name: organization?.name || "",
     },
   });
+  const currentName = watch("name");
 
   const onSubmit = handleSubmit(async (data) => {
     if (organization) {
@@ -60,10 +62,21 @@ export const CreateOrEditOrganizationDialog: React.FC<CreateOrEditOrganizationDi
                         value: true,
                         message: "Name is required",
                       },
+                      minLength: {
+                        value: 2,
+                        message: "Organization name must be at least 2 characters long",
+                      },
+                      pattern: {
+                        value: /^(?!.* {2,})[A-Za-z0-9 ]+$/,
+                        message:
+                          "Organization name can only contain letters, numbers, and spaces, and cannot contain consecutive spaces",
+                      },
                     })}
                   />
                   <Field.ErrorText>{formState.errors.name?.message}</Field.ErrorText>
                 </Field.Root>
+
+                <Input value={toSlug(currentName)} readOnly disabled />
               </Stack>
             </Dialog.Body>
             <Dialog.Footer>

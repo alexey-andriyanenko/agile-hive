@@ -70,15 +70,15 @@ const OrganizationUsers: React.FC = observer(() => {
   };
 
   return (
-    <Flex flex="1" direction="column" width="100%">
+    <Flex flex="1" direction="column" width="100%" gap={4}>
       <Heading> Organization Team </Heading>
 
-      <Flex direction="column" width="100%" p={4}>
+      <Flex direction="column" width="100%" p={4} gap={4}>
         {loading ? (
           <div>Loading users...</div>
         ) : (
           <>
-            <Flex justify="flex-end">
+            <Flex>
               <Button variant="outline" onClick={handleCreateUser}>
                 Create User
               </Button>

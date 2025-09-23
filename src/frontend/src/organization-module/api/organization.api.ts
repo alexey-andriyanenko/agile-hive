@@ -3,6 +3,7 @@ import type {
   CreateOrganizationRequest,
   CreateOrganizationResponse,
   GetManyOrganizationsResponse,
+  UpdateOrganizationRequest,
 } from "./organization.types.ts";
 import type { OrganizationModel } from "src/organization-module/models/organization.ts";
 
@@ -22,6 +23,12 @@ class OrganizationApiService {
   createOrganization(data: CreateOrganizationRequest) {
     return appHttpClient
       .post<CreateOrganizationRequest, CreateOrganizationResponse>("/organizations")
+      .send(data);
+  }
+
+  updateOrganization(data: UpdateOrganizationRequest) {
+    return appHttpClient
+      .put<UpdateOrganizationRequest, CreateOrganizationResponse>(`/organizations/${data.id}`)
       .send(data);
   }
 }

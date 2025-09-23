@@ -1,7 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import type { OrganizationModel } from "../models/organization.ts";
 import { organizationApiService } from "../api/organization.api.ts";
-import type { CreateOrganizationRequest } from "src/organization-module/api";
+import type {
+  CreateOrganizationRequest,
+  UpdateOrganizationRequest,
+} from "src/organization-module/api";
 
 class OrganizationStore {
   private _currentOrganization: OrganizationModel | null = null;
@@ -47,6 +50,24 @@ class OrganizationStore {
 
     runInAction(() => {
       this._organizations.push(res);
+    });
+  }
+
+  public async updateOrganization(data: UpdateOrganizationRequest): Promise<void> {
+    const res = await organizationApiService.updateOrganization({
+      id: data.id,
+      organizationName: data.organizationName,
+    });
+
+    runInAction(() => {
+      if (this._currentOrganization?.id === res.id) {
+        this._currentOrganization = res;
+      }
+
+      const index = this._organizations.findIndex((org) => org.id === res.id);
+      if (index !== -1) {
+        this._organizations[index] = res;
+      }
     });
   }
 }

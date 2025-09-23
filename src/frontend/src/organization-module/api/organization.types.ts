@@ -9,3 +9,9 @@ export type CreateOrganizationRequest = {
 };
 
 export type CreateOrganizationResponse = OrganizationModel;
+
+export type UpdateOrganizationRequest = CreateOrganizationRequest & {
+  id: string;
+};
+
+export type UpdateOrganizationResponse = OrganizationModel;
