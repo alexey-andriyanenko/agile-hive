@@ -13,8 +13,6 @@ public class CreateProjectRequest
     public ProjectVisibility Visibility { get; set; }
 
     public List<CreateProjectWithUserItemParameters> Users { get; set; } = [];
-
-
 }
 
 public class CreateProjectWithUserItemParameters

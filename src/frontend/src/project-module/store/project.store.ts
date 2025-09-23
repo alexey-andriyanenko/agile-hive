@@ -66,14 +66,14 @@ class ProjectStore {
     const res = await projectApiService.updateProject(data);
 
     runInAction(() => {
+      if (this._currentProject?.id === res.id) {
+        this._currentProject = res;
+      }
+
       const index = this._projects.findIndex((p) => p.id === res.id);
 
       if (index !== -1) {
         this._projects[index] = res;
-
-        if (this._currentProject?.id === res.id) {
-          this._currentProject = res;
-        }
       }
     });
   }

@@ -62,6 +62,9 @@ export const AddUsersToProjectDialog: React.FC<AddUsersToProjectDialogProps> = (
   const [userOptions, setUserOptions] = React.useState(
     createListCollection<{ label: string; value: string }>({ items: [] }),
   );
+  const [filteredUserOptions, setFilteredUserOptions] = React.useState(
+    createListCollection<{ label: string; value: string }>({ items: [] }),
+  );
 
   const roleOptions = React.useMemo(() => {
     return createListCollection({
@@ -77,29 +80,34 @@ export const AddUsersToProjectDialog: React.FC<AddUsersToProjectDialogProps> = (
       .getManyOrganizationUsers({ organizationId: organization.id })
       .then((response) => {
         setUsers(response.users);
+        setUserOptions(
+          createListCollection({
+            items: response.users.map((x) => ({
+              label: `${x.firstName} ${x.lastName}`,
+              value: x.id,
+            })),
+          }),
+        );
         setLoading(false);
       });
   }, []);
 
   React.useEffect(() => {
-    const addedFormUserIds = (watchedUsers ?? [])
+    console.log("watchedUsers", watchedUsers);
+
+    const addedFormUserIds = watchedUsers
       .map((user) => user.userId?.[0])
       .filter((id): id is string => !!id);
     const addedUserIds = addedUsers.map((user) => user.id);
 
     const ids = [...addedFormUserIds, ...addedUserIds];
 
-    setUserOptions(
+    setFilteredUserOptions(
       createListCollection({
-        items: users
-          .filter((user) => !ids.includes(user.id))
-          .map((x) => ({
-            label: `${x.firstName} ${x.lastName}`,
-            value: x.id,
-          })),
+        items: userOptions.items.filter((item) => !ids.includes(item.value)),
       }),
     );
-  }, [users, addedUsers, watchedUsers]);
+  }, [users, addedUsers, userOptions, watchedUsers]);
 
   const onSubmit = handleSubmit(async (data) => {
     const userItems = data.users.map((user) => ({
@@ -157,7 +165,7 @@ export const AddUsersToProjectDialog: React.FC<AddUsersToProjectDialogProps> = (
                               </Select.Control>
                               <Select.Positioner>
                                 <Select.Content>
-                                  {userOptions.items.map((item) => (
+                                  {filteredUserOptions.items.map((item) => (
                                     <Select.Item key={item.value} item={item}>
                                       {item.label}
                                       <Select.ItemIndicator />
@@ -230,7 +238,7 @@ export const AddUsersToProjectDialog: React.FC<AddUsersToProjectDialogProps> = (
                     </Flex>
                   ))}
 
-                  {userOptions.items.length > 0 ? (
+                  {filteredUserOptions.items.length > 0 ? (
                     <Button variant="ghost" onClick={handleAppend}>
                       + Add another user
                     </Button>

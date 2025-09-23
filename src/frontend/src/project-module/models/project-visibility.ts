@@ -1,5 +1,5 @@
 ﻿export enum ProjectVisibility {
-  Public,
+  Public = 0,
   Private,
 }
 

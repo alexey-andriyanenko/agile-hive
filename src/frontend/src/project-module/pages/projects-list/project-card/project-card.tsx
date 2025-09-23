@@ -8,18 +8,11 @@ import type { ProjectModel } from "src/project-module/models/project.ts";
 type ProjectCardProps = {
   project: ProjectModel;
   onSelect: (project: ProjectModel) => void;
-  onEdit: (project: ProjectModel) => void;
   onDelete: (project: ProjectModel) => void;
 };
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({
-  project,
-  onSelect,
-  onEdit,
-  onDelete,
-}) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect, onDelete }) => {
   const handleSelect = () => onSelect(project);
-  const handleEdit = () => onEdit(project);
   const handleDelete = () => onDelete(project);
 
   return (
@@ -35,7 +28,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <Button colorPalette="red" onClick={handleDelete}>
           Delete
         </Button>
-        <Button onClick={handleEdit}>Edit</Button>
         <Button variant="outline" onClick={handleSelect}>
           Enter
         </Button>

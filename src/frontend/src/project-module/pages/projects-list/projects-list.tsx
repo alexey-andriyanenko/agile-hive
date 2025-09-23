@@ -47,24 +47,17 @@ const ProjectsList: React.FC = observer(() => {
   };
 
   const handleCreateProject = () => {
-    projectModalsStore.open("CreateOrEditProjectDialog", {
-      onCreate: async (name: string, description: string) =>
+    projectModalsStore.open("CreateProjectDialog", {
+      organization: organizationStore.currentOrganization!,
+      onCreate: async (data) =>
         projectStore.createProject({
-          name,
-          description,
-          organizationId: organizationStore.currentOrganization!.id,
-        }),
-    });
-  };
-
-  const handleEditProject = (project: ProjectModel) => {
-    projectModalsStore.open("CreateOrEditProjectDialog", {
-      project,
-      onEdit: async (name: string, description: string) =>
-        projectStore.updateProject({
-          projectId: project.id,
-          name,
-          description,
+          name: data.name,
+          description: data.description,
+          users: data.users.map((user) => ({
+            userId: user.userId[0],
+            role: Number(user.role),
+          })),
+          visibility: Number(data.visibility),
           organizationId: organizationStore.currentOrganization!.id,
         }),
     });
@@ -105,7 +98,6 @@ const ProjectsList: React.FC = observer(() => {
                 key={project.id}
                 project={project}
                 onSelect={handleSelectProject}
-                onEdit={handleEditProject}
                 onDelete={handleDeleteProject}
               />
             ))}

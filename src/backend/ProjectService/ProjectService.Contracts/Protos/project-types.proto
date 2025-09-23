@@ -22,7 +22,8 @@ message ProjectDto {
   string slug = 3;
   string description = 4;
   string organization_id = 5;
-  ProjectMemberRole my_role = 6;
+  ProjectVisibility visibility = 6;
+  ProjectMemberRole my_role = 7;
 }
 
 message ProjectMemberDto {

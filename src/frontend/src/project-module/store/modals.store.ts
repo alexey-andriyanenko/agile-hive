@@ -5,14 +5,14 @@
 } from "src/modals-module";
 
 import type {
-  CreateOrEditProjectDialogProps,
+  CreateProjectDialogProps,
   AddUsersToProjectDialogProps,
 } from "src/project-module/components/modals";
 
-export type ModalName = "CreateOrEditProjectDialog" | "AddUsersToProjectDialog";
+export type ModalName = "CreateProjectDialog" | "AddUsersToProjectDialog";
 
 export interface IModalsStoreRegistry extends ModalsStoreRegistryGuard<ModalName> {
-  CreateOrEditProjectDialog: Omit<CreateOrEditProjectDialogProps, keyof ModalsPropsBase>;
+  CreateProjectDialog: Omit<CreateProjectDialogProps, keyof ModalsPropsBase>;
   AddUsersToProjectDialog: Omit<AddUsersToProjectDialogProps, keyof ModalsPropsBase>;
 }
 

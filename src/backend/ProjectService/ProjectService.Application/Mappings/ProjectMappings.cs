@@ -13,6 +13,7 @@ public static class ProjectMappings
             Slug = project.Slug,
             Description = project.Description,
             OrganizationId = project.OrganizationId.ToString(),
+            Visibility = (ProjectVisibility)project.Visibility,
             MyRole = (ProjectMemberRole)member.Role
         };
     }

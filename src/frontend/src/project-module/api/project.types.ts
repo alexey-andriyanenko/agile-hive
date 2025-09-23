@@ -11,18 +11,22 @@ export type CreateProjectRequest = {
   description: string;
   organizationId: string;
   visibility: ProjectVisibility;
-  members: CreateProjectMemberItem[];
+  users: CreateProjectUserItem[];
 };
 
-export type CreateProjectMemberItem = {
+export type CreateProjectUserItem = {
   userId: string;
   role: ProjectUserRole;
 };
 
 export type CreateProjectResponse = ProjectModel;
 
-export type UpdateProjectRequest = CreateProjectRequest & {
+export type UpdateProjectRequest = {
   projectId: string;
+  organizationId: string;
+  name: string;
+  description: string;
+  visibility: ProjectVisibility;
 };
 
 export type UpdateProjectResponse = ProjectModel;

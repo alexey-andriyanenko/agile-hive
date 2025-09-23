@@ -3,6 +3,8 @@ import type {
   CreateProjectRequest,
   CreateProjectResponse,
   GetProjectsResponse,
+  UpdateProjectRequest,
+  UpdateProjectResponse,
 } from "./project.types.ts";
 
 class ProjectApiService {
@@ -34,11 +36,11 @@ class ProjectApiService {
       .send(data);
   }
 
-  public async updateProject(data: CreateProjectRequest & { projectId: string }) {
+  public async updateProject(data: UpdateProjectRequest) {
     return await appHttpClient
       .put<
-        CreateProjectRequest & { projectId: string },
-        CreateProjectResponse
+        UpdateProjectRequest,
+        UpdateProjectResponse
       >("/organizations/:organizationId/projects/:projectId")
       .setRouteParams({ organizationId: data.organizationId, projectId: data.projectId })
       .send(data);
