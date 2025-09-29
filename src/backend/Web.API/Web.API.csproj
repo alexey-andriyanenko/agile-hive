@@ -38,6 +38,10 @@
 
         <Protobuf Include="../ProjectUserService/ProjectUserService.Contracts/Protos/project-user-types.proto" GrpcServices="None" />
         <Protobuf Include="../ProjectUserService/ProjectUserService.Contracts/Protos/project-user.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board-types.proto" GrpcServices="None" />
+        <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board.proto" GrpcServices="Client" />
+        <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board-column.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

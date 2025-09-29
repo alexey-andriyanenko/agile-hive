@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option csharp_namespace = "TaskService.Contracts";
+
+package task.comments;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "task-types.proto";
+
+service CommentService {
+  rpc Create (CreateCommentRequest) returns (task.types.TaskCommentDto);
+  rpc GetById (GetCommentByIdRequest) returns (task.types.TaskCommentDto);
+  rpc GetByTaskId (GetCommentsByTaskIdRequest) returns (GetCommentsByTaskIdResponse);
+  rpc Update (UpdateCommentRequest) returns (task.types.TaskCommentDto);
+  rpc Delete (DeleteCommentRequest) returns (google.protobuf.Empty);
+}
+
+message CreateCommentRequest {
+  string tenant_id = 1;
+  string task_id = 2;
+  string content = 3;
+  string created_by_user_id = 4;
+}
+
+message GetCommentByIdRequest {
+  string tenant_id = 1;
+  string task_id = 2;
+  string comment_id = 3;
+}
+
+message GetCommentsByTaskIdRequest {
+  string tenant_id = 1;
+  string task_id = 2;
+}
+
+message GetCommentsByTaskIdResponse {
+  repeated task.types.TaskCommentDto comments = 1;
+}
+
+message UpdateCommentRequest {
+  string tenant_id = 1;
+  string task_id = 2;
+  string comment_id = 3;
+  string content = 4;
+}
+
+message DeleteCommentRequest {
+  string tenant_id = 1;
+  string task_id = 2;
+  string comment_id = 3;
+}

@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoardService.Contracts";
+
+package board.column;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "board-types.proto";
+
+service BoardColumnService {
+  rpc Create (CreateBoardColumnRequest) returns (board.types.BoardColumnDto);
+  rpc GetById (GetBoardColumnByIdRequest) returns (board.types.BoardColumnDto);
+  rpc GetMany (GetManyBoardColumnsRequest) returns (GetManyBoardColumnsResponse);
+  rpc Update (UpdateBoardColumnRequest) returns (board.types.BoardColumnDto);
+  rpc Delete (DeleteBoardColumnRequest) returns (google.protobuf.Empty);
+}
+
+message CreateBoardColumnRequest {
+  string name = 1;
+  int32 order = 2;
+  string board_id = 3;
+}
+
+message GetBoardColumnByIdRequest {
+  string board_column_id = 1;
+  string board_id = 2;
+}
+
+message GetManyBoardColumnsRequest {
+  string board_id = 1;
+  repeated board.types.BoardColumnDto board_columns = 2;
+}
+
+message GetManyBoardColumnsResponse {
+  repeated board.types.BoardColumnDto board_columns = 1;
+}
+
+message UpdateBoardColumnRequest {
+  string board_column_id = 1;
+  string name = 2;
+  int32 order = 3;
+  string board_id = 4;
+}
+
+message DeleteBoardColumnRequest {
+  string board_column_id = 1;
+  string board_id = 2;
+}

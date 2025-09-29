@@ -6,6 +6,7 @@ import { ThemeProvider } from "src/shared-module/components/theme";
 import authModule from "src/auth-module";
 import projectModule from "src/project-module";
 import organizationModule from "src/organization-module";
+import boardModule from "src/board-module";
 
 import Index from "./pages/index";
 import type { RouteItem } from "src/routes-module/routes-list/routes-list.types.ts";
@@ -40,6 +41,7 @@ const App: React.FC = () => {
           {renderRoutes(authModule)}
           {renderRoutes(organizationModule)}
           {renderRoutes(projectModule)}
+          {renderRoutes(boardModule)}
 
           <Route
             path="*"

@@ -1,10 +1,8 @@
 ﻿using System.Text;
+using BoardService.Contracts;
 using IdentityService.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using OrganizationService.Contracts;
-using ProjectService.Contracts;
-using Web.API.DelegatingHandlers;
 using Web.API.Exceptions;
 
 namespace Web.API.DI;
@@ -45,6 +43,7 @@ public static class ServiceExtensions
         services.AddProjectServices(configuration);
         services.AddOrganizationUserServices(configuration);
         services.AddProjectUserServices(configuration);
+        services.AddBoardServices(configuration);
         
         return services;
     }
@@ -156,6 +155,33 @@ public static class ServiceExtensions
             })
             .AddJwtCallCredentials();
 
+        return services;
+    }
+
+    private static IServiceCollection AddBoardServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var boardServiceAddress = new Uri(configuration["ServiceAddresses:BoardService"]!);
+        
+        services.AddGrpcClient<BoardService.Contracts.BoardService.BoardServiceClient>(options =>
+        {
+            options.Address = boardServiceAddress;
+        })
+        .ConfigureChannel(options =>
+        {
+            options.UnsafeUseInsecureChannelCallCredentials = true;
+        })
+        .AddJwtCallCredentials();
+
+        services.AddGrpcClient<BoardColumnService.BoardColumnServiceClient>(options =>
+        {
+            options.Address = boardServiceAddress;
+        })
+        .ConfigureChannel(options =>
+        {
+            options.UnsafeUseInsecureChannelCallCredentials = true;
+        })
+        .AddJwtCallCredentials();
+        
         return services;
     }
 }

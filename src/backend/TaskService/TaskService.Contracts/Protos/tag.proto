@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option csharp_namespace = "TaskService.Contracts";
+
+package task.tags;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "task-types.proto";
+
+service TagService {
+  rpc GetManyByProjectId(GetManyTagsByProjectIdRequest) returns (GetManyTagsByProjectIdResponse);
+  rpc GetById(GetTagByIdRequest) returns (task.types.TagDto);
+  rpc Create(CreateTagRequest) returns (task.types.TagDto);
+  rpc Update(UpdateTagRequest) returns (task.types.TagDto);
+  rpc Delete(DeleteTagRequest) returns (google.protobuf.Empty);
+}
+
+message GetManyTagsByProjectIdRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+}
+
+message GetManyTagsByProjectIdResponse {
+  repeated task.types.TagDto tags = 1;
+}
+
+message GetTagByIdRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string tag_id = 3;
+}
+
+message CreateTagRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string name = 3;
+  string color = 4;
+}
+
+message UpdateTagRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string tag_id = 3;
+  string name = 4;
+  string color = 5;
+}
+
+message DeleteTagRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string tag_id = 3;
+}
