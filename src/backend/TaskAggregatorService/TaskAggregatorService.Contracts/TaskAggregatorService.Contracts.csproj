@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.32.1" />
+        <PackageReference Include="Grpc.Core" Version="2.46.6" />
+        <PackageReference Include="Grpc.Tools" Version="2.72.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="Protos/task-aggregate.proto" ProtoRoot="Protos" GrpcServices="Server" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Protobuf Include="../../TaskService/TaskService.Contracts/Protos/task-types.proto" GrpcServices="None" />
+        <Protobuf Include="../../TaskService/TaskService.Contracts/Protos/task.proto" GrpcServices="Client" />
+        <Protobuf Include="../../TaskService/TaskService.Contracts/Protos/tag.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../../BoardService/BoardService.Contracts/Protos/board-types.proto" GrpcServices="None" />
+        <Protobuf Include="../../BoardService/BoardService.Contracts/Protos/board-column.proto" GrpcServices="Client" />
+        <Protobuf Include="../../BoardService/BoardService.Contracts/Protos/board.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../../ProjectUserService/ProjectUserService.Contracts/Protos/project-user-types.proto" GrpcServices="None" />
+        <Protobuf Include="../../ProjectUserService/ProjectUserService.Contracts/Protos/project-user.proto" GrpcServices="Client" />
+    </ItemGroup>
+</Project>

@@ -61,8 +61,8 @@ public class BoardColumnService(ApplicationDbContext dbContext) : Contracts.Boar
         
         return column.ToDto();
     }
-    
-    public override async Task<GetManyBoardColumnsResponse> GetMany(GetManyBoardColumnsRequest request, ServerCallContext context)
+
+    public override async Task<GetManyBoardColumnsByBoardIdResponse> GetManyByBoardId(GetManyBoardColumnsByBoardIdRequest request, ServerCallContext context)
     {
         var boardId = Guid.Parse(request.BoardId);
         var board = await dbContext.Boards
@@ -74,7 +74,7 @@ public class BoardColumnService(ApplicationDbContext dbContext) : Contracts.Boar
             throw new RpcException(new Status(StatusCode.NotFound, $"Board with ID '{request.BoardId}' not found."));
         }
 
-        var response = new GetManyBoardColumnsResponse()
+        var response = new GetManyBoardColumnsByBoardIdResponse()
         {
             BoardColumns = { board.Columns.Select(c => c.ToDto()) }
         };

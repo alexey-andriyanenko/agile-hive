@@ -1,0 +1,89 @@
+
+syntax = "proto3";
+
+option csharp_namespace = "TaskAggregatorService.Contracts";
+
+package task.aggregator;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+message TaskAggregateDto {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string tenant_id = 4;
+  string project_id = 5;
+  string board_id = 6;
+  TaskAggregateBoardColumnDto board_column = 7;
+  TaskAggregateUserDto creator_user = 8;
+  optional TaskAggregateUserDto assignee_user = 9;
+  google.protobuf.Timestamp created_at = 10;
+  optional google.protobuf.Timestamp updated_at = 11;
+}
+
+message TaskAggregateUserDto {
+  string id = 1;
+  string full_name = 2;
+  string email = 3;
+}
+
+message TaskAggregateBoardColumnDto {
+  string id = 1;
+  string name = 2;
+}
+
+service TaskAggregateService {
+  rpc GetManyByBoardId(GetManyTasksByBoardIdRequest) returns (GetManyTasksByBoardIdResponse);
+  rpc GetById(GetTaskByIdRequest) returns (TaskAggregateDto);
+  rpc Create(CreateTaskRequest) returns (TaskAggregateDto);
+  rpc Update(UpdateTaskRequest) returns (TaskAggregateDto);
+  rpc Delete(DeleteTaskRequest) returns (google.protobuf.Empty);
+}
+
+message GetManyTasksByBoardIdRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string board_id = 3;
+}
+
+message GetManyTasksByBoardIdResponse {
+  repeated TaskAggregateDto tasks = 1;
+}
+
+message GetTaskByIdRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string board_id = 3;
+  string task_id = 4;
+}
+
+message CreateTaskRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string board_id = 3;
+  string board_column_id = 4;
+  string title = 5;
+  string description = 6;
+  repeated string tag_ids = 7;
+  optional string assignee_user_id = 8;
+}
+
+message UpdateTaskRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string board_id = 3;
+  string task_id = 4;
+  string title = 5;
+  string description = 6;
+  string board_column_id = 7;
+  optional string assignee_user_id = 8;
+  repeated string tag_ids = 9;
+}
+
+message DeleteTaskRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+  string board_id = 3;
+  string task_id = 4;
+}

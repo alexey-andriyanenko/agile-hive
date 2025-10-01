@@ -11,7 +11,7 @@ import "task-types.proto";
 service CommentService {
   rpc Create (CreateCommentRequest) returns (task.types.TaskCommentDto);
   rpc GetById (GetCommentByIdRequest) returns (task.types.TaskCommentDto);
-  rpc GetByTaskId (GetCommentsByTaskIdRequest) returns (GetCommentsByTaskIdResponse);
+  rpc GetManyByTaskId (GetCommentsByTaskIdRequest) returns (GetCommentsByTaskIdResponse);
   rpc Update (UpdateCommentRequest) returns (task.types.TaskCommentDto);
   rpc Delete (DeleteCommentRequest) returns (google.protobuf.Empty);
 }

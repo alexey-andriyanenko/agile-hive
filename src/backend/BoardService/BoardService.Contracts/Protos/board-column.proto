@@ -11,7 +11,7 @@ import "board-types.proto";
 service BoardColumnService {
   rpc Create (CreateBoardColumnRequest) returns (board.types.BoardColumnDto);
   rpc GetById (GetBoardColumnByIdRequest) returns (board.types.BoardColumnDto);
-  rpc GetMany (GetManyBoardColumnsRequest) returns (GetManyBoardColumnsResponse);
+  rpc GetManyByBoardId (GetManyBoardColumnsByBoardIdRequest) returns (GetManyBoardColumnsByBoardIdResponse);
   rpc Update (UpdateBoardColumnRequest) returns (board.types.BoardColumnDto);
   rpc Delete (DeleteBoardColumnRequest) returns (google.protobuf.Empty);
 }
@@ -27,12 +27,11 @@ message GetBoardColumnByIdRequest {
   string board_id = 2;
 }
 
-message GetManyBoardColumnsRequest {
+message GetManyBoardColumnsByBoardIdRequest {
   string board_id = 1;
-  repeated board.types.BoardColumnDto board_columns = 2;
 }
 
-message GetManyBoardColumnsResponse {
+message GetManyBoardColumnsByBoardIdResponse {
   repeated board.types.BoardColumnDto board_columns = 1;
 }
 

@@ -44,6 +44,7 @@ public static class ServiceExtensions
         services.AddOrganizationUserServices(configuration);
         services.AddProjectUserServices(configuration);
         services.AddBoardServices(configuration);
+        services.AddTaskAggregatorServices(configuration);
         
         return services;
     }
@@ -175,6 +176,24 @@ public static class ServiceExtensions
         services.AddGrpcClient<BoardColumnService.BoardColumnServiceClient>(options =>
         {
             options.Address = boardServiceAddress;
+        })
+        .ConfigureChannel(options =>
+        {
+            options.UnsafeUseInsecureChannelCallCredentials = true;
+        })
+        .AddJwtCallCredentials();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddTaskAggregatorServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var taskAggregatorServiceAddress = new Uri(configuration["ServiceAddresses:TaskAggregatorService"]!);
+        
+        services.AddGrpcClient<TaskAggregatorService.Contracts.TaskAggregateService.TaskAggregateServiceClient>(options =>
+        {
+            options.Address = taskAggregatorServiceAddress;
         })
         .ConfigureChannel(options =>
         {

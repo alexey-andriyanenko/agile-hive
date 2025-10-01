@@ -12,7 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<TaskTagEntity> TaskTags { get; set; }
     
-    public DbSet<Comment> Comments { get; set; }
+    public DbSet<CommentEntity> Comments { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -13,15 +13,19 @@ public class TaskEntityTypeConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(200);
-
-        builder.Property(x => x.Description)
-            .HasMaxLength(4000);
         
-
+        builder.HasIndex(x => new { x.TenantId, x.ProjectId });
+        builder.HasIndex(x => new { x.BoardId, x.BoardColumnId });
+        builder.HasIndex(x => x.Title);
+        
+        builder.Property(x => x.Description)
+            .HasColumnType("jsonb");
+        
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
-        builder.Property(x => x.UpdatedAt);
+        builder.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.TenantId)
             .IsRequired();

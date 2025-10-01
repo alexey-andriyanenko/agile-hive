@@ -34,4 +34,5 @@
     <ItemGroup>
       <ProjectReference Include="..\TaskService.Domain\TaskService.Domain.csproj" />
     </ItemGroup>
+
 </Project>

@@ -16,9 +16,9 @@ message TaskDto {
   string board_id = 6;
   string board_column_id = 7;
   string created_by_user_id = 8;
-  string assignee_user_id = 9;
+  optional string assignee_user_id = 9;
   google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
+  optional google.protobuf.Timestamp updated_at = 11;
 }
 
 message TagDto {
@@ -35,5 +35,5 @@ message TaskCommentDto {
   string content = 3;
   string CreatedByUserId = 4;
   google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  optional google.protobuf.Timestamp updated_at = 6;
 }

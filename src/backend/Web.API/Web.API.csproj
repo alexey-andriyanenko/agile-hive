@@ -42,6 +42,8 @@
         <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board-types.proto" GrpcServices="None" />
         <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board.proto" GrpcServices="Client" />
         <Protobuf Include="../BoardService/BoardService.Contracts/Protos/board-column.proto" GrpcServices="Client" />
+
+        <Protobuf Include="../TaskAggregatorService/TaskAggregatorService.Contracts/Protos/task-aggregate.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

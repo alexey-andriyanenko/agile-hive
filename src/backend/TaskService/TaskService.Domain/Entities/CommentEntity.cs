@@ -1,6 +1,6 @@
 ﻿namespace TaskService.Domain.Entities;
 
-public class Comment
+public class CommentEntity
 {
     public Guid Id { get; set; }
     

@@ -1,4 +1,5 @@
 ﻿using BoardService.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.API.Dtos.Board;
 using Web.API.Results.Board;
@@ -7,6 +8,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId:guid}/projects/{projectId:guid}/boards")]
+[Authorize]
 public class BoardController(BoardService.Contracts.BoardService.BoardServiceClient boardServiceClient) : ControllerBase
 {
     [HttpGet("{boardId:guid}")]

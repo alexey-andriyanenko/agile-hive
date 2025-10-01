@@ -1,5 +1,9 @@
+using BoardService.Infrastructure.DI;
+using Microsoft.EntityFrameworkCore;
+using TaskService.Application.DI;
+using TaskService.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
@@ -15,7 +19,8 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Database.MigrateAsync();
 }
 
-app.MapGrpcService<BoardService.Application.Services.BoardService>();
-app.MapGrpcService<BoardColumnService>();
+app.MapGrpcService<TaskService.Application.Services.CommentService>();
+app.MapGrpcService<TaskService.Application.Services.TagService>();
+app.MapGrpcService<TaskService.Application.Services.TaskService>();
 
 await app.RunAsync();

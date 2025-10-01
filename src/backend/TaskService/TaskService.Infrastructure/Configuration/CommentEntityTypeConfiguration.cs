@@ -4,15 +4,15 @@ using TaskService.Domain.Entities;
 
 namespace TaskService.Infrastructure.Configuration;
 
-public class CommentEntityTypeConfiguration : IEntityTypeConfiguration<Comment>
+public class CommentEntityTypeConfiguration : IEntityTypeConfiguration<CommentEntity>
 {
-    public void Configure(EntityTypeBuilder<Comment> builder)
+    public void Configure(EntityTypeBuilder<CommentEntity> builder)
     {
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Content)
             .IsRequired()
-            .HasMaxLength(1000);
+            .HasColumnType("jsonb");
 
         builder.Property(x => x.CreatedByUserId)
             .IsRequired();
@@ -20,7 +20,8 @@ public class CommentEntityTypeConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
-        builder.Property(x => x.UpdatedAt);
+        builder.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.TaskId)
             .IsRequired();
