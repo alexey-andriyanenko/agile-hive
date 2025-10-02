@@ -1,0 +1,74 @@
+﻿import type { TaskModel } from "../models";
+
+export type TaskResponseModel = {
+  id: string;
+  title: string;
+  description?: string;
+  tenantId: string;
+  projectId: string;
+  boardId: string;
+  boardColumn: TaskBoardColumnResponseModel;
+  createdBy: TaskUserResponseModel;
+  assignedTo: TaskUserResponseModel | null;
+  createdAt: Date;
+  updatedAt?: Date;
+};
+
+export type TaskBoardColumnResponseModel = {
+  id: string;
+  name: string;
+};
+
+export type TaskUserResponseModel = {
+  id: string;
+  fullName: string;
+  email: string;
+};
+
+export type GetTaskByIdRequest = {
+  taskId: string;
+  projectId: string;
+  organizationId: string;
+};
+
+export type GetTaskByIdResponse = TaskModel;
+
+export type GetTasksByBoardIdRequest = {
+  boardId: string;
+  projectId: string;
+  organizationId: string;
+};
+
+export type GetTasksByBoardIdResponse = {
+  tasks: TaskModel[];
+};
+
+export type CreateTaskRequest = {
+  organizationId: string;
+  projectId: string;
+  boardId: string;
+  title: string;
+  description: string;
+  boardColumnId: string;
+  assigneeUserId?: string;
+};
+
+export type CreateTaskResponse = TaskModel;
+
+export type UpdateTaskRequest = {
+  taskId: string;
+  organizationId: string;
+  projectId: string;
+  title: string;
+  description: string;
+  boardColumnId?: string;
+  assigneeUserId?: string | null;
+};
+
+export type UpdateTaskResponse = TaskModel;
+
+export type DeleteTaskRequest = {
+  taskId: string;
+  organizationId: string;
+  projectId: string;
+};

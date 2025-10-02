@@ -10,7 +10,7 @@ public static class Mappings
             ProjectId = Guid.Parse(boardGrpcDto.ProjectId),
             Name = boardGrpcDto.Name,
             CreatedAt = boardGrpcDto.CreatedAt.ToDateTime(),
-            UpdatedAt = boardGrpcDto.UpdatedAt.ToDateTime(),
+            UpdatedAt = boardGrpcDto.UpdatedAt?.ToDateTime(),
             CreatedByUserId = Guid.Parse(boardGrpcDto.CreatedByUserId),
             Type = boardGrpcDto.BoardType.ToHttp(),
             Columns = boardGrpcDto.Columns.Select(c => c.ToHttp()).ToList()
@@ -27,7 +27,7 @@ public static class Mappings
             Name = boardColumnGrpcDto.Name,
             Order = boardColumnGrpcDto.Order,
             CreatedAt = boardColumnGrpcDto.CreatedAt.ToDateTime(),
-            UpdatedAt = boardColumnGrpcDto.UpdatedAt.ToDateTime()
+            UpdatedAt = boardColumnGrpcDto.UpdatedAt?.ToDateTime()
         };
     }
 

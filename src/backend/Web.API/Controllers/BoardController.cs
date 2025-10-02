@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.API.Dtos.Board;
+using Web.API.Parameters.Board;
 using Web.API.Results.Board;
 
 namespace Web.API.Controllers;
@@ -43,14 +44,12 @@ public class BoardController(BoardService.Contracts.BoardService.BoardServiceCli
     [HttpPost]
     public async Task<Dtos.Board.BoardDto> CreateAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
-        [FromBody] CreateBoardRequest request)
+        [FromBody] Parameters.Board.CreateBoardParameters parameters)
     {
-        var response = await boardServiceClient.CreateAsync(new CreateBoardRequest()
-        {
-            ProjectId = projectId.ToString(),
-            Name = request.Name,
-            BoardTypeId = request.BoardTypeId,
-        }).ResponseAsync;
+        parameters.TenantId = organizationId;
+        parameters.ProjectId = projectId;
+        
+        var response = await boardServiceClient.CreateAsync(parameters.ToGrpc()).ResponseAsync;
 
         return response.ToHttp();
     }
@@ -59,14 +58,13 @@ public class BoardController(BoardService.Contracts.BoardService.BoardServiceCli
     public async Task<Dtos.Board.BoardDto> UpdateAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
         [FromRoute] Guid boardId,
-        [FromBody] UpdateBoardRequest request)
+        [FromBody] Parameters.Board.UpdateBoardParameters parameters)
     {
-        var response = await boardServiceClient.UpdateAsync(new UpdateBoardRequest()
-        {
-            ProjectId = projectId.ToString(),
-            BoardId = boardId.ToString(),
-            Name = request.Name,
-        }).ResponseAsync;
+        parameters.TenantId = organizationId;
+        parameters.ProjectId = projectId;
+        parameters.BoardId = boardId;
+        
+        var response = await boardServiceClient.UpdateAsync(parameters.ToGrpc()).ResponseAsync;
 
         return response.ToHttp();
     }
@@ -81,5 +79,21 @@ public class BoardController(BoardService.Contracts.BoardService.BoardServiceCli
             ProjectId = projectId.ToString(),
             BoardId = boardId.ToString(),
         });
+    }
+
+    [HttpGet("types")]
+    public async Task<GetManyBoardTypesResult> GetManyTypesAsync([FromRoute] Guid organizationId,
+        [FromRoute] Guid projectId)
+    {
+        var response = await boardServiceClient.GetManyTypesAsync(new GetManyBoardTypesRequest()
+        {
+            TenantId = organizationId.ToString(),
+            ProjectId = projectId.ToString(),
+        }).ResponseAsync;
+        
+        return new GetManyBoardTypesResult()
+        {
+            BoardTypes = response.BoardTypes.Select(x => x.ToHttp()).ToList(),
+        };
     }
 }

@@ -24,6 +24,7 @@ public static class Mappings
         Name = column.Name,
         BoardId = column.BoardId.ToString(),
         Order = column.Order,
+        CreatedByUserId = column.CreatedByUserId.ToString(),
         CreatedAt = column.CreatedAt.ToTimestamp(),
         UpdatedAt = column.UpdatedAt?.ToTimestamp()
     };

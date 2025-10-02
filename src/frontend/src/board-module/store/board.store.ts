@@ -1,16 +1,19 @@
 ﻿import { makeAutoObservable, runInAction } from "mobx";
-import type { BoardModel } from "src/board-module/models";
+import type { BoardModel, BoardTypeModel } from "src/board-module/models";
 import {
   boardApiService,
   type CreateBoardRequest,
   type DeleteBoardRequest,
   type GetBoardByIdRequest,
   type GetManyBoardsRequest,
+  type GetManyBoardTypesRequest,
   type UpdateBoardRequest,
 } from "src/board-module/api";
 
 class BoardStore {
   private _boards: BoardModel[] = [];
+
+  private _boardTypes: BoardTypeModel[] = [];
 
   private _currentBoard: BoardModel | null = null;
 
@@ -20,6 +23,10 @@ class BoardStore {
 
   public get boards() {
     return this._boards;
+  }
+
+  public get boardTypes() {
+    return this._boardTypes;
   }
 
   public get currentBoard() {
@@ -79,6 +86,14 @@ class BoardStore {
       if (this._currentBoard?.id === data.boardId) {
         this._currentBoard = null;
       }
+    });
+  }
+
+  public async fetchBoardTypes(data: GetManyBoardTypesRequest) {
+    const res = await boardApiService.getBoardTypes(data);
+
+    runInAction(() => {
+      this._boardTypes = res.boardTypes;
     });
   }
 }

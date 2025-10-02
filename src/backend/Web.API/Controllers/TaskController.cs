@@ -14,10 +14,12 @@ public class TaskController(TaskAggregateService.TaskAggregateServiceClient task
     [HttpGet("{taskId:guid}")]   
     public async Task<Dtos.Task.TaskDto> GetByIdAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
-        [FromRoute] Guid taskId)
+        [FromRoute] Guid taskId,
+        [FromQuery] Guid boardId)
     {
         var response = await taskAggregateServiceClient.GetByIdAsync(new GetTaskByIdRequest()
         {
+            BoardId = boardId.ToString(),
             TenantId = organizationId.ToString(),
             ProjectId = projectId.ToString(),
             TaskId = taskId.ToString()

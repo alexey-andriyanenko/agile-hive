@@ -2,16 +2,19 @@ import { appHttpClient } from "src/shared-module/api";
 import type {
   BoardColumnResponseModel,
   BoardResponseModel,
+  BoardTypeResponseModel,
   CreateBoardRequest,
   CreateBoardResponse,
   GetBoardByIdRequest,
   GetBoardByIdResponse,
   GetManyBoardsRequest,
   GetManyBoardsResponse,
+  GetManyBoardTypesRequest,
+  GetManyBoardTypesResponse,
   UpdateBoardRequest,
   UpdateBoardResponse,
 } from "./board.types";
-import type { BoardColumnModel, BoardModel } from "../models";
+import type { BoardColumnModel, BoardModel, BoardTypeModel } from "../models";
 
 class BoardApiService {
   async getManyBoards(data: GetManyBoardsRequest): Promise<GetManyBoardsResponse> {
@@ -83,12 +86,28 @@ class BoardApiService {
       .send();
   }
 
+  async getBoardTypes(data: GetManyBoardTypesRequest): Promise<GetManyBoardTypesResponse> {
+    const res = await appHttpClient
+      .get<{ boardTypes: BoardTypeResponseModel[] }>(
+        "/organizations/:organizationId/projects/:projectId/boards/types",
+      )
+      .setRouteParams({
+        organizationId: data.organizationId,
+        projectId: data.projectId,
+      })
+      .send();
+
+    return {
+      boardTypes: res.boardTypes.map(BoardApiService.toBoardTypeDomain),
+    };
+  }
+
   private static toBoardDomain(res: BoardResponseModel): BoardModel {
     return {
       ...res,
       createdAt: new Date(res.createdAt),
       updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
-      columns: res.columns.map(this.toBoardColumnDomain),
+      columns: res.columns.map(BoardApiService.toBoardColumnDomain),
     };
   }
 
@@ -97,6 +116,14 @@ class BoardApiService {
       ...res,
       createdAt: new Date(res.createdAt),
       updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
+    };
+  }
+
+  private static toBoardTypeDomain(res: BoardTypeResponseModel): BoardTypeModel {
+    return {
+      id: res.id,
+      name: res.name,
+      isEssential: res.isEssential,
     };
   }
 }

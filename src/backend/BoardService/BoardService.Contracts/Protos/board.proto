@@ -14,6 +14,8 @@ service BoardService {
   rpc GetMany (GetManyBoardsRequest) returns (GetManyBoardsResponse);
   rpc Update (UpdateBoardRequest) returns (BoardDto);
   rpc Delete (DeleteBoardRequest) returns (google.protobuf.Empty);
+
+  rpc GetManyTypes (GetManyBoardTypesRequest) returns (GetManyBoardTypesResponse);
 }
 
 message BoardTypeDto {
@@ -37,6 +39,11 @@ message CreateBoardRequest {
   string name = 1;
   string board_type_id = 2;
   string project_id = 3;
+  repeated CreateBoardColumnItemRequest columns = 4;
+}
+
+message CreateBoardColumnItemRequest {
+  string name = 1;
 }
 
 message GetBoardByIdRequest {
@@ -56,9 +63,24 @@ message UpdateBoardRequest {
   string board_id = 1;
   string project_id = 2;
   string name = 3;
+  repeated CreateOrUpdateBoardColumnItemRequest columns = 4;
+}
+
+message CreateOrUpdateBoardColumnItemRequest {
+  optional string id = 1;
+  string name = 2;
 }
 
 message DeleteBoardRequest {
   string board_id = 1;
   string project_id = 2;
+}
+
+message GetManyBoardTypesRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+}
+
+message GetManyBoardTypesResponse {
+  repeated BoardTypeDto board_types = 1;
 }

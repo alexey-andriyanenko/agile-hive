@@ -1,4 +1,4 @@
-import type { BoardModel, BoardColumnModel } from "../models";
+import type { BoardModel, BoardColumnModel, BoardTypeModel } from "../models";
 
 export type BoardResponseModel = {
   id: string;
@@ -48,7 +48,12 @@ export type CreateBoardRequest = {
   projectId: string;
   organizationId: string;
   name: string;
-  typeId: string;
+  boardTypeId: string;
+  columns: CreateBoardColumnItemRequest[];
+};
+
+export type CreateBoardColumnItemRequest = {
+  name: string;
 };
 
 export type CreateBoardResponse = BoardModel;
@@ -57,6 +62,12 @@ export type UpdateBoardRequest = {
   boardId: string;
   projectId: string;
   organizationId: string;
+  name: string;
+  columns: CreateOrUpdateBoardColumnItemRequest[];
+};
+
+export type CreateOrUpdateBoardColumnItemRequest = {
+  id?: string;
   name: string;
 };
 
@@ -92,4 +103,13 @@ export type DeleteBoardColumnRequest = {
   boardColumnId: string;
   projectId: string;
   organizationId: string;
+};
+
+export type GetManyBoardTypesRequest = {
+  organizationId: string;
+  projectId: string;
+};
+
+export type GetManyBoardTypesResponse = {
+  boardTypes: BoardTypeModel[];
 };

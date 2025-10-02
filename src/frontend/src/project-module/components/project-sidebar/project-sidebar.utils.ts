@@ -23,10 +23,6 @@ export const getNavItems = (
           name: "Project Boards",
         },
         {
-          href: `/organization/${organizationSlug}/projects/${projectSlug}/team`,
-          name: "Project Team",
-        },
-        {
           href: `/organization/${organizationSlug}/projects/${projectSlug}/settings`,
           name: "Project Settings",
         },
