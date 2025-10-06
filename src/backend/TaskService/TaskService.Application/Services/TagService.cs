@@ -12,7 +12,6 @@ public class TagService(ApplicationDbContext dbContext) : Contracts.TagService.T
     public override async Task<GetManyTagsByProjectIdResponse> GetManyByProjectId(GetManyTagsByProjectIdRequest request, ServerCallContext context)
     {
         var tags = await dbContext.Tags
-            .Where(t => t.ProjectId == Guid.Parse(request.ProjectId))
             .ToListAsync();
 
         return new GetManyTagsByProjectIdResponse()

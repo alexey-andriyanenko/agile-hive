@@ -23,6 +23,8 @@ public class TaskDto
     public DateTime CreatedAt { get; set; }
     
     public DateTime? UpdatedAt { get; set; }
+    
+    public IReadOnlyList<TaskTagDto> Tags { get; set; } = [];
 }
 
 public class TaskUserDto
@@ -39,4 +41,13 @@ public class TaskBoardColumnDto
     public Guid Id { get; set; }
     
     public required string Name { get; set; }
+}
+
+public class TaskTagDto
+{
+    public Guid Id { get; set; }
+    
+    public required string Name { get; set; }
+    
+    public required string Color { get; set; }
 }

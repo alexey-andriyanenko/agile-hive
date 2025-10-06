@@ -47,7 +47,7 @@ public static class ServiceCollectionExtensions
 
         services.AddGrpcClient<ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient>(options =>
             {
-                options.Address = new Uri(configuration["ServiceAddresses:UserService"]!);
+                options.Address = new Uri(configuration["ServiceAddresses:ProjectUserService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
             .AddJwtCallCredentials();
@@ -55,6 +55,13 @@ public static class ServiceCollectionExtensions
         services.AddGrpcClient<BoardColumnService.BoardColumnServiceClient>(options =>
             {
                 options.Address = new Uri(configuration["ServiceAddresses:BoardService"]!);
+            })
+            .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
+            .AddJwtCallCredentials();
+        
+        services.AddGrpcClient<TaskService.Contracts.TagService.TagServiceClient>(options =>
+            {
+                options.Address = new Uri(configuration["ServiceAddresses:TaskService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
             .AddJwtCallCredentials();

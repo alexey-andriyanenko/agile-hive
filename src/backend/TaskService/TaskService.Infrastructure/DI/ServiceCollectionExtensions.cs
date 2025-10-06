@@ -1,15 +1,14 @@
 ﻿using System.Text;
-using BoardService.Infrastructure.DelegatingHandlers;
-using BoardService.Infrastructure.Interceptors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using TaskService.Infrastructure;
 using TaskService.Infrastructure.Data;
+using TaskService.Infrastructure.DelegatingHandlers;
+using TaskService.Infrastructure.Interceptors;
 
-namespace BoardService.Infrastructure.DI;
+namespace TaskService.Infrastructure.DI;
 
 public static class ServiceCollectionExtensions
 {

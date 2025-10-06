@@ -9,11 +9,27 @@ using TaskAggregatorService.Contracts;
 namespace TaskAggregatorService.Application.Services;
 
 public class TaskAggregatorService(
+    TaskService.Contracts.TagService.TagServiceClient tagServiceClient,
     TaskService.Contracts.TaskService.TaskServiceClient taskServiceClient,
     BoardColumnService.BoardColumnServiceClient boardColumnServiceClient,
     ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient projectUserServiceClient
 ) : TaskAggregateService.TaskAggregateServiceBase
 {
+    public override async Task<GetTagsByProjectIdResponse> GetTagsByProjectId(GetTagsByProjectIdRequest request, ServerCallContext context)
+    {
+        var tags = await tagServiceClient.GetManyByProjectIdAsync(
+            new TaskService.Contracts.GetManyTagsByProjectIdRequest
+            {
+                TenantId = request.TenantId,
+                ProjectId = request.ProjectId
+            }).ResponseAsync;
+
+        return new GetTagsByProjectIdResponse()
+        {
+            Tags = { tags.Tags.Select(t => t.ToDto()) }
+        };
+    }
+
     public override async Task<GetManyTasksByBoardIdResponse> GetManyByBoardId(GetManyTasksByBoardIdRequest request,
         ServerCallContext context)
     {
@@ -49,7 +65,7 @@ public class TaskAggregatorService(
             }).ResponseAsync;
         var projectUsersById = projectUsersResponse.Users.ToDictionary(u => u.Id, u => u);
     
-        return new GetManyTasksByBoardIdResponse
+        var result = new GetManyTasksByBoardIdResponse
         {
             Tasks =
             {
@@ -58,6 +74,8 @@ public class TaskAggregatorService(
                     .ToList()
             }
         };
+
+        return result;
     }
     
     public override async Task<TaskAggregateDto> GetById(GetTaskByIdRequest request, ServerCallContext context)
@@ -67,7 +85,8 @@ public class TaskAggregatorService(
             {
                 TenantId = request.TenantId,
                 ProjectId = request.ProjectId,
-                TaskId = request.TaskId
+                TaskId = request.TaskId,
+                BoardId = request.BoardId
             }).ResponseAsync;
 
         return await BuildTaskAggregateDto(taskResponse, request.ProjectId);
@@ -84,7 +103,8 @@ public class TaskAggregatorService(
                 Description = request.Description,
                 BoardId = request.BoardId,
                 BoardColumnId = request.BoardColumnId,
-                AssigneeUserId = request.AssigneeUserId
+                AssigneeUserId = request.AssigneeUserId,
+                TagIds = { request.TagIds }
             }).ResponseAsync;
 
         return await BuildTaskAggregateDto(taskResponse, request.ProjectId);
@@ -97,11 +117,13 @@ public class TaskAggregatorService(
             {
                 TenantId = request.TenantId,
                 ProjectId = request.ProjectId,
+                BoardId = request.BoardId,
                 TaskId = request.TaskId,
                 Title = request.Title,
                 Description = request.Description,
                 BoardColumnId = request.BoardColumnId,
-                AssigneeUserId = request.AssigneeUserId
+                AssigneeUserId = request.AssigneeUserId,
+                TagIds = { request.TagIds }
             }).ResponseAsync;
 
         return await BuildTaskAggregateDto(taskResponse, request.ProjectId);

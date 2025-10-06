@@ -12,7 +12,8 @@ public class UpdateTaskRequestValidator : AbstractValidator<UpdateTaskRequest>
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(4000).WithMessage("Description must not exceed 4000 characters.");
+            .NotEmpty()
+            .WithMessage("Description is required.");
 
         RuleFor(x => x.BoardId)
             .NotEmpty().WithMessage("BoardId is required.")

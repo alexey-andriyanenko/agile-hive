@@ -9,13 +9,16 @@ public static class TaskEntityMappings
     public static TaskDto ToDto(this TaskEntity task) => new TaskDto
     {
         Id = task.Id.ToString(),
-        Title = task.Title,
-        Description = task.Description,
+        ProjectId = task.ProjectId.ToString(),
+        TenantId = task.TenantId.ToString(),
         BoardId = task.BoardId.ToString(),
         BoardColumnId = task.BoardColumnId.ToString(),
+        Title = task.Title,
+        Description = task.Description,
         CreatedByUserId = task.CreatedByUserId.ToString(),
         AssigneeUserId = task.AssigneeUserId?.ToString(),
         CreatedAt = task.CreatedAt.ToTimestamp(),
-        UpdatedAt = task.UpdatedAt?.ToTimestamp()
+        UpdatedAt = task.UpdatedAt?.ToTimestamp(),
+        Tags = { task.TaskTags.Select(tt => tt.Tag!.ToDto()) }
     };
 }

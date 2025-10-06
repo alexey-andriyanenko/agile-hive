@@ -1,0 +1,5 @@
+﻿.comment-editor:not(.editable) .comment-editor-content .tiptap {
+    min-height: unset;
+}
+
+

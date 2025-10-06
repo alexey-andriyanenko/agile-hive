@@ -16,7 +16,8 @@ public static class Mappings
             CreatedBy = dto.CreatorUser.ToHttp(),
             AssignedTo = dto.AssigneeUser?.ToHttp(),
             CreatedAt = dto.CreatedAt.ToDateTime(),
-            UpdatedAt = dto.UpdatedAt?.ToDateTime()
+            UpdatedAt = dto.UpdatedAt?.ToDateTime(),
+            Tags = dto.Tags.Select(t => t.ToHttp()).ToList()
         };
     }
     
@@ -36,6 +37,16 @@ public static class Mappings
         {
             Id = Guid.Parse(dto.Id),
             Name = dto.Name
+        };
+    }
+    
+    public static TaskTagDto ToHttp(this TaskAggregatorService.Contracts.TagDto dto)
+    {
+        return new TaskTagDto
+        {
+            Id = Guid.Parse(dto.Id),
+            Name = dto.Name,
+            Color = dto.Color
         };
     }
 }

@@ -20,6 +20,7 @@ message TaskAggregateDto {
   optional TaskAggregateUserDto assignee_user = 9;
   google.protobuf.Timestamp created_at = 10;
   optional google.protobuf.Timestamp updated_at = 11;
+  repeated TagDto tags = 12;
 }
 
 message TaskAggregateUserDto {
@@ -33,12 +34,38 @@ message TaskAggregateBoardColumnDto {
   string name = 2;
 }
 
+message TaskAggregateCommentDto {
+  string id = 1;
+  string content = 3;
+  string CreatedByUserId = 4;
+  google.protobuf.Timestamp created_at = 5;
+  optional google.protobuf.Timestamp updated_at = 6;
+}
+
+message TagDto {
+  string id = 1;
+  string project_id = 2;
+  string tenant_id = 3;
+  string name = 4;
+  string color = 5;
+}
+
 service TaskAggregateService {
+  rpc GetTagsByProjectId(GetTagsByProjectIdRequest) returns (GetTagsByProjectIdResponse);
   rpc GetManyByBoardId(GetManyTasksByBoardIdRequest) returns (GetManyTasksByBoardIdResponse);
   rpc GetById(GetTaskByIdRequest) returns (TaskAggregateDto);
   rpc Create(CreateTaskRequest) returns (TaskAggregateDto);
   rpc Update(UpdateTaskRequest) returns (TaskAggregateDto);
   rpc Delete(DeleteTaskRequest) returns (google.protobuf.Empty);
+}
+
+message GetTagsByProjectIdRequest {
+  string tenant_id = 1;
+  string project_id = 2;
+}
+
+message GetTagsByProjectIdResponse {
+  repeated TagDto tags = 1;
 }
 
 message GetManyTasksByBoardIdRequest {

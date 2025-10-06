@@ -2,10 +2,13 @@
   CreateTaskRequest,
   CreateTaskResponse,
   DeleteTaskRequest,
+  GetTagsByProjectIdRequest,
+  GetTagsByProjectIdResponse,
   GetTaskByIdRequest,
   GetTaskByIdResponse,
   GetTasksByBoardIdRequest,
   GetTasksByBoardIdResponse,
+  TagResponseModel,
   TaskBoardColumnResponseModel,
   TaskResponseModel,
   TaskUserResponseModel,
@@ -13,9 +16,28 @@
   UpdateTaskResponse,
 } from "./task.types.ts";
 import { appHttpClient } from "src/shared-module/api";
-import type { TaskBoardColumnModel, TaskModel, TaskUserModel } from "src/board-module/models";
+import type {
+  TagModel,
+  TaskBoardColumnModel,
+  TaskModel,
+  TaskUserModel,
+} from "src/board-module/models";
 
 class TaskApiService {
+  public async getTagsByProjectId(
+    data: GetTagsByProjectIdRequest,
+  ): Promise<GetTagsByProjectIdResponse> {
+    const response = await appHttpClient
+      .get<{
+        tags: TagResponseModel[];
+      }>(`/organizations/${data.organizationId}/projects/${data.projectId}/tasks/tags`)
+      .send();
+
+    return {
+      tags: response.tags.map(this.toTagDomainModel),
+    };
+  }
+
   public async getTaskById(data: GetTaskByIdRequest): Promise<GetTaskByIdResponse> {
     const response = await appHttpClient
       .get<TaskResponseModel>(
@@ -32,9 +54,8 @@ class TaskApiService {
     const response = await appHttpClient
       .get<{
         tasks: TaskResponseModel[];
-      }>(
-        `/organizations/${data.organizationId}/projects/${data.projectId}/boards/${data.boardId}/tasks`,
-      )
+      }>(`/organizations/${data.organizationId}/projects/${data.projectId}/tasks/by-board`)
+      .setSearchParams({ boardId: data.boardId })
       .send();
 
     return {
@@ -47,7 +68,7 @@ class TaskApiService {
       .post<
         CreateTaskRequest,
         CreateTaskResponse
-      >(`/organizations/${data.organizationId}/projects/${data.projectId}/boards/${data.boardId}/tasks`)
+      >(`/organizations/${data.organizationId}/projects/${data.projectId}/tasks`)
       .send(data);
 
     return this.toTaskDomainModel(response);
@@ -86,6 +107,7 @@ class TaskApiService {
       assignedTo: response.assignedTo ? this.toTaskUserDomainModel(response.assignedTo) : null,
       createdAt: new Date(response.createdAt),
       updatedAt: response.updatedAt ? new Date(response.updatedAt) : undefined,
+      tags: response.tags.map(this.toTagDomainModel),
     };
   }
 
@@ -103,6 +125,14 @@ class TaskApiService {
     return {
       id: response.id,
       name: response.name,
+    };
+  }
+
+  private toTagDomainModel(response: TagResponseModel): TagModel {
+    return {
+      id: response.id,
+      name: response.name,
+      color: response.color,
     };
   }
 }

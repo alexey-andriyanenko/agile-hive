@@ -3,7 +3,7 @@ using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BoardService.Infrastructure.Interceptors;
+namespace TaskService.Infrastructure.Interceptors;
 
 public class ValidationInterceptor(IServiceProvider serviceProvider) : Interceptor
 {

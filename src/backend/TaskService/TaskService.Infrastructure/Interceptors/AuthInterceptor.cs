@@ -3,9 +3,8 @@ using System.Security.Claims;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.AspNetCore.Http;
-using TaskService.Infrastructure;
 
-namespace BoardService.Infrastructure.Interceptors;
+namespace TaskService.Infrastructure.Interceptors;
 
 public class AuthInterceptor(IHttpContextAccessor httpContextAccessor) : Interceptor
 {

@@ -2,16 +2,32 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskAggregatorService.Contracts;
 using Web.API.Dtos.Task;
+using Web.API.Parameters.Task;
 
 namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId:guid}/projects/{projectId:guid}/tasks")]
 [Authorize]
-
 public class TaskController(TaskAggregateService.TaskAggregateServiceClient taskAggregateServiceClient)
 {
-    [HttpGet("{taskId:guid}")]   
+    [HttpGet("tags")]
+    public async Task<Results.Task.GetTagsByProjectIdResponse> GetTagsByProjectIdAsync([FromRoute] Guid organizationId,
+        [FromRoute] Guid projectId)
+    {
+        var response = await taskAggregateServiceClient.GetTagsByProjectIdAsync(new GetTagsByProjectIdRequest()
+        {
+            TenantId = organizationId.ToString(),
+            ProjectId = projectId.ToString()
+        }).ResponseAsync;
+
+        return new Results.Task.GetTagsByProjectIdResponse()
+        {
+            Tags = response.Tags.ToList()
+        };
+    }
+
+    [HttpGet("{taskId:guid}")]
     public async Task<Dtos.Task.TaskDto> GetByIdAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
         [FromRoute] Guid taskId,
@@ -27,7 +43,7 @@ public class TaskController(TaskAggregateService.TaskAggregateServiceClient task
 
         return response.ToHttp();
     }
-    
+
     [HttpGet("by-board")]
     public async Task<Results.Task.GetManyTasksByBoardIdResponse> GetManyByBoardAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
@@ -39,28 +55,22 @@ public class TaskController(TaskAggregateService.TaskAggregateServiceClient task
             ProjectId = projectId.ToString(),
             BoardId = boardId.ToString()
         }).ResponseAsync;
-        
+
         return new Results.Task.GetManyTasksByBoardIdResponse()
         {
             Tasks = response.Tasks.Select(x => x.ToHttp()).ToList(),
         };
     }
-    
+
     [HttpPost]
     public async Task<Dtos.Task.TaskDto> CreateAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
-        [FromBody] CreateTaskRequest request)
+        [FromBody] CreateTaskParameters parameters)
     {
-        var response = await taskAggregateServiceClient.CreateAsync(new CreateTaskRequest()
-        {
-            TenantId = organizationId.ToString(),
-            ProjectId = projectId.ToString(),
-            BoardId = request.BoardId,
-            Title = request.Title,
-            Description = request.Description,
-            BoardColumnId = request.BoardColumnId,
-            AssigneeUserId = request.AssigneeUserId,
-        }).ResponseAsync;
+        parameters.TenantId = organizationId;
+        parameters.ProjectId = projectId;
+        
+        var response = await taskAggregateServiceClient.CreateAsync(parameters.ToGrpcRequest()).ResponseAsync;
 
         return response.ToHttp();
     }
@@ -69,18 +79,13 @@ public class TaskController(TaskAggregateService.TaskAggregateServiceClient task
     public async Task<Dtos.Task.TaskDto> UpdateAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
         [FromRoute] Guid taskId,
-        [FromBody] UpdateTaskRequest request)
+        [FromBody] UpdateTaskParameters parameters)
     {
-        var response = await taskAggregateServiceClient.UpdateAsync(new UpdateTaskRequest()
-        {
-            TenantId = organizationId.ToString(),
-            ProjectId = projectId.ToString(),
-            TaskId = taskId.ToString(),
-            Title = request.Title,
-            Description = request.Description,
-            BoardColumnId = request.BoardColumnId,
-            AssigneeUserId = request.AssigneeUserId,
-        }).ResponseAsync;
+        parameters.TenantId = organizationId;
+        parameters.ProjectId = projectId;
+        parameters.TaskId = taskId;
+        
+        var response = await taskAggregateServiceClient.UpdateAsync(parameters.ToGrpcRequest()).ResponseAsync;
 
         return response.ToHttp();
     }

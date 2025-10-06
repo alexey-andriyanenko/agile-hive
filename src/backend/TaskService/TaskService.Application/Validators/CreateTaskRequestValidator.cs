@@ -12,8 +12,9 @@ public class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .MaximumLength(4000).WithMessage("Description must not exceed 4000 characters.");
-
+            .NotEmpty()
+            .WithMessage("Description is required.");
+        
         RuleFor(x => x.BoardId)
             .NotEmpty().WithMessage("BoardId is required.")
             .Must(id => Guid.TryParse(id, out _)).WithMessage("BoardId must be a valid GUID.");

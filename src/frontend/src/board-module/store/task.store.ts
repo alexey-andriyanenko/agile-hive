@@ -1,6 +1,6 @@
 ﻿import { makeAutoObservable } from "mobx";
 
-import { taskApiService } from "src/board-module/api";
+import { type GetTagsByProjectIdRequest, taskApiService } from "src/board-module/api";
 import type {
   GetTaskByIdRequest,
   GetTasksByBoardIdRequest,
@@ -8,9 +8,11 @@ import type {
   UpdateTaskRequest,
   DeleteTaskRequest,
 } from "src/board-module/api";
-import type { TaskModel } from "src/board-module/models";
+import type { TagModel, TaskModel } from "src/board-module/models";
 
 class TaskStore {
+  private _tags: TagModel[] = [];
+
   private _tasks: TaskModel[] = [];
 
   constructor() {
@@ -19,6 +21,30 @@ class TaskStore {
 
   public get tasks() {
     return this._tasks;
+  }
+
+  public get tags() {
+    return this._tags;
+  }
+
+  public get tasksByColumnId(): Record<string, TaskModel[]> {
+    return this._tasks.reduce(
+      (acc, task) => {
+        if (!acc[task.boardColumn.id]) {
+          acc[task.boardColumn.id] = [];
+        }
+
+        acc[task.boardColumn.id].push(task);
+
+        return acc;
+      },
+      {} as Record<string, TaskModel[]>,
+    );
+  }
+
+  public async fetchTags(data: GetTagsByProjectIdRequest) {
+    const res = await taskApiService.getTagsByProjectId(data);
+    this._tags = res.tags;
   }
 
   public async fetchTaskById(data: GetTaskByIdRequest) {

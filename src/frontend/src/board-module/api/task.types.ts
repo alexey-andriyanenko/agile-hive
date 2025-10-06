@@ -3,7 +3,7 @@
 export type TaskResponseModel = {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   tenantId: string;
   projectId: string;
   boardId: string;
@@ -12,6 +12,7 @@ export type TaskResponseModel = {
   assignedTo: TaskUserResponseModel | null;
   createdAt: Date;
   updatedAt?: Date;
+  tags: TagResponseModel[];
 };
 
 export type TaskBoardColumnResponseModel = {
@@ -23,6 +24,21 @@ export type TaskUserResponseModel = {
   id: string;
   fullName: string;
   email: string;
+};
+
+export type TagResponseModel = {
+  id: string;
+  name: string;
+  color: string;
+};
+
+export type GetTagsByProjectIdRequest = {
+  projectId: string;
+  organizationId: string;
+};
+
+export type GetTagsByProjectIdResponse = {
+  tags: TagResponseModel[];
 };
 
 export type GetTaskByIdRequest = {
@@ -51,6 +67,7 @@ export type CreateTaskRequest = {
   description: string;
   boardColumnId: string;
   assigneeUserId?: string;
+  tagIds: string[];
 };
 
 export type CreateTaskResponse = TaskModel;
@@ -59,10 +76,12 @@ export type UpdateTaskRequest = {
   taskId: string;
   organizationId: string;
   projectId: string;
+  boardId: string;
   title: string;
   description: string;
   boardColumnId?: string;
   assigneeUserId?: string | null;
+  tagIds: string[];
 };
 
 export type UpdateTaskResponse = TaskModel;
@@ -71,4 +90,5 @@ export type DeleteTaskRequest = {
   taskId: string;
   organizationId: string;
   projectId: string;
+  boardId: string;
 };

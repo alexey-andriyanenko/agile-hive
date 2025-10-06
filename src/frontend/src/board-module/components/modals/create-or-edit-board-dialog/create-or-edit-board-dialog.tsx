@@ -143,8 +143,6 @@ export const CreateOrEditBoardDialog: React.FC<CreateOrEditBoardDialogProps> = o
                             onValueChange={(item) => field.onChange(item.value)}
                             onInteractOutside={() => field.onBlur()}
                             collection={boardTypesCollection}
-                            readOnly={!!board}
-                            disabled={!!board}
                           >
                             <Select.HiddenSelect />
                             <Select.Control>

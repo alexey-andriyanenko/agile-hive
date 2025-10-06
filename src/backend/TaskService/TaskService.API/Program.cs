@@ -1,7 +1,7 @@
-using BoardService.Infrastructure.DI;
 using Microsoft.EntityFrameworkCore;
 using TaskService.Application.DI;
 using TaskService.Infrastructure.Data;
+using TaskService.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 

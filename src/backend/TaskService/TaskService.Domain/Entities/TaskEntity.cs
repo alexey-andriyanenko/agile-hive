@@ -19,6 +19,6 @@ public class TaskEntity
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    public ICollection<CommentEntity> Comments { get; set; } = [];
-    public ICollection<TaskTagEntity> TaskTags { get; set; } = [];
+    public List<CommentEntity> Comments { get; set; } = [];
+    public List<TaskTagEntity> TaskTags { get; set; } = [];
 }
