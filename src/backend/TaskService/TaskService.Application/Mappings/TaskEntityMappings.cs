@@ -19,6 +19,6 @@ public static class TaskEntityMappings
         AssigneeUserId = task.AssigneeUserId?.ToString(),
         CreatedAt = task.CreatedAt.ToTimestamp(),
         UpdatedAt = task.UpdatedAt?.ToTimestamp(),
-        Tags = { task.TaskTags.Select(tt => tt.Tag!.ToDto()) }
+        TagIds = { task.TaskTags.Select(tt => tt.TagId.ToString()) }
     };
 }

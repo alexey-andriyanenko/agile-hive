@@ -1,6 +1,6 @@
 ﻿import type { TaskBoardColumnModel } from "./task-board-column.ts";
 import type { TaskUserModel } from "./task-user.ts";
-import type { TagModel } from "src/board-module/models/tag.ts";
+import type { TaskTagModel } from "./task-tag.ts";
 
 export type TaskModel = {
   id: string;
@@ -12,7 +12,7 @@ export type TaskModel = {
   boardColumn: TaskBoardColumnModel;
   createdBy: TaskUserModel;
   assignedTo: TaskUserModel | null;
-  tags: TagModel[];
+  tags: TaskTagModel[];
   createdAt: Date;
   updatedAt?: Date;
 };

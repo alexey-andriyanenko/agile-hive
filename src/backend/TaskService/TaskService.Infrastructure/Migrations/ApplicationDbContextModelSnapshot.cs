@@ -57,35 +57,6 @@ namespace TaskService.Infrastructure.Migrations
                     b.ToTable("TaskComments", (string)null);
                 });
 
-            modelBuilder.Entity("TaskService.Domain.Entities.TagEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Color")
-                        .HasMaxLength(7)
-                        .HasColumnType("character varying(7)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name", "TenantId", "ProjectId")
-                        .IsUnique();
-
-                    b.ToTable("Tags", (string)null);
-                });
-
             modelBuilder.Entity("TaskService.Domain.Entities.TaskEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -146,8 +117,6 @@ namespace TaskService.Infrastructure.Migrations
 
                     b.HasKey("TaskId", "TagId");
 
-                    b.HasIndex("TagId");
-
                     b.ToTable("TaskTags", (string)null);
                 });
 
@@ -168,26 +137,13 @@ namespace TaskService.Infrastructure.Migrations
 
             modelBuilder.Entity("TaskService.Domain.Entities.TaskTagEntity", b =>
                 {
-                    b.HasOne("TaskService.Domain.Entities.TagEntity", "Tag")
-                        .WithMany("TaskTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TaskService.Domain.Entities.TaskEntity", "Task")
                         .WithMany("TaskTags")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tag");
-
                     b.Navigation("Task");
-                });
-
-            modelBuilder.Entity("TaskService.Domain.Entities.TagEntity", b =>
-                {
-                    b.Navigation("TaskTags");
                 });
 
             modelBuilder.Entity("TaskService.Domain.Entities.TaskEntity", b =>

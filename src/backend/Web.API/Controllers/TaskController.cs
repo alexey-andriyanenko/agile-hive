@@ -11,22 +11,6 @@ namespace Web.API.Controllers;
 [Authorize]
 public class TaskController(TaskAggregateService.TaskAggregateServiceClient taskAggregateServiceClient)
 {
-    [HttpGet("tags")]
-    public async Task<Results.Task.GetTagsByProjectIdResponse> GetTagsByProjectIdAsync([FromRoute] Guid organizationId,
-        [FromRoute] Guid projectId)
-    {
-        var response = await taskAggregateServiceClient.GetTagsByProjectIdAsync(new GetTagsByProjectIdRequest()
-        {
-            TenantId = organizationId.ToString(),
-            ProjectId = projectId.ToString()
-        }).ResponseAsync;
-
-        return new Results.Task.GetTagsByProjectIdResponse()
-        {
-            Tags = response.Tags.ToList()
-        };
-    }
-
     [HttpGet("{taskId:guid}")]
     public async Task<Dtos.Task.TaskDto> GetByIdAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,

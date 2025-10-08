@@ -18,7 +18,6 @@
     <ItemGroup>
         <Protobuf Include="Protos/task-types.proto" ProtoRoot="Protos" GrpcServices="None" />
         <Protobuf Include="Protos/task.proto" ProtoRoot="Protos" GrpcServices="Server" />
-        <Protobuf Include="Protos/tag.proto" ProtoRoot="Protos" GrpcServices="Server" />
         <Protobuf Include="Protos/comment.proto" ProtoRoot="Protos" GrpcServices="Server" />
     </ItemGroup>
 </Project>

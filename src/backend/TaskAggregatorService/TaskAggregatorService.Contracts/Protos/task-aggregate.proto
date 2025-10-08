@@ -20,7 +20,7 @@ message TaskAggregateDto {
   optional TaskAggregateUserDto assignee_user = 9;
   google.protobuf.Timestamp created_at = 10;
   optional google.protobuf.Timestamp updated_at = 11;
-  repeated TagDto tags = 12;
+  repeated TaskTagDto tags = 12;
 }
 
 message TaskAggregateUserDto {
@@ -42,10 +42,8 @@ message TaskAggregateCommentDto {
   optional google.protobuf.Timestamp updated_at = 6;
 }
 
-message TagDto {
+message TaskTagDto {
   string id = 1;
-  string project_id = 2;
-  string tenant_id = 3;
   string name = 4;
   string color = 5;
 }
@@ -65,7 +63,7 @@ message GetTagsByProjectIdRequest {
 }
 
 message GetTagsByProjectIdResponse {
-  repeated TagDto tags = 1;
+  repeated TaskTagDto tags = 1;
 }
 
 message GetManyTasksByBoardIdRequest {

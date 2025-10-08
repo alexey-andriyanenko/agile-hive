@@ -6,11 +6,13 @@ import { useBoardStore, useTaskStore } from "src/board-module/store";
 import { BoardColumn } from "src/board-module/pages/board-workspace/board-column";
 import { ProjectSidebar } from "src/project-module/components/project-sidebar";
 import { useOrganizationStore } from "src/organization-module/store";
+import { useTagStore } from "src/project-module/store";
 
 const BoardWorkspace: React.FC = observer(() => {
   const organizationStore = useOrganizationStore();
   const boardStore = useBoardStore();
   const taskStore = useTaskStore();
+  const tagStore = useTagStore();
   const [loadingTasks, setLoadingTasks] = React.useState(false);
   const [loadingTags, setLoadingTags] = React.useState(false);
 
@@ -29,13 +31,13 @@ const BoardWorkspace: React.FC = observer(() => {
   }, [boardStore.currentBoard, organizationStore, boardStore, taskStore]);
 
   React.useEffect(() => {
-    if (taskStore.tags.length !== 0) {
+    if (tagStore.tags.length !== 0) {
       return;
     }
 
     setLoadingTags(true);
-    taskStore
-      .fetchTags({
+    tagStore
+      .fetchTagsByProjectId({
         organizationId: organizationStore.currentOrganization!.id,
         projectId: boardStore.currentBoard!.projectId,
       })

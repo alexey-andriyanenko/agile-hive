@@ -20,7 +20,6 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         var tasks = await dbContext.Tasks
             .Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
             .Include(x => x.TaskTags)
-            .ThenInclude(x => x.Tag)
             .ToListAsync(context.CancellationToken);
 
         return new GetManyTasksByBoardIdResponse()
@@ -36,7 +35,6 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         var taskId = Guid.Parse(request.TaskId);
         var task = await dbContext.Tasks
             .Include(x => x.TaskTags)
-            .ThenInclude(x => x.Tag)
             .FirstOrDefaultAsync(t => t.TenantId == tenantId && t.ProjectId == projectId && t.Id == taskId, context.CancellationToken);
 
         if (task == null)
@@ -84,7 +82,6 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         var taskId = Guid.Parse(request.TaskId);
         var task = await dbContext.Tasks
             .Include(x => x.TaskTags)
-            .ThenInclude(x => x.Tag)
             .FirstOrDefaultAsync(t => t.TenantId == tenantId && t.ProjectId == projectId && t.Id == taskId, context.CancellationToken);
 
         if (task == null)
@@ -118,12 +115,6 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         }));
 
         await dbContext.SaveChangesAsync(context.CancellationToken);
-        
-        await dbContext.Entry(task)
-            .Collection(t => t.TaskTags)
-            .Query()
-            .Include(tt => tt.Tag)
-            .LoadAsync(context.CancellationToken);
         
         return task.ToDto();
     }

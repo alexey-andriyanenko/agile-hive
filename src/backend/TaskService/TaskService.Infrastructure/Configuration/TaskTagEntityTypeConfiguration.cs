@@ -13,12 +13,7 @@ public class TaskTagEntityTypeConfiguration : IEntityTypeConfiguration<TaskTagEn
             .WithMany(x => x.TaskTags)
             .HasForeignKey(x => x.TaskId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(x => x.Tag)
-            .WithMany(x => x.TaskTags)
-            .HasForeignKey(x => x.TagId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+        
         builder.ToTable("TaskTags");
     }
 }

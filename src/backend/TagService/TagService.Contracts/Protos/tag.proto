@@ -1,19 +1,26 @@
 syntax = "proto3";
 
-option csharp_namespace = "TaskService.Contracts";
+option csharp_namespace = "Tag.Contracts";
 
-package task.tags;
+package tags;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-import "task-types.proto";
 
 service TagService {
   rpc GetManyByProjectId(GetManyTagsByProjectIdRequest) returns (GetManyTagsByProjectIdResponse);
-  rpc GetById(GetTagByIdRequest) returns (task.types.TagDto);
-  rpc Create(CreateTagRequest) returns (task.types.TagDto);
-  rpc Update(UpdateTagRequest) returns (task.types.TagDto);
+  rpc GetManyByIds(GetManyTagsByIdsRequest) returns (GetManyTagsByIdsResponse);
+  rpc GetById(GetTagByIdRequest) returns (TagDto);
+  rpc Create(CreateTagRequest) returns (TagDto);
+  rpc Update(UpdateTagRequest) returns (TagDto);
   rpc Delete(DeleteTagRequest) returns (google.protobuf.Empty);
+}
+
+message TagDto {
+  string id = 1;
+  optional string project_id = 2;
+  string tenant_id = 3;
+  string name = 4;
+  string color = 5;
 }
 
 message GetManyTagsByProjectIdRequest {
@@ -22,7 +29,17 @@ message GetManyTagsByProjectIdRequest {
 }
 
 message GetManyTagsByProjectIdResponse {
-  repeated task.types.TagDto tags = 1;
+  repeated TagDto tags = 1;
+}
+
+message GetManyTagsByIdsRequest {
+  string tenant_id = 1;
+  optional string project_id = 2;
+  repeated string tag_ids = 3;
+}
+
+message GetManyTagsByIdsResponse {
+  repeated TagDto tags = 1;
 }
 
 message GetTagByIdRequest {
@@ -33,7 +50,7 @@ message GetTagByIdRequest {
 
 message CreateTagRequest {
   string tenant_id = 1;
-  string project_id = 2;
+  optional string project_id = 2;
   string name = 3;
   string color = 4;
 }

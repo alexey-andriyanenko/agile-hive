@@ -19,15 +19,7 @@ message TaskDto {
   optional string assignee_user_id = 9;
   google.protobuf.Timestamp created_at = 10;
   optional google.protobuf.Timestamp updated_at = 11;
-  repeated TagDto tags = 12;
-}
-
-message TagDto {
-  string id = 1;
-  string project_id = 2;
-  string tenant_id = 3;
-  string name = 4;
-  string color = 5;
+  repeated string tag_ids = 12;
 }
 
 message TaskCommentDto {

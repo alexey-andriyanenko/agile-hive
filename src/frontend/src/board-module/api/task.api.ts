@@ -2,13 +2,11 @@
   CreateTaskRequest,
   CreateTaskResponse,
   DeleteTaskRequest,
-  GetTagsByProjectIdRequest,
-  GetTagsByProjectIdResponse,
   GetTaskByIdRequest,
   GetTaskByIdResponse,
   GetTasksByBoardIdRequest,
   GetTasksByBoardIdResponse,
-  TagResponseModel,
+  TaskTagResponseModel,
   TaskBoardColumnResponseModel,
   TaskResponseModel,
   TaskUserResponseModel,
@@ -17,26 +15,13 @@
 } from "./task.types.ts";
 import { appHttpClient } from "src/shared-module/api";
 import type {
-  TagModel,
   TaskBoardColumnModel,
   TaskModel,
+  TaskTagModel,
   TaskUserModel,
 } from "src/board-module/models";
 
 class TaskApiService {
-  public async getTagsByProjectId(
-    data: GetTagsByProjectIdRequest,
-  ): Promise<GetTagsByProjectIdResponse> {
-    const response = await appHttpClient
-      .get<{
-        tags: TagResponseModel[];
-      }>(`/organizations/${data.organizationId}/projects/${data.projectId}/tasks/tags`)
-      .send();
-
-    return {
-      tags: response.tags.map(this.toTagDomainModel),
-    };
-  }
 
   public async getTaskById(data: GetTaskByIdRequest): Promise<GetTaskByIdResponse> {
     const response = await appHttpClient
@@ -107,7 +92,7 @@ class TaskApiService {
       assignedTo: response.assignedTo ? this.toTaskUserDomainModel(response.assignedTo) : null,
       createdAt: new Date(response.createdAt),
       updatedAt: response.updatedAt ? new Date(response.updatedAt) : undefined,
-      tags: response.tags.map(this.toTagDomainModel),
+      tags: response.tags.map(this.toTaskTagDomainModel),
     };
   }
 
@@ -128,7 +113,7 @@ class TaskApiService {
     };
   }
 
-  private toTagDomainModel(response: TagResponseModel): TagModel {
+  private toTaskTagDomainModel(response: TaskTagResponseModel): TaskTagModel {
     return {
       id: response.id,
       name: response.name,

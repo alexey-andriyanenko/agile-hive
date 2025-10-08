@@ -19,7 +19,7 @@ import { useOrganizationStore } from "src/organization-module/store";
 import type { TaskFormValues } from "../create-or-edit-task-dialog.types.ts";
 import type { ProjectUserModel } from "src/project-module/models";
 import { pickColor } from "src/shared-module/utils";
-import { useTaskStore } from "src/board-module/store";
+import { useTagStore } from "src/project-module/store";
 
 type TaskDetailsFormProps = {
   board: BoardModel;
@@ -27,7 +27,7 @@ type TaskDetailsFormProps = {
 
 export const TaskDetailsForm: React.FC<TaskDetailsFormProps> = ({ board }) => {
   const organizationStore = useOrganizationStore();
-  const taskStore = useTaskStore();
+  const tagStore = useTagStore();
 
   const { formState, control, register } = useFormContext<TaskFormValues>();
 
@@ -42,6 +42,13 @@ export const TaskDetailsForm: React.FC<TaskDetailsFormProps> = ({ board }) => {
       .then((res) => {
         setAssignees(res.users);
       });
+
+    if (tagStore.tags.length === 0) {
+      tagStore.fetchTagsByProjectId(
+        organizationStore.currentOrganization!.id,
+        board.projectId
+      );
+    }
   }, []);
 
   const boardColumnsCollection = React.useMemo(() => {
@@ -61,13 +68,13 @@ export const TaskDetailsForm: React.FC<TaskDetailsFormProps> = ({ board }) => {
 
   const tagsCollection = React.useMemo(() => {
     return createListCollection({
-      items: taskStore.tags.map((tag) => ({
+      items: tagStore.tags.map((tag) => ({
         label: tag.name,
         value: tag.id,
         color: tag.color,
       })),
     });
-  }, [taskStore.tags]);
+  }, [tagStore.tags]);
 
   return (
     <Stack gap="4">

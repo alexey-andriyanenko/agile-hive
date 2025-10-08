@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Tag.Contracts;
 using TaskAggregatorService.Infrastructure.Interceptors;
 
 namespace TaskAggregatorService.Infrastructure.DI;
@@ -59,9 +60,9 @@ public static class ServiceCollectionExtensions
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
             .AddJwtCallCredentials();
         
-        services.AddGrpcClient<TaskService.Contracts.TagService.TagServiceClient>(options =>
+        services.AddGrpcClient<TagService.TagServiceClient>(options =>
             {
-                options.Address = new Uri(configuration["ServiceAddresses:TaskService"]!);
+                options.Address = new Uri(configuration["ServiceAddresses:TagService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
             .AddJwtCallCredentials();

@@ -1,11 +1,13 @@
 import React from "react";
 
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, Tabs } from "@chakra-ui/react";
+import { LuUsers, LuTags } from "react-icons/lu";
 
 import { ProjectSidebar } from "src/project-module/components/project-sidebar";
 
 import { ProjectUsers } from "./project-users";
 import { ProjectForm } from "src/project-module/pages/project-settings/project-form";
+import { ProjectTags } from "./project-tags";
 
 const ProjectSettings: React.FC = () => {
   return (
@@ -16,7 +18,25 @@ const ProjectSettings: React.FC = () => {
         <Heading> Project Settings </Heading>
 
         <ProjectForm />
-        <ProjectUsers />
+
+        <Tabs.Root defaultValue="users">
+          <Tabs.List>
+            <Tabs.Trigger value="users">
+              <LuUsers />
+              Users
+            </Tabs.Trigger>
+            <Tabs.Trigger value="tags">
+              <LuTags />
+              Tags
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="users">
+            <ProjectUsers />
+          </Tabs.Content>
+          <Tabs.Content value="tags">
+            <ProjectTags />
+          </Tabs.Content>
+        </Tabs.Root>
       </Flex>
     </Flex>
   );

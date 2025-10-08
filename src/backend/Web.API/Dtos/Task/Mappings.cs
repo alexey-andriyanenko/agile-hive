@@ -40,7 +40,7 @@ public static class Mappings
         };
     }
     
-    public static TaskTagDto ToHttp(this TaskAggregatorService.Contracts.TagDto dto)
+    public static TaskTagDto ToHttp(this TaskAggregatorService.Contracts.TaskTagDto dto)
     {
         return new TaskTagDto
         {

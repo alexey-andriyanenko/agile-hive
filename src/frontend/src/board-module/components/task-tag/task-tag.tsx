@@ -1,10 +1,10 @@
 ﻿import React from "react";
 
 import { Box } from "@chakra-ui/react";
-import type { TagModel } from "src/board-module/models";
+import type { TaskTagModel } from "src/board-module/models";
 
 type TagProps = {
-  tag: TagModel;
+  tag: TaskTagModel;
 };
 
 export const TaskTag: React.FC<TagProps> = ({ tag }) => {

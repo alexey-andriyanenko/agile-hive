@@ -12,7 +12,7 @@ export type TaskResponseModel = {
   assignedTo: TaskUserResponseModel | null;
   createdAt: Date;
   updatedAt?: Date;
-  tags: TagResponseModel[];
+  tags: TaskTagResponseModel[];
 };
 
 export type TaskBoardColumnResponseModel = {
@@ -26,19 +26,10 @@ export type TaskUserResponseModel = {
   email: string;
 };
 
-export type TagResponseModel = {
+export type TaskTagResponseModel = {
   id: string;
   name: string;
   color: string;
-};
-
-export type GetTagsByProjectIdRequest = {
-  projectId: string;
-  organizationId: string;
-};
-
-export type GetTagsByProjectIdResponse = {
-  tags: TagResponseModel[];
 };
 
 export type GetTaskByIdRequest = {

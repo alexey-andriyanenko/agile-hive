@@ -1,14 +1,14 @@
 ﻿using BoardService.Contracts;
 using ProjectUserService.Contracts;
+using Tag.Contracts;
 using TaskAggregatorService.Contracts;
 using TaskService.Contracts;
-using TagDto = TaskAggregatorService.Contracts.TagDto;
 
 namespace TaskAggregatorService.Application.Mappings;
 
 public static class TaskAggregateMappings
 {
-    public static TaskAggregateDto ToDto(this TaskDto taskDto, BoardColumnDto boardColumnDto, ProjectUserDto creatorUserDto, ProjectUserDto? assigneeUserDto)
+    public static TaskAggregateDto ToDto(this TaskDto taskDto, BoardColumnDto boardColumnDto, ProjectUserDto creatorUserDto, IReadOnlyList<TagDto> tags, ProjectUserDto? assigneeUserDto)
     {
         return new TaskAggregateDto
         {
@@ -23,7 +23,10 @@ public static class TaskAggregateMappings
             AssigneeUser = assigneeUserDto?.ToDto(),
             CreatedAt = taskDto.CreatedAt,
             UpdatedAt = taskDto.UpdatedAt,
-            Tags = { taskDto.Tags.Select(t => t.ToDto()) }
+            Tags =
+            {
+                tags.Select(x => x.ToDto())
+            }
         };
     }
     

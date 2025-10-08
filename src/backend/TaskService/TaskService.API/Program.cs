@@ -20,7 +20,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapGrpcService<TaskService.Application.Services.CommentService>();
-app.MapGrpcService<TaskService.Application.Services.TagService>();
 app.MapGrpcService<TaskService.Application.Services.TaskService>();
 
 await app.RunAsync();

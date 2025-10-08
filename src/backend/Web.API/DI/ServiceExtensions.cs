@@ -3,6 +3,7 @@ using BoardService.Contracts;
 using IdentityService.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Tag.Contracts;
 using Web.API.Exceptions;
 
 namespace Web.API.DI;
@@ -45,6 +46,7 @@ public static class ServiceExtensions
         services.AddProjectUserServices(configuration);
         services.AddBoardServices(configuration);
         services.AddTaskAggregatorServices(configuration);
+        services.AddTagServices(configuration);
         
         return services;
     }
@@ -194,6 +196,23 @@ public static class ServiceExtensions
         services.AddGrpcClient<TaskAggregatorService.Contracts.TaskAggregateService.TaskAggregateServiceClient>(options =>
         {
             options.Address = taskAggregatorServiceAddress;
+        })
+        .ConfigureChannel(options =>
+        {
+            options.UnsafeUseInsecureChannelCallCredentials = true;
+        })
+        .AddJwtCallCredentials();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddTagServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        var tagServiceAddress = new Uri(configuration["ServiceAddresses:TagService"]!);
+        
+        services.AddGrpcClient<TagService.TagServiceClient>(options =>
+        {
+            options.Address = tagServiceAddress;
         })
         .ConfigureChannel(options =>
         {
