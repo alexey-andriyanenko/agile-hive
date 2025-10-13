@@ -11,4 +11,9 @@
       <ProjectReference Include="..\TagService.Infrastructure\TagService.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\ProjectMessages\ProjectMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
+    </ItemGroup>
 </Project>

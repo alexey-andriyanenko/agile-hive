@@ -6,7 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Confluent.Kafka" Version="2.11.0" />
         <PackageReference Include="MassTransit" Version="8.5.2" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.2" />
     </ItemGroup>
@@ -15,10 +14,10 @@
         <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\IdentityMessages\IdentityMessages.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
+        <ProjectReference Include="..\OrganizationService.Infrastructure\OrganizationService.Infrastructure.csproj" />
     </ItemGroup>
     
     <ItemGroup>
       <ProjectReference Include="..\OrganizationService.Contracts\OrganizationService.Contracts.csproj" />
-      <ProjectReference Include="..\OrganizationService.Infrastructure\OrganizationService.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

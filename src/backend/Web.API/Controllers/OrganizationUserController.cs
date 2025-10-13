@@ -7,7 +7,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId}/users")]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 public class OrganizationUserController(
     OrganizationUserService.Contracts.OrganizationUserService.OrganizationUserServiceClient organizationUserServiceClient
     )

@@ -8,7 +8,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId:guid}/projects/{projectId:guid}/tasks")]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 public class TaskController(TaskAggregateService.TaskAggregateServiceClient taskAggregateServiceClient)
 {
     [HttpGet("{taskId:guid}")]

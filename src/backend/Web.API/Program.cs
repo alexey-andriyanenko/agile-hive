@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Web.API.DelegatingHandlers;
 using Web.API.DI;
 using Web.API.Middlewares;
+using Web.API.Policies.Tenant;
 using Web.API.Services;
 
 namespace Web.API;
@@ -26,7 +28,8 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<AuthHeaderHandler>();
         builder.Services.AddScoped<TokenProvider>();
-
+        builder.Services.AddScoped<IAuthorizationHandler, TenantAuthorizationHandler>();
+        
         builder.Services.AddOpenApi();
 
         builder.Services.AddServices(builder.Configuration);
@@ -50,7 +53,9 @@ public class Program
         
         app.UseAuthentication();
         app.UseAuthorization();
+        
         app.MapControllers();
+        
         
         app.Run();
     }

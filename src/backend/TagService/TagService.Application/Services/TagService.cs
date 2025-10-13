@@ -9,6 +9,18 @@ namespace TagService.Application.Services;
 
 public class TagService(ApplicationDbContext dbContext) : Tag.Contracts.TagService.TagServiceBase
 {
+    public override async Task<GetManyTagsByTenantIdResponse> getManyByTenantId(GetManyTagsByTenantIdRequest request, ServerCallContext context)
+    {
+        var tags = await dbContext.Tags
+            .Where(t => t.TenantId == Guid.Parse(request.TenantId) && t.ProjectId == null)
+            .ToListAsync();
+
+        return new GetManyTagsByTenantIdResponse()
+        {
+            Tags = { tags.Select(x => x.ToDto()) }
+        };
+    }
+
     public override async Task<GetManyTagsByProjectIdResponse> GetManyByProjectId(GetManyTagsByProjectIdRequest request, ServerCallContext context)
     {
         var tags = await dbContext.Tags

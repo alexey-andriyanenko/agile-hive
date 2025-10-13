@@ -7,6 +7,7 @@ package tags;
 import "google/protobuf/empty.proto";
 
 service TagService {
+  rpc getManyByTenantId(GetManyTagsByTenantIdRequest) returns (GetManyTagsByTenantIdResponse);
   rpc GetManyByProjectId(GetManyTagsByProjectIdRequest) returns (GetManyTagsByProjectIdResponse);
   rpc GetManyByIds(GetManyTagsByIdsRequest) returns (GetManyTagsByIdsResponse);
   rpc GetById(GetTagByIdRequest) returns (TagDto);
@@ -21,6 +22,14 @@ message TagDto {
   string tenant_id = 3;
   string name = 4;
   string color = 5;
+}
+
+message GetManyTagsByTenantIdRequest {
+  string tenant_id = 1;
+}
+
+message GetManyTagsByTenantIdResponse {
+  repeated TagDto tags = 1;
 }
 
 message GetManyTagsByProjectIdRequest {

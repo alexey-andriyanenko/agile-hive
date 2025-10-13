@@ -7,7 +7,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId}/projects")]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 public class ProjectController(ProjectService.Contracts.ProjectService.ProjectServiceClient projectClient)
 {
     [HttpPost]

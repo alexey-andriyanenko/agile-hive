@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Tag.Contracts;
 using Web.API.Exceptions;
+using Web.API.Policies.Tenant;
 
 namespace Web.API.DI;
 
@@ -37,7 +38,12 @@ public static class ServiceExtensions
                 };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("TenantAccess", policy =>
+                policy.RequireAuthenticatedUser()
+                    .AddRequirements(new TenantRequirement()));
+        });
 
         services.AddIdentityServices(configuration);
         services.AddOrganizationServices(configuration);

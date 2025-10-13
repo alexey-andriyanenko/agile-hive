@@ -19,10 +19,10 @@ export const ProjectTags: React.FC = observer(() => {
   React.useEffect(() => {
     setLoading(true);
     tagStore
-      .fetchTagsByProjectId(
-        organizationStore.currentOrganization!.id,
-        projectStore.currentProject!.id,
-      )
+      .fetchTagsByProjectId({
+        organizationId: organizationStore.currentOrganization!.id,
+        projectId: projectStore.currentProject!.id,
+      })
       .then(() => setLoading(false))
       .catch((error) => {
         console.error("Failed to fetch tags:", error);

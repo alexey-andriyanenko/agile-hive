@@ -6,12 +6,31 @@ using TagDto = Tag.Contracts.TagDto;
 namespace Web.API.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 [Route("/api/v1/organizations/{organizationId}/tags")]
 public class TagController : ControllerBase
 {
+    [HttpGet("by-tenant")]
+    public async Task<ActionResult<Results.Tag.GetTagsResult>> GetManyByTenantIdAsync(
+        [FromServices] TagService.TagServiceClient tagServiceClient,
+        [FromRoute] Guid organizationId,
+        CancellationToken cancellationToken)
+    {
+        var response = await tagServiceClient.getManyByTenantIdAsync(new GetManyTagsByTenantIdRequest()
+        {
+            TenantId = organizationId.ToString()
+        }, cancellationToken: cancellationToken);
+
+        var result = new Results.Tag.GetTagsResult()
+        {
+            Tags = response.Tags.ToList()
+        };
+
+        return Ok(result);
+    }
+    
     [HttpGet("by-project")]
-    public async Task<ActionResult<Results.Tag.GetTagsByProjectIdResult>> GetManyByProjectIdAsync(
+    public async Task<ActionResult<Results.Tag.GetTagsResult>> GetManyByProjectIdAsync(
         [FromServices] TagService.TagServiceClient tagServiceClient,
         [FromRoute] Guid organizationId,
         [FromQuery] Guid projectId,
@@ -23,7 +42,7 @@ public class TagController : ControllerBase
             ProjectId = projectId.ToString()
         }, cancellationToken: cancellationToken);
 
-        var result = new Results.Tag.GetTagsByProjectIdResult
+        var result = new Results.Tag.GetTagsResult
         {
             Tags = response.Tags.ToList()
         };

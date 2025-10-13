@@ -9,7 +9,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations/{organizationId:guid}/projects/{projectId:guid}/boards")]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 public class BoardController(BoardService.Contracts.BoardService.BoardServiceClient boardServiceClient) : ControllerBase
 {
     [HttpGet("{boardId:guid}")]

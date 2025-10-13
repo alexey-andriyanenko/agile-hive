@@ -7,16 +7,18 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations")]
-[Authorize]
-public class OrganizationController(OrganizationService.Contracts.OrganizationService.OrganizationServiceClient organizationClient)
+public class OrganizationController(
+    OrganizationService.Contracts.OrganizationService.OrganizationServiceClient organizationClient)
 {
     [HttpPost]
+    [Authorize(Policy = "TenantAccess")]
     public async Task<OrganizationDto> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
     {
         return await organizationClient.CreateAsync(request).ResponseAsync;
     }
 
     [HttpGet("{organizationId}")]
+    [Authorize(Policy = "TenantAccess")]
     public async Task<OrganizationDto> GetOrganizationByIdAsync([FromRoute] string organizationId)
     {
         return await organizationClient.GetByIdAsync(new GetOrganizationByIdRequest()
@@ -24,17 +26,19 @@ public class OrganizationController(OrganizationService.Contracts.OrganizationSe
             OrganizationId = organizationId
         }).ResponseAsync;
     }
-    
+
     [HttpGet("by-slug/{organizationSlug}")]
+    [Authorize]
     public async Task<OrganizationDto> GetOrganizationBySlugAsync([FromRoute] string organizationSlug)
     {
-        return await organizationClient.GetBySlugAsync(new GetOrganizationBySlugRequest() 
+        return await organizationClient.GetBySlugAsync(new GetOrganizationBySlugRequest()
         {
             OrganizationSlug = organizationSlug
         }).ResponseAsync;
     }
-    
+
     [HttpGet]
+    [Authorize]
     public async Task<GetManyOrganizationsResponse> GetManyOrganizationsAsync([FromQuery] List<string> organizationIds)
     {
         return await organizationClient.GetManyAsync(new GetManyOrganizationsRequest()
@@ -44,6 +48,7 @@ public class OrganizationController(OrganizationService.Contracts.OrganizationSe
     }
 
     [HttpPut("{organizationId}")]
+    [Authorize(Policy = "TenantAccess")]
     public async Task<OrganizationDto> UpdateOrganizationAsync([FromRoute] string organizationId,
         [FromBody] UpdateOrganizationRequest request)
     {
@@ -52,6 +57,7 @@ public class OrganizationController(OrganizationService.Contracts.OrganizationSe
     }
 
     [HttpDelete("{organizationId}")]
+    [Authorize(Policy = "TenantAccess")]
     public async Task<Empty> DeleteOrganizationAsync([FromRoute] string organizationId)
     {
         return await organizationClient.DeleteAsync(new DeleteOrganizationRequest()
@@ -59,8 +65,9 @@ public class OrganizationController(OrganizationService.Contracts.OrganizationSe
             OrganizationId = organizationId
         }).ResponseAsync;
     }
-    
+
     [HttpDelete]
+    [Authorize]
     public async Task<Empty> DeleteManyOrganizationsAsync([FromQuery] List<string> organizationIds)
     {
         return await organizationClient.DeleteManyAsync(new DeleteManyOrganizationsRequest()

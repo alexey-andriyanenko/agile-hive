@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectService.Application.Validations;
 using ProjectService.Contracts;
@@ -14,6 +15,19 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<Services.ProjectService>();
         services.AddScoped<Services.ProjectMemberService>();
+        
+        services.AddMassTransit(x =>
+        {
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("localhost", "/", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+            });
+        });
         
         return services;
     }

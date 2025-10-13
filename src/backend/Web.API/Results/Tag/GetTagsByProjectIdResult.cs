@@ -2,7 +2,7 @@
 
 namespace Web.API.Results.Tag;
 
-public class GetTagsByProjectIdResult
+public class GetTagsResult
 {
     public IReadOnlyList<TagDto> Tags { get; set; } = [];
 }

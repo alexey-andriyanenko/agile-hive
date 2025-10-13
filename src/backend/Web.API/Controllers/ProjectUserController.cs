@@ -8,7 +8,7 @@ namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organization/{organizationId}/projects/{projectId}/users")]
-[Authorize]
+[Authorize(Policy = "TenantAccess")]
 public class ProjectUserController(ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient projectUserServiceClient)
 {
     [HttpGet("{userId}")]

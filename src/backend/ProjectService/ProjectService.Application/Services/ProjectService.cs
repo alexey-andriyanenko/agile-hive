@@ -1,8 +1,10 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using IdentityService.Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using ProjectMessages.Messages;
 using ProjectService.Application.Extensions;
 using ProjectService.Application.Mappings;
 using ProjectService.Contracts;
@@ -15,6 +17,7 @@ namespace ProjectService.Application.Services;
 public class ProjectService(
     ApplicationDbContext dbContext,
     UserService.UserServiceClient userServiceClient,
+    IPublishEndpoint publishEndpoint,
     IHttpContextAccessor httpContextAccessor
     ) : Contracts.ProjectService.ProjectServiceBase
 {
@@ -73,11 +76,12 @@ public class ProjectService(
         
         await dbContext.SaveChangesAsync();
         
-
-        if (memberUser is null)
+        
+        await publishEndpoint.Publish(new ProjectCreationSucceededMessage()
         {
-            throw new RpcException(new Status(StatusCode.Internal, "Failed to retrieve project member for the creating user."));
-        }
+            ProjectId = project.Id,
+            OrganizationId = project.OrganizationId
+        });
 
         return project.ToDto(memberUser);
     }
