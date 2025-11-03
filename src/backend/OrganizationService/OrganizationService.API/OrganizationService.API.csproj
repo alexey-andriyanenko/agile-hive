@@ -21,7 +21,7 @@
         <ProjectReference Include="..\..\AgileHive.Messages\IdentityMessages\IdentityMessages.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>

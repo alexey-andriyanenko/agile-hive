@@ -1,0 +1,294 @@
+﻿version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend
+  
+  identity-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: identity-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - identity_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  identity-service:
+    build:
+      context: ./IdentityService
+      dockerfile: IdentityService.API/Dockerfile
+    image: identityservice.api
+    ports:
+      - "5201:5201"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__IdentityDb=Host=identity-db;Database=identity-db;Username=admin;Password=admin
+    depends_on:
+      - identity-db
+      - rabbitmq
+    networks:
+      - backend
+  
+  organization-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: organization-db
+    ports:
+      - "5434:5432"
+    volumes:
+      - organization_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  organization-service:
+    build:
+      context: ./OrganizationService
+      dockerfile: OrganizationService.API/Dockerfile
+    image: organizationservice.api
+    ports:
+      - "5202:5202"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__OrganizationDb=Host=organization-db;Database=organization-db;Username=admin;Password=admin
+      - Services__IdentityService__Url=http://identity-service:5201
+    depends_on:
+      - organization-db
+      - rabbitmq
+      - identity-service
+    networks:
+      - backend
+  
+  project-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: project-db
+    ports:
+      - "5435:5432"
+    volumes:
+      - project_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  project-service:
+    build:
+      context: ./ProjectService
+      dockerfile: ProjectService.API/Dockerfile
+    image: projectservice.api
+    ports:
+      - "5203:5203"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ProjectDb=Host=project-db;Database=project-db;Username=admin;Password=admin
+      - Services__IdentityService__Url=http://identity-service:5201
+    depends_on:
+      - project-db
+      - rabbitmq
+      - identity-service
+    networks:
+      - backend
+  
+  tag-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tag-db
+    ports:
+      - "5436:5432"
+    volumes:
+      - tag_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  tag-service:
+    build:
+      context: ./TagService
+      dockerfile: TagService.API/Dockerfile
+    image: tagservice.api
+    ports:
+      - "5209:5209"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__TagDb=Host=tag-db;Database=tag-db;Username=admin;Password=admin
+    depends_on:
+      - tag-db
+      - rabbitmq
+    networks:
+      - backend
+  
+  task-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: task-db
+    ports:
+      - "5437:5432"
+    volumes:
+      - task_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  task-service:
+    build:
+      context: ./TaskService
+      dockerfile: TaskService.API/Dockerfile
+    image: taskservice.api
+    ports:
+      - "5207:5207"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__TaskDb=Host=task-db;Database=task-db;Username=admin;Password=admin
+    depends_on:
+      - task-db
+      - rabbitmq
+    networks:
+      - backend
+  
+  board-db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: board-db
+    ports:
+      - "5438:5432"
+    volumes:
+      - board_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  board-service:
+    build:
+      context: ./BoardService
+      dockerfile: BoardService.API/Dockerfile
+    image: boardservice.api
+    ports:
+      - "5206:5206"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__BoardDb=Host=board-db;Database=board-db;Username=admin;Password=admin
+    depends_on:
+      - board-db
+      - rabbitmq
+    networks:
+      - backend
+  
+  organization-user-service:
+    build:
+      context: ./OrganizationUserService
+      dockerfile: OrganizationUserService.API/Dockerfile
+    image: organizationuserservice.api
+    ports:
+      - "5204:5204"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Services__IdentityService__Url=http://identity-service:5201
+      - Services__OrganizationService__Url=http://organization-service:5202
+    depends_on:
+      - organization-service
+      - identity-service
+    networks:
+      - backend
+  
+  project-user-service:
+    build:
+      context: ./ProjectUserService
+      dockerfile: ProjectUserService.API/Dockerfile
+    image: projectuserservice.api
+    ports:
+      - "5205:5205"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Services__IdentityService__Url=http://identity-service:5201
+      - Services__ProjectService__Url=http://project-service:5203
+    depends_on:
+      - project-service
+      - identity-service
+    networks:
+      - backend
+  
+  task-aggregator-service:
+    build:
+      context: ./TaskAggregatorService
+      dockerfile: TaskAggregatorService.API/Dockerfile
+    image: taskaggregatorservice.api
+    ports:
+      - "5208:5208"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Services__TaskService__Url=http://task-service:5207
+      - Services__BoardService__Url=http://board-service:5206
+      - Services__ProjectService__Url=http://project-service:5203
+      - Services__TagService__Url=http://tag-service:5209
+    depends_on:
+      - task-service
+      - board-service
+      - project-service
+      - tag-service
+    networks:
+      - backend
+  
+  web-api:
+    build:
+      context: Web.API
+      dockerfile: Dockerfile
+    image: webapi.api
+    ports:
+      - "5200:5200"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Services__IdentityService__Url=http://identity-service:5201
+      - Services__OrganizationService__Url=http://organization-service:5202
+      - Services__ProjectService__Url=http://project-service:5203
+      - Services__OrganizationUserService__Url=http://organization-user-service:5204
+      - Services__ProjectUserService__Url=http://project-user-service:5205
+      - Services__TaskAggregatorService__Url=http://task-aggregator-service:5208
+      - Services__TaskService__Url=http://task-service:5207
+      - Services__BoardService__Url=http://board-service:5206
+      - Services__TagService__Url=http://tag-service:5209
+    depends_on:
+      - identity-service
+      - organization-service
+      - project-service
+      - task-service
+      - board-service
+      - tag-service
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  identity_data:
+  organization_data:
+  project_data:
+  tag_data:
+  task_data:
+  board_data:
+  rabbitmq_data:

@@ -1,7 +1,0 @@
-﻿services:
-  boardservice.api:
-    image: boardservice.api
-    build:
-      context: .
-      dockerfile: BoardService.API/Dockerfile
-

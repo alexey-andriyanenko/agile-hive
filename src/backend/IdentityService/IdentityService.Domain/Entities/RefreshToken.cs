@@ -11,7 +11,7 @@ public class RefreshToken
     public DateTime CreatedAt { get; set; }
     
     public DateTime? RevokedAt { get; set; }
-    
+      
     public string? ReplacedByToken { get; set; }
 
     public Guid UserId { get; set; }

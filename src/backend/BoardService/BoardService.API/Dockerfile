@@ -1,13 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5206
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["BoardService.API/BoardService.API.csproj", "BoardService.API/"]
+COPY ["BoardService.Application/BoardService.Application.csproj", "BoardService.Application/"]
+COPY ["BoardService.Contracts/BoardService.Contracts.csproj", "BoardService.Contracts/"]
+COPY ["BoardService.Infrastructure/BoardService.Infrastructure.csproj", "BoardService.Infrastructure/"]
+COPY ["BoardService.Domain/BoardService.Domain.csproj", "BoardService.Domain/"]
 RUN dotnet restore "BoardService.API/BoardService.API.csproj"
 COPY . .
 WORKDIR "/src/BoardService.API"
