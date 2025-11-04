@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option csharp_namespace = "PermissionService.Contracts";
+
+package permissions;
+
+service PermissionsService {
+  rpc GetMany (GetPermissionsRequest) returns (GetPermissionsResponse);
+  rpc IsAllowed (CheckIfAllowedRequest) returns (CheckIfAllowedResponse);
+}
+
+message PermissionDto {
+  string scope = 1;
+  string resource = 2;
+  string operation = 3;
+  string tenantId = 4;
+  bool allowed = 5;
+}
+
+message GetPermissionsRequest {
+  string tenantId = 1;
+  string role = 2;
+}
+
+message GetPermissionsResponse {
+  repeated PermissionDto permissions = 1;
+}
+
+message CheckIfAllowedRequest {
+  string scope = 1;
+  string resource = 2;
+  string operation = 3;
+  string tenantId = 4;
+  string role = 5;
+}
+
+message CheckIfAllowedResponse {
+  bool allowed = 1;
+}
