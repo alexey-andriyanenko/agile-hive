@@ -4,6 +4,7 @@ using IdentityService.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Tag.Contracts;
+using Web.API.DelegatingHandlers;
 using Web.API.Exceptions;
 using Web.API.Policies.Tenant;
 
@@ -44,7 +45,9 @@ public static class ServiceExtensions
                 policy.RequireAuthenticatedUser()
                     .AddRequirements(new TenantRequirement()));
         });
-
+        
+        services.AddTransient<TenantMessageHandler>();
+        
         services.AddIdentityServices(configuration);
         services.AddOrganizationServices(configuration);
         services.AddProjectServices(configuration);
@@ -53,6 +56,7 @@ public static class ServiceExtensions
         services.AddBoardServices(configuration);
         services.AddTaskAggregatorServices(configuration);
         services.AddTagServices(configuration);
+        services.AddTenantContextServices(configuration);
         
         return services;
     }
@@ -79,8 +83,7 @@ public static class ServiceExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             });
-
-
+        
         services.AddGrpcClient<UserService.UserServiceClient>(options =>
             {
                 options.Address = identityServiceAddress;
@@ -107,7 +110,8 @@ public static class ServiceExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         return services;
     }
@@ -125,11 +129,11 @@ public static class ServiceExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         return services;
     }
-
 
     private static IServiceCollection AddOrganizationUserServices(this IServiceCollection services,
         IConfiguration configuration)
@@ -144,7 +148,8 @@ public static class ServiceExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         return services;
     }
@@ -162,7 +167,8 @@ public static class ServiceExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         return services;
     }
@@ -179,7 +185,9 @@ public static class ServiceExtensions
         {
             options.UnsafeUseInsecureChannelCallCredentials = true;
         })
-        .AddJwtCallCredentials();
+        .AddJwtCallCredentials()
+        .AddHttpMessageHandler<TenantMessageHandler>();
+
 
         services.AddGrpcClient<BoardColumnService.BoardColumnServiceClient>(options =>
         {
@@ -189,7 +197,8 @@ public static class ServiceExtensions
         {
             options.UnsafeUseInsecureChannelCallCredentials = true;
         })
-        .AddJwtCallCredentials();
+        .AddJwtCallCredentials()
+        .AddHttpMessageHandler<TenantMessageHandler>();
         
         return services;
     }
@@ -207,7 +216,8 @@ public static class ServiceExtensions
         {
             options.UnsafeUseInsecureChannelCallCredentials = true;
         })
-        .AddJwtCallCredentials();
+        .AddJwtCallCredentials()
+        .AddHttpMessageHandler<TenantMessageHandler>();
         
         return services;
     }
@@ -224,7 +234,27 @@ public static class ServiceExtensions
         {
             options.UnsafeUseInsecureChannelCallCredentials = true;
         })
-        .AddJwtCallCredentials();
+        .AddJwtCallCredentials()
+        .AddHttpMessageHandler<TenantMessageHandler>();
+        
+        return services;
+    }
+
+    public static IServiceCollection AddTenantContextServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var tenantServiceAddress = new Uri(configuration["ServiceAddresses:TenantContextService"]!);
+        
+        services.AddGrpcClient<TenantContextService.Contracts.TenantContextService.TenantContextServiceClient>(options =>
+            {
+                options.Address = tenantServiceAddress;
+            })
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
+            })
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
         
         return services;
     }

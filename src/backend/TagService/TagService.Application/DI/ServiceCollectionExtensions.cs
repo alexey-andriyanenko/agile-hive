@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
 
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<OrganizationMessagesConsumer>();
+            x.AddConsumer<TenantProvisioningConsumer>();
             x.AddConsumer<ProjectMessagesConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
@@ -23,9 +23,9 @@ public static class ServiceCollectionExtensions
                     h.Password("guest");
                 });
 
-                cfg.ReceiveEndpoint("organization-messages-queue", e =>
+                cfg.ReceiveEndpoint("tag-service__tenant-provisioning-queue", e =>
                 {
-                    e.ConfigureConsumer<OrganizationMessagesConsumer>(context);
+                    e.ConfigureConsumer<TenantProvisioningConsumer>(context);
 
                     e.UseMessageRetry(r =>
                     {

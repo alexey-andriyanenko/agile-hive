@@ -90,13 +90,6 @@ public class OrganizationMemberService(
         ServerCallContext context)
     {
         var organizationId = Guid.Parse(request.OrganizationId);
-        var organization = await dbContext.Organizations.SingleOrDefaultAsync(x => x.Id == organizationId);
-
-        if (organization is null)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound,
-                $"Organization with ID '{request.OrganizationId}' not found."));
-        }
         
         var users = await userServiceClient.GetManyByIdsAsync(new GetManyUsersByIdsRequest
         {
@@ -141,7 +134,7 @@ public class OrganizationMemberService(
                 Role = (Domain.Enums.OrganizationMemberRole)usersToAddById[userId].Role,
             };
 
-            organization.Members.Add(organizationMember);
+            dbContext.OrganizationMembers.Add(organizationMember);
         }
 
         await dbContext.SaveChangesAsync();
@@ -206,11 +199,6 @@ public class OrganizationMemberService(
             throw new RpcException(new Status(StatusCode.FailedPrecondition, "Users cannot remove themselves from an organization."));
         }
         
-        var organization = await dbContext.Organizations.SingleOrDefaultAsync(x => x.Id == organizationId);
-        if (organization is null)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound, $"Organization with ID '{request.OrganizationId}' not found."));
-        }
         
         var organizationMembers = dbContext.OrganizationMembers
             .Where(x => x.OrganizationId == organizationId && userIds.Contains(x.UserId))

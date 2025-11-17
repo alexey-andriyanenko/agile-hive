@@ -1,4 +1,5 @@
 ﻿using OrganizationUserService.Contracts;
+using TenantContextService.Contracts;
 
 namespace Web.API.Policies.Tenant;
 
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 public class TenantAuthorizationHandler(
-    OrganizationUserService.Contracts.OrganizationUserService.OrganizationUserServiceClient organizationUserService,
+    TenantContextService.Contracts.TenantContextService.TenantContextServiceClient tenantContextServiceClient,
     IHttpContextAccessor httpContextAccessor)
     : AuthorizationHandler<TenantRequirement>
 {
@@ -47,10 +48,10 @@ public class TenantAuthorizationHandler(
 
         try
         {
-            await organizationUserService.GetByIdAsync(new GetOrganizationUserByIdRequest()
+            await tenantContextServiceClient.GetTenantMemberAsync(new GetTenantMemberRequest()
             {
                 UserId = userId.ToString(),
-                OrganizationId = tenantId.ToString(),
+                TenantId = tenantId.ToString()
             });
             
             context.Succeed(requirement);

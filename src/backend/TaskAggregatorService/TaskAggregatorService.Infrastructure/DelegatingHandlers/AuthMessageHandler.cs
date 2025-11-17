@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 
-namespace BoardService.Infrastructure.DelegatingHandlers;
+namespace TaskAggregatorService.Infrastructure.DelegatingHandlers;
 
 public class AuthHeaderHandler(IHttpContextAccessor httpContextAccessor) : DelegatingHandler
 {

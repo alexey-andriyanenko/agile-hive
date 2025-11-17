@@ -1,5 +1,6 @@
 using BoardService.Application.DI;
 using BoardService.Application.Services;
+using BoardService.Infrastructure;
 using BoardService.Infrastructure.Data;
 using BoardService.Infrastructure.DI;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<TenantMiddleware>();
         
 using (var scope = app.Services.CreateScope())
 {

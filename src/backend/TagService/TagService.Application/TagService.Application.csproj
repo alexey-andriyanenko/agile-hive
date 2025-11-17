@@ -14,6 +14,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\ProjectMessages\ProjectMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\TenantProvisioning\TenantProvisioning.csproj" />
         <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
     </ItemGroup>
 </Project>

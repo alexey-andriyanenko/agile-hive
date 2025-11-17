@@ -2,77 +2,89 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrganizationService.Contracts;
+using TenantContextService.Contracts;
+using Web.API.Dtos.Organization;
 
 namespace Web.API.Controllers;
 
 [ApiController]
 [Route("api/v1/organizations")]
 public class OrganizationController(
-    OrganizationService.Contracts.OrganizationService.OrganizationServiceClient organizationClient)
+    TenantContextService.Contracts.TenantContextService.TenantContextServiceClient organizationClient)
 {
     [HttpPost]
-    [Authorize(Policy = "TenantAccess")]
-    public async Task<OrganizationDto> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
+    [Authorize]
+    public async Task<Dtos.Organization.OrganizationDto> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
     {
-        return await organizationClient.CreateAsync(request).ResponseAsync;
+        var response = await organizationClient.CreateTenantAsync(new CreateTenantRequest()
+        {
+            Name = request.OrganizationName
+        }).ResponseAsync;
+
+        return response.ToDto();
     }
 
     [HttpGet("{organizationId}")]
     [Authorize(Policy = "TenantAccess")]
-    public async Task<OrganizationDto> GetOrganizationByIdAsync([FromRoute] string organizationId)
+    public async Task<Dtos.Organization.OrganizationDto> GetOrganizationByIdAsync([FromRoute] string organizationId)
     {
-        return await organizationClient.GetByIdAsync(new GetOrganizationByIdRequest()
+        var response = await organizationClient.GetTenantByIdAsync(new GetTenantByIdRequest()
         {
-            OrganizationId = organizationId
+            Id = organizationId
         }).ResponseAsync;
+
+        return response.ToDto();
     }
 
     [HttpGet("by-slug/{organizationSlug}")]
     [Authorize]
-    public async Task<OrganizationDto> GetOrganizationBySlugAsync([FromRoute] string organizationSlug)
+    public async Task<Dtos.Organization.OrganizationDto> GetOrganizationBySlugAsync([FromRoute] string organizationSlug)
     {
-        return await organizationClient.GetBySlugAsync(new GetOrganizationBySlugRequest()
+        var response = await organizationClient.GetTenantBySlugAsync(new GetTenantBySlugRequest()
         {
-            OrganizationSlug = organizationSlug
+            Slug = organizationSlug
         }).ResponseAsync;
+        
+        return response.ToDto();
     }
 
     [HttpGet]
     [Authorize]
-    public async Task<GetManyOrganizationsResponse> GetManyOrganizationsAsync([FromQuery] List<string> organizationIds)
+    public async Task<Results.Organization.GetManyOrganizationsResponse> GetManyOrganizationsAsync([FromQuery] List<string> organizationIds)
     {
-        return await organizationClient.GetManyAsync(new GetManyOrganizationsRequest()
+        var response = await organizationClient.GetManyTenantsAsync(new GetManyTenantsRequest()
         {
-            OrganizationIds = { organizationIds }
+            Ids = { organizationIds }
         }).ResponseAsync;
+
+        return new Results.Organization.GetManyOrganizationsResponse()
+        {
+            Organizations = response.Tenants.Select(t => t.ToDto()).ToList()
+        };
     }
 
     [HttpPut("{organizationId}")]
     [Authorize(Policy = "TenantAccess")]
-    public async Task<OrganizationDto> UpdateOrganizationAsync([FromRoute] string organizationId,
+    public async Task<Dtos.Organization.OrganizationDto> UpdateOrganizationAsync([FromRoute] string organizationId,
         [FromBody] UpdateOrganizationRequest request)
     {
         request.OrganizationId = organizationId;
-        return await organizationClient.UpdateAsync(request).ResponseAsync;
+        var response = await organizationClient.UpdateTenantAsync(new UpdateTenantRequest()
+        {
+            Id = request.OrganizationId,
+            Name = request.OrganizationName
+        }).ResponseAsync;
+
+        return response.ToDto();
     }
 
     [HttpDelete("{organizationId}")]
     [Authorize(Policy = "TenantAccess")]
     public async Task<Empty> DeleteOrganizationAsync([FromRoute] string organizationId)
     {
-        return await organizationClient.DeleteAsync(new DeleteOrganizationRequest()
+        return await organizationClient.DeleteTenantAsync(new DeleteTenantRequest()
         {
-            OrganizationId = organizationId
-        }).ResponseAsync;
-    }
-
-    [HttpDelete]
-    [Authorize]
-    public async Task<Empty> DeleteManyOrganizationsAsync([FromQuery] List<string> organizationIds)
-    {
-        return await organizationClient.DeleteManyAsync(new DeleteManyOrganizationsRequest()
-        {
-            OrganizationIds = { organizationIds }
+            Id = organizationId
         }).ResponseAsync;
     }
 }

@@ -1,4 +1,6 @@
-﻿using BoardService.Application.Services;
+﻿using BoardService.Application.Consumers;
+using BoardService.Application.Services;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoardService.Application.DI;
@@ -9,6 +11,30 @@ public static class ServiceCollectionExtensions
    {
       services.AddScoped<Services.BoardService>();
       services.AddScoped<BoardColumnService>();
+      
+      services.AddMassTransit(x =>
+      {
+         x.AddConsumer<TenantProvisioningConsumer>();
+            
+         x.UsingRabbitMq((context, cfg) =>
+         {
+            cfg.Host("localhost", "/", h =>
+            {
+               h.Username("guest");
+               h.Password("guest");
+            });
+                
+            cfg.ReceiveEndpoint("board-service__tenant-provisioning-messages-queue", e =>
+            {
+               e.ConfigureConsumer<TenantProvisioningConsumer>(context);
+
+               e.UseMessageRetry(r =>
+               {
+                  r.Interval(3, TimeSpan.FromSeconds(5));
+               });
+            });
+         });
+      });
 
       return services;
    } 

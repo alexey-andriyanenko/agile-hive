@@ -5,7 +5,7 @@ using ProjectService.Infrastructure.Configurations;
 
 namespace ProjectService.Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, TenantContext tenantContext) : DbContext(options)
 {
     public DbSet<Project> Projects { get; set; }
     
@@ -17,5 +17,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.ApplyConfiguration(new ProjectMemberConfiguration());
         
         base.OnModelCreating(builder);
+    }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(tenantContext.DbConnectionString))
+        {
+            optionsBuilder.UseNpgsql(tenantContext.DbConnectionString);
+        }
+
+        base.OnConfiguring(optionsBuilder);
     }
 }

@@ -1,23 +1,43 @@
 ﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using ProjectMessages.Messages;
 using TagService.Domain.Entities;
+using TagService.Infrastructure;
 using TagService.Infrastructure.Data;
 
 namespace TagService.Application.Consumers;
 
 public class ProjectMessagesConsumer(
-    ApplicationDbContext dbContext,
-    IPublishEndpoint publishEndpoint
+    IPublishEndpoint publishEndpoint,
+    TenantContextService.Contracts.TenantContextService.TenantContextServiceClient tenantContextServiceClient
     ) : IConsumer<ProjectCreationSucceededMessage>
 {
     public async Task Consume(ConsumeContext<ProjectCreationSucceededMessage> context)
     {
+        var tenantContextResult = await tenantContextServiceClient.GetTenantContextAsync(new TenantContextService.Contracts.GetTenantContextRequest()
+        {
+            TenantId = context.Message.OrganizationId.ToString(),
+            ServiceName = "TagService"
+        }).ResponseAsync;
+        
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseNpgsql(tenantContextResult.DbConnectionString);
+        
+        var tenantContext = new TenantContext()
+        {
+            TenantId = context.Message.OrganizationId,
+            ServiceName = "TagService",
+            DbConnectionString = tenantContextResult.DbConnectionString,
+        };
+        
+        await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
+
         var message = context.Message;
 
         var predefinedTags = GetPredefinedProjectTags(message.OrganizationId, message.ProjectId);
 
-        dbContext.Tags.AddRange(predefinedTags);
-        await dbContext.SaveChangesAsync();
+        db.Tags.AddRange(predefinedTags);
+        await db.SaveChangesAsync();
     }
     
     public static List<TagEntity> GetPredefinedProjectTags(Guid tenantId, Guid projectId)

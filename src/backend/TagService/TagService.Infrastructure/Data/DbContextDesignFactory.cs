@@ -18,6 +18,13 @@ public class DbContextDesignFactory : IDesignTimeDbContextFactory<ApplicationDbC
         
         optionsBuilder.UseNpgsql(connectionString);
 
-        return new ApplicationDbContext(optionsBuilder.Options);
+        var tenantContext = new TenantContext
+        {
+            TenantId = Guid.Empty,
+            ServiceName = "TagDb",
+            DbConnectionString = connectionString!,
+        };
+        
+        return new ApplicationDbContext(optionsBuilder.Options, tenantContext);
     }
 }

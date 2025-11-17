@@ -16,8 +16,21 @@ public static class ServiceCollectionExtensions
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
          
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("TaskDb")));
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        {
+            var tenantContext = sp.GetRequiredService<TenantContext>();
+
+            var defaultConnection = configuration.GetConnectionString("TaskDb");
+
+            var connectionString = string.IsNullOrEmpty(tenantContext.DbConnectionString)
+                ? defaultConnection
+                : tenantContext.DbConnectionString;
+
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+            });
+        });
 
         services.AddAuthentication(options =>
             {
@@ -43,9 +56,17 @@ public static class ServiceCollectionExtensions
             });
         services.AddAuthorization();
         services.AddHttpContextAccessor();
+        services.AddScoped<TenantContext>();
 
         services.AddTransient<AuthHeaderHandler>();
         services.AddScoped<TokenProvider>();
+        
+        services
+            .AddGrpcClient<TenantContextService.Contracts.TenantContextService.TenantContextServiceClient>(options =>
+            {
+                options.Address = new Uri(configuration["ServiceAddresses:TenantContextService"]!);
+            })
+            .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; });
         
         services.AddGrpc(options =>
         {

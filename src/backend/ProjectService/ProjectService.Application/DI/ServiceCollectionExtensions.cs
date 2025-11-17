@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectService.Application.Consumers;
 using ProjectService.Application.Validations;
 using ProjectService.Contracts;
 
@@ -18,13 +19,24 @@ public static class ServiceCollectionExtensions
         
         services.AddMassTransit(x =>
         {
-
+            x.AddConsumer<TenantProvisioningConsumer>();
+            
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host("localhost", "/", h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
+                });
+                
+                cfg.ReceiveEndpoint("project-service__tenant-provisioning-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<TenantProvisioningConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
                 });
             });
         });

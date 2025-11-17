@@ -26,6 +26,7 @@
 
     <ItemGroup>
         <Protobuf Include="../../IdentityService/IdentityService.Contracts/Protos/user.proto" GrpcServices="Client"/>
+        <Protobuf Include="../../TenantContextService/TenantContextService.Contracts/Protos/tenant-context.proto" GrpcServices="Client"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+option csharp_namespace = "TenantContextService.Contracts";
+
+import "google/protobuf/empty.proto";
+
+package tenant.context;
+
+service TenantContextService {
+  rpc GetTenantContext (GetTenantContextRequest) returns (TenantContextResponse);
+
+  rpc CreateTenant (CreateTenantRequest) returns (TenantResponse);
+  rpc UpdateTenant (UpdateTenantRequest) returns (TenantResponse);
+  rpc GetTenantById (GetTenantByIdRequest) returns (TenantResponse);
+  rpc GetTenantBySlug (GetTenantBySlugRequest) returns (TenantResponse);
+  rpc GetManyTenants (GetManyTenantsRequest) returns (GetManyTenantsResponse);
+  rpc DeleteTenant (DeleteTenantRequest) returns (google.protobuf.Empty);
+  
+  rpc GetTenantMember (GetTenantMemberRequest) returns (TenantMemberResponse);
+}
+
+enum TenantMemberRole {
+  OWNER = 0;
+  ADMIN = 1;
+  MANAGER = 2;
+  MEMBER = 3;
+  GUEST = 4;
+}
+
+message GetTenantContextRequest {
+  string tenant_id = 1;
+  string service_name = 2;
+}
+
+message TenantContextResponse {
+  string service_name = 2;
+  string db_connection_string = 3;
+}
+
+message TenantResponse {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  TenantMemberRole my_role = 4;
+  bool is_active = 5;
+}
+
+message GetTenantMemberRequest {
+  string tenant_id = 1;
+  string user_id = 2;
+}
+
+message TenantMemberResponse {
+  string user_id = 1;
+  TenantMemberRole role = 2;
+}
+
+message CreateTenantRequest {
+  string name = 2;
+}
+
+message GetTenantByIdRequest {
+  string id = 1;
+}
+
+message GetTenantBySlugRequest {
+  string slug = 1;
+}
+
+message GetManyTenantsRequest {
+  repeated string ids = 1;
+}
+
+message GetManyTenantsResponse {
+  repeated TenantResponse tenants = 1;
+}
+
+message UpdateTenantRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message DeleteTenantRequest {
+  string id = 1;
+}
+
+message DeleteManyTenantsRequest {
+  repeated string ids = 1;
+}

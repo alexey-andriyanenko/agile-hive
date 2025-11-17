@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectService.API.DI;
 using ProjectService.Application.DI;
+using ProjectService.Infrastructure;
 using ProjectService.Infrastructure.Data;
 using ProjectService.Infrastructure.DI;
 
@@ -20,6 +21,8 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseMiddleware<TenantMiddleware>();
         
         using (var scope = app.Services.CreateScope())
         {

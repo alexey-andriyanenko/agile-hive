@@ -16,9 +16,22 @@ public static class ServiceExtensions
         IConfiguration configuration)
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
-        
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("OrganizationDb")));
+
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        {
+            var tenantContext = sp.GetRequiredService<TenantContext>();
+
+            var defaultConnection = configuration.GetConnectionString("OrganizationDb");
+
+            var connectionString = string.IsNullOrEmpty(tenantContext.DbConnectionString)
+                ? defaultConnection
+                : tenantContext.DbConnectionString;
+
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+            });
+        });
 
         services.AddHttpContextAccessor();
 
@@ -45,24 +58,30 @@ public static class ServiceExtensions
                 };
             });
         services.AddAuthorization();
-        
-        services.AddGrpcClient<UserService.UserServiceClient>(options =>
-        {
-            options.Address = new Uri(configuration["ServiceAddresses:IdentityService"]!);
-        })
-        .ConfigureChannel(options =>
-        {
-            options.UnsafeUseInsecureChannelCallCredentials = true;
-        })
-        .AddJwtCallCredentials();
 
+        services.AddScoped<TenantContext>();
+
+        services.AddGrpcClient<UserService.UserServiceClient>(options =>
+            {
+                options.Address = new Uri(configuration["ServiceAddresses:IdentityService"]!);
+            })
+            .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
+            .AddJwtCallCredentials();
+
+        services
+            .AddGrpcClient<TenantContextService.Contracts.TenantContextService.TenantContextServiceClient>(options =>
+            {
+                options.Address = new Uri(configuration["ServiceAddresses:TenantContextService"]!);
+            })
+            .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
+            .AddJwtCallCredentials();
+        
         services.AddGrpc(options =>
         {
             options.Interceptors.Add<AuthInterceptor>();
             options.Interceptors.Add<ValidationInterceptor>();
         });
-        
-        
+
         return services;
     }
 }

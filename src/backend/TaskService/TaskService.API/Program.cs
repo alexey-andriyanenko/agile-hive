@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskService.Application.DI;
+using TaskService.Infrastructure;
 using TaskService.Infrastructure.Data;
 using TaskService.Infrastructure.DI;
 
@@ -12,6 +13,7 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<TenantMiddleware>();
         
 using (var scope = app.Services.CreateScope())
 {

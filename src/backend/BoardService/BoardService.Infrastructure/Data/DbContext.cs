@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoardService.Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, TenantContext tenantContext) : DbContext(options)
 {
     public DbSet<Board> Boards { get; set; }
 
@@ -24,6 +24,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (!optionsBuilder.IsConfigured && !string.IsNullOrEmpty(tenantContext.DbConnectionString))
+        {
+            optionsBuilder.UseNpgsql(tenantContext.DbConnectionString);
+        }
+        
         optionsBuilder.UseSeeding((context, _) =>
         {
             var boardTypesContext = context.Set<BoardType>();

@@ -12,7 +12,7 @@ public static class ServiceExtensions
     {
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<OrganizationCommandsConsumer>();
+            x.AddConsumer<TenantProvisioningConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
@@ -21,10 +21,10 @@ public static class ServiceExtensions
                     h.Username("guest");
                     h.Password("guest");
                 });
-
-                cfg.ReceiveEndpoint("organization-commands-queue", e =>
+                
+                cfg.ReceiveEndpoint("organization-service__tenant-provisioning-messages-queue", e =>
                 {
-                    e.ConfigureConsumer<OrganizationCommandsConsumer>(context);
+                    e.ConfigureConsumer<TenantProvisioningConsumer>(context);
 
                     e.UseMessageRetry(r =>
                     {

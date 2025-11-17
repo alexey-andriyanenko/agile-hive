@@ -22,29 +22,6 @@ namespace OrganizationService.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("OrganizationService.Domain.Entities.Organization", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Organizations");
-                });
-
             modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationMember", b =>
                 {
                     b.Property<Guid>("OrganizationId")
@@ -60,20 +37,6 @@ namespace OrganizationService.Infrastructure.Migrations
                     b.HasKey("OrganizationId", "UserId");
 
                     b.ToTable("OrganizationMembers");
-                });
-
-            modelBuilder.Entity("OrganizationService.Domain.Entities.OrganizationMember", b =>
-                {
-                    b.HasOne("OrganizationService.Domain.Entities.Organization", null)
-                        .WithMany("Members")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OrganizationService.Domain.Entities.Organization", b =>
-                {
-                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

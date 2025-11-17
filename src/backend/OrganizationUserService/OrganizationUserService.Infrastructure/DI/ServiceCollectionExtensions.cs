@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
 
         services.AddTransient<AuthHeaderHandler>();
+        services.AddTransient<TenantMessageHandler>();
         services.AddScoped<UserContextProvider>();
         services.AddScoped<TokenProvider>();
 
@@ -64,7 +65,8 @@ public static class ServiceCollectionExtensions
             {
                 options.UnsafeUseInsecureChannelCallCredentials = true;
             })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
         
         services.AddGrpc(options =>
         {

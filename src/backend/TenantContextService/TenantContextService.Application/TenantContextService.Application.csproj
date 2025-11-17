@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\AgileHive.Messages\OrganizationMessages\OrganizationMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\ProjectMessages\ProjectMessages.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\TenantProvisioning\TenantProvisioning.csproj" />
+        <ProjectReference Include="..\..\AgileHive.Messages\Shared\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TenantContextService.Infrastructure\TenantContextService.Infrastructure.csproj" />
+    </ItemGroup>
+</Project>

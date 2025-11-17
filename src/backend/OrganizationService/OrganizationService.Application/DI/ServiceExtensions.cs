@@ -11,7 +11,6 @@ public static class ServiceExtensions
     {
         services.AddScoped<IValidator<CreateOrganizationRequest>, CreateOrganizationRequestValidator>();
         
-        services.AddScoped<Services.OrganizationService>();
         services.AddScoped<Services.OrganizationMemberService>();
         
         return services;

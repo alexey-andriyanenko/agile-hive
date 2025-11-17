@@ -46,6 +46,8 @@
         <Protobuf Include="../TagService/TagService.Contracts/Protos/tag.proto" GrpcServices="Client" />
 
         <Protobuf Include="../TaskAggregatorService/TaskAggregatorService.Contracts/Protos/task-aggregate.proto" GrpcServices="Client" />
+        
+        <Protobuf Include="../TenantContextService/TenantContextService.Contracts/Protos/tenant-context.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

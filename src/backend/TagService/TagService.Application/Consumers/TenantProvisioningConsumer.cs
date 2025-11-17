@@ -1,29 +1,56 @@
 ﻿using MassTransit;
-using OrganizationMessages.Messages;
-using ProjectMessages.Messages;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TagService.Domain.Entities;
+using TagService.Infrastructure;
 using TagService.Infrastructure.Data;
+using TenantProvisioning.Messages;
 
 namespace TagService.Application.Consumers;
 
-public class OrganizationMessagesConsumer(
-    ApplicationDbContext dbContext,
-    IPublishEndpoint publishEndpoint
-) : IConsumer<OrganizationCreationSucceededMessage>
+public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint): IConsumer<TenantDatabaseCreationRequested>
 {
-    public async Task Consume(ConsumeContext<OrganizationCreationSucceededMessage> context)
+    public async Task Consume(ConsumeContext<TenantDatabaseCreationRequested> context)
     {
-        var message = context.Message;
+        logger.LogInformation("Event received to create tenant database for TenantId: {TenantId}, ServiceName: {ServiceName}", context.Message.TenantId, context.Message.ServiceName);
+        
+        if (context.Message.ServiceName != "TagService")
+        {
+            return;
+        }
+        
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseNpgsql(context.Message.DbConnectionString);
 
-        var predefinedTags = GetPredefinedTenantTags(message.OrganizationId);
+        var tenantContext = new TenantContext()
+        {
+            TenantId = context.Message.TenantId,
+            ServiceName = context.Message.ServiceName,
+            DbConnectionString = context.Message.DbConnectionString,
+        };
 
-        dbContext.Tags.AddRange(predefinedTags);
-        await dbContext.SaveChangesAsync();
+        await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
+
+        logger.LogInformation("Applying migrations for service {ServiceName} and tenant {TenantId}", context.Message.ServiceName, context.Message.TenantId);
+        
+        await db.Database.MigrateAsync();
+        
+        logger.LogInformation("Migrations applied for service {ServiceName} and tenant {TenantId}", context.Message.ServiceName, context.Message.TenantId);
+        
+        await publishEndpoint.Publish(new TenantDatabaseCreated()
+        {
+            TenantId = context.Message.TenantId,
+            ServiceName = context.Message.ServiceName
+        });
+        
+        var predefinedTags = GetPredefinedTenantTags(context.Message.TenantId);
+        db.Tags.AddRange(predefinedTags);
+        await db.SaveChangesAsync();
+        
+        logger.LogInformation("Inserted predefined tags for tenant {TenantId}", context.Message.TenantId);
     }
-
-
-
-    private static IReadOnlyList<TagEntity> GetPredefinedTenantTags(Guid tenantId)
+    
+     private static IReadOnlyList<TagEntity> GetPredefinedTenantTags(Guid tenantId)
     {
         {
             return new List<TagEntity>

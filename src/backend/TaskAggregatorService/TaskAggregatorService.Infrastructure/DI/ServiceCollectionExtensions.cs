@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using BoardService.Contracts;
-using BoardService.Infrastructure.DelegatingHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Tag.Contracts;
+using TaskAggregatorService.Infrastructure.DelegatingHandlers;
 using TaskAggregatorService.Infrastructure.Interceptors;
 
 namespace TaskAggregatorService.Infrastructure.DI;
@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
 
         services.AddTransient<AuthHeaderHandler>();
+        services.AddTransient<TenantMessageHandler>();
         services.AddScoped<TokenProvider>();
 
         services.AddGrpcClient<ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient>(options =>
@@ -51,28 +52,32 @@ public static class ServiceCollectionExtensions
                 options.Address = new Uri(configuration["ServiceAddresses:ProjectUserService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         services.AddGrpcClient<BoardColumnService.BoardColumnServiceClient>(options =>
             {
                 options.Address = new Uri(configuration["ServiceAddresses:BoardService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
         
         services.AddGrpcClient<TagService.TagServiceClient>(options =>
             {
                 options.Address = new Uri(configuration["ServiceAddresses:TagService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         services.AddGrpcClient<TaskService.Contracts.TaskService.TaskServiceClient>(options =>
             {
                 options.Address = new Uri(configuration["ServiceAddresses:TaskService"]!);
             })
             .ConfigureChannel(options => { options.UnsafeUseInsecureChannelCallCredentials = true; })
-            .AddJwtCallCredentials();
+            .AddJwtCallCredentials()
+            .AddHttpMessageHandler<TenantMessageHandler>();
 
         services.AddGrpc(options =>
         {

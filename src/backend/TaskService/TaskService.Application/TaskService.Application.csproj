@@ -11,4 +11,7 @@
       <ProjectReference Include="..\TaskService.Infrastructure\TaskService.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\AgileHive.Messages\TenantProvisioning\TenantProvisioning.csproj" />
+    </ItemGroup>
 </Project>
