@@ -11,7 +11,7 @@ public class OrganizationController(
     OrganizationService.Contracts.OrganizationService.OrganizationServiceClient organizationClient)
 {
     [HttpPost]
-    [Authorize(Policy = "TenantAccess")]
+    [Authorize]
     public async Task<OrganizationDto> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
     {
         return await organizationClient.CreateAsync(request).ResponseAsync;
