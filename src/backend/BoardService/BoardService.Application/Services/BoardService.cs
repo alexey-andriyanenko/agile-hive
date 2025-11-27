@@ -1,4 +1,5 @@
-﻿using BoardService.Application.Mappings;
+﻿using BoardMessages.Messages;
+using BoardService.Application.Mappings;
 using BoardService.Contracts;
 using BoardService.Domain.Constants;
 using BoardService.Domain.Entities;
@@ -6,12 +7,13 @@ using BoardService.Infrastructure;
 using BoardService.Infrastructure.Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoardService.Application.Services;
 
-public class BoardService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : Contracts.BoardService.BoardServiceBase
+public class BoardService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, IPublishEndpoint publishEndpoint) : Contracts.BoardService.BoardServiceBase
 {
     public override async Task<BoardDto> Create(CreateBoardRequest request, ServerCallContext context)
     {
@@ -67,6 +69,16 @@ public class BoardService(ApplicationDbContext dbContext, IHttpContextAccessor h
         dbContext.Boards.Add(board);
         await dbContext.SaveChangesAsync();
 
+        await publishEndpoint.Publish(new BoardCreatedMessage()
+        {
+            OrganizationId = Guid.Parse(request.TenantId),
+            ProjectId = board.ProjectId,
+            BoardId = board.Id,
+            CreatedByUserId = board.CreatedByUserId,
+            BoardName = board.Name,
+            BoardColumnIds = board.Columns.Select(c => c.Id).ToList()
+        });
+        
         return board.ToDto();
     }
 

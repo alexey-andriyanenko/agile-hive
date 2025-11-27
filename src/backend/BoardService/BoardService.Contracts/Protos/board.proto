@@ -39,7 +39,8 @@ message CreateBoardRequest {
   string name = 1;
   string board_type_id = 2;
   string project_id = 3;
-  repeated CreateBoardColumnItemRequest columns = 4;
+  string tenant_id = 4;
+  repeated CreateBoardColumnItemRequest columns = 5;
 }
 
 message CreateBoardColumnItemRequest {

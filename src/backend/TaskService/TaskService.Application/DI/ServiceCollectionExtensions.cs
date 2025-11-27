@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
+using TaskService.Application.Consumers;
 
 namespace TaskService.Application.DI;
 
@@ -8,6 +10,31 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<Services.TaskService>();
         services.AddScoped<Services.CommentService>();
+        
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumer<BoardMessagesConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("localhost", "/", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+
+                
+                cfg.ReceiveEndpoint("task-service__board-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<BoardMessagesConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
+                });
+            });
+        });
         
         return services;
     }

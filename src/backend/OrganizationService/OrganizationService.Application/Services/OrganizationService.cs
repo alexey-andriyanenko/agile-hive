@@ -47,6 +47,7 @@ public class OrganizationService(
             {
                 OrganizationId = organization.Id,
                 OrganizationName = organization.Name,
+                CreatedByUserId = userContext.UserId
             });
 
             return organization.ToDto(organizationUser);

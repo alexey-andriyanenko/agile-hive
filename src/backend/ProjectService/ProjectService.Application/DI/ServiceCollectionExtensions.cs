@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectService.Application.Consumers;
 using ProjectService.Application.Validations;
 using ProjectService.Contracts;
 
@@ -18,6 +19,8 @@ public static class ServiceCollectionExtensions
         
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<IdentityMessagesConsumer>();
+            x.AddConsumer<OrganizationMessagesConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
@@ -25,6 +28,26 @@ public static class ServiceCollectionExtensions
                 {
                     h.Username("guest");
                     h.Password("guest");
+                });
+                
+                cfg.ReceiveEndpoint("project-service__organization-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<OrganizationMessagesConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
+                });
+                
+                cfg.ReceiveEndpoint("project-service__identity-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<IdentityMessagesConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
                 });
             });
         });

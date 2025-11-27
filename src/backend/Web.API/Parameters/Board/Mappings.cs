@@ -6,6 +6,7 @@ public static class Mappings
     {
         return new BoardService.Contracts.CreateBoardRequest()
         {
+            TenantId = parameters.TenantId.ToString(),
             ProjectId = parameters.ProjectId.ToString(),
             Name = parameters.Name,
             BoardTypeId = parameters.BoardTypeId.ToString(),
