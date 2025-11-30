@@ -7,6 +7,8 @@ public class TaskEntity
     public required string Title { get; set; }
 
     public string? Description { get; set; }
+    
+    public string? DescriptionAsPlainText { get; set; }
 
     public Guid TenantId { get; set; }
     public Guid ProjectId { get; set; }

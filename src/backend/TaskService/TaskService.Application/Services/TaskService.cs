@@ -17,15 +17,37 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         var tenantId = Guid.Parse(request.TenantId);
         var projectId = Guid.Parse(request.ProjectId);
         var boardId = Guid.Parse(request.BoardId);
-        var tasks = await dbContext.Tasks
+        var totalCount = await dbContext.Tasks
             .Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
-            .Include(x => x.TaskTags)
-            .Take(1000)
-            .ToListAsync(context.CancellationToken);
+            .CountAsync(context.CancellationToken);
+
+        var tasksQuery = dbContext.Tasks.AsQueryable();
+
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            tasksQuery = tasksQuery.Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
+                .Include(x => x.TaskTags)
+                .Skip(request.Page * request.PageSize)
+                .Take(request.PageSize);
+        }
+        else
+        {
+            tasksQuery = tasksQuery.Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId && 
+                                       (EF.Functions.ILike(t.Title, $"%{request.Search}%") || 
+                                        EF.Functions.ILike(t.DescriptionAsPlainText!, $"%{request.Search}%")))
+                .Include(x => x.TaskTags)
+                .Skip(request.Page * request.PageSize)
+                .Take(request.PageSize);
+        }
+        
+        var tasks = await tasksQuery.ToListAsync(context.CancellationToken);
 
         return new GetManyTasksByBoardIdResponse()
         {
-            Tasks = { tasks.Select(t => t.ToDto()) }
+            Tasks = { tasks.Select(t => t.ToDto()) },
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount
         };
     }
 

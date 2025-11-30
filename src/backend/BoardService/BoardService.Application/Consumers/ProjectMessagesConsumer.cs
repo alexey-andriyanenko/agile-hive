@@ -1,4 +1,5 @@
 ﻿using BoardMessages.Messages;
+using BoardService.Domain.Constants;
 using BoardService.Domain.Entities;
 using BoardService.Infrastructure.Data;
 using MassTransit;
@@ -21,6 +22,7 @@ public class ProjectMessagesConsumer(ApplicationDbContext dbContext, IPublishEnd
                 Id = Guid.NewGuid(),
                 ProjectId = message.ProjectId,
                 Name = $"Board {i} for Project {message.ProjectId}",
+                BoardTypeId = PredefinedBoardTypes.ScrumId,
                 CreatedAt = DateTime.UtcNow,
                 Columns = GetDefaultScrumColumns().ToList(),
             };

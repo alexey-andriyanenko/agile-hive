@@ -44,6 +44,7 @@ export type GetTasksByBoardIdRequest = {
   boardId: string;
   projectId: string;
   organizationId: string;
+  search?: string;
 };
 
 export type GetTasksByBoardIdResponse = {

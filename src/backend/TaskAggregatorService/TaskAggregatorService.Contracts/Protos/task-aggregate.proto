@@ -70,6 +70,9 @@ message GetManyTasksByBoardIdRequest {
   string tenant_id = 1;
   string project_id = 2;
   string board_id = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+  optional string search = 6;
 }
 
 message GetManyTasksByBoardIdResponse {

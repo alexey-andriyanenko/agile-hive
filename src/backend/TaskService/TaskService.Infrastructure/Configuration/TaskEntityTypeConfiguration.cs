@@ -20,6 +20,9 @@ public class TaskEntityTypeConfiguration : IEntityTypeConfiguration<TaskEntity>
         
         builder.Property(x => x.Description)
             .HasColumnType("jsonb");
+
+        builder.Property(x => x.DescriptionAsPlainText);
+        builder.HasIndex(x => x.DescriptionAsPlainText);
         
         builder.Property(x => x.CreatedAt)
             .IsRequired();

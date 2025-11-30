@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using OrganizationService.API.DI;
 using OrganizationService.Application.DI;
 using OrganizationService.Application.Services;
+using OrganizationService.Infrastructure.Data;
 using OrganizationService.Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbInitializer.Database.MigrateAsync();
+}
 
 app.MapGrpcService<OrganizationService.Application.Services.OrganizationService>();
 app.MapGrpcService<OrganizationMemberService>();

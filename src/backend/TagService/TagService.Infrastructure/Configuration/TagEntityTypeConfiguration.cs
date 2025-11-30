@@ -8,7 +8,7 @@ public class TagEntityTypeConfiguration : IEntityTypeConfiguration<TagEntity>
 {
     public void Configure(EntityTypeBuilder<TagEntity> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => new { x.Id, x.TenantId });
 
         builder.HasIndex(x => new { x.TenantId, x.Name })
             .IsUnique()

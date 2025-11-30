@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.Xml;
-using BoardService.Contracts;
+﻿using BoardService.Contracts;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using ProjectUserService.Contracts;
@@ -28,7 +27,10 @@ public class TaskAggregatorService(
             {
                 TenantId = request.TenantId,
                 ProjectId = request.ProjectId,
-                BoardId = request.BoardId
+                BoardId = request.BoardId,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Search = request.Search
             }).ResponseAsync;
     
         var assigneeIds = tasksResponse.Tasks
