@@ -11,6 +11,16 @@ namespace Web.API.Controllers;
 [Authorize(Policy = "TenantAccess")]
 public class TaskController(TaskAggregateService.TaskAggregateServiceClient taskAggregateServiceClient)
 {
+    [HttpGet]
+    public async Task<GetManyByTenantIdResponse> GetManyByTenantIdAsync([FromRoute] Guid organizationId,
+        [FromRoute] Guid projectId)
+    {
+        return await taskAggregateServiceClient.GetManyByTenantIdAsync(new GetManyByTenantIdRequest()
+        {
+            TenantId = organizationId.ToString(),
+        }).ResponseAsync;
+    }
+    
     [HttpGet("{taskId:guid}")]
     public async Task<Dtos.Task.TaskDto> GetByIdAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,

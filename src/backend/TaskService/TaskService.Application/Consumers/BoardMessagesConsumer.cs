@@ -191,7 +191,7 @@ public class BoardMessagesConsumer(ApplicationDbContext dbContext, IPublishEndpo
         // reuse a single Random to avoid repetition and reseeding issues
         var rnd = new Random();
 
-        for (var i = 0; i <= 10000; i++)
+        for (var i = 0; i <= 1000; i++)
         {
             var id = Guid.NewGuid();
             var chosen = descriptions[rnd.Next(descriptions.Count)];

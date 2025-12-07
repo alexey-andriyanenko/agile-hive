@@ -12,6 +12,58 @@ namespace TaskService.Application.Services;
 
 public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : Contracts.TaskService.TaskServiceBase
 {
+    public override async Task<GetManyTasksByTenantIdResponse> GetManyByTenantId(GetManyTasksByTenantIdRequest request, ServerCallContext context)
+    {
+        var tasksCount = await dbContext.Tasks
+            .Where(t => t.TenantId == Guid.Parse(request.TenantId))
+            .CountAsync(context.CancellationToken);
+
+        return new GetManyTasksByTenantIdResponse()
+        {
+            TotalCount = tasksCount,
+        };
+    }
+    
+    public override async Task<GenerateCsvResponse> GenerateCsv(Empty request, ServerCallContext context)
+    {
+        var tasks = await dbContext.Tasks.ToListAsync(context.CancellationToken);
+        
+        var byTenantId = tasks
+            .GroupBy(t => t.TenantId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var csv = "TenantId,ProjectId,BoardId,BoardColumnId\n";
+        
+        foreach (var tenantGroup in byTenantId)
+        {
+            var byProjectId = tenantGroup.Value
+                .GroupBy(t => t.ProjectId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+            foreach (var projectGroup in byProjectId)  
+            {
+                var byBoardId = projectGroup.Value
+                    .GroupBy(t => t.BoardId)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+                foreach (var boardGroup in byBoardId)
+                {
+                    var byBoardColumnId = boardGroup.Value
+                        .GroupBy(t => t.BoardColumnId)
+                        .ToDictionary(g => g.Key, g => g.ToList());
+                    foreach (var boardColumnGroup in byBoardColumnId)
+                    {
+                        csv += $"{tenantGroup.Key},{projectGroup.Key},{boardGroup.Key},{boardColumnGroup.Key}\n";
+                    }
+                }
+            }
+        }
+        
+        return new GenerateCsvResponse()
+        {
+            FileName = "output.csv",
+            FileContent = csv
+        };
+    }
+     
     public override async Task<GetManyTasksByBoardIdResponse> GetManyByBoardId(GetManyTasksByBoardIdRequest request, ServerCallContext context)
     {
         var tenantId = Guid.Parse(request.TenantId);

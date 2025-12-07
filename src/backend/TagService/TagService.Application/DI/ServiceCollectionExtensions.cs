@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
                     h.Password("guest");
                 });
 
-                cfg.ReceiveEndpoint("organization-messages-queue", e =>
+                cfg.ReceiveEndpoint("tag-service__organization-messages-queue", e =>
                 {
                     e.ConfigureConsumer<OrganizationMessagesConsumer>(context);
 
@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
                     });
                 });
                 
-                cfg.ReceiveEndpoint("project-messages-queue", e =>
+                cfg.ReceiveEndpoint("tag-service__project-messages-queue", e =>
                 {
                     e.ConfigureConsumer<ProjectMessagesConsumer>(context);
 

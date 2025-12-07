@@ -49,12 +49,27 @@ message TaskTagDto {
 }
 
 service TaskAggregateService {
+  rpc GenerateCsv(google.protobuf.Empty) returns (GenerateCsvResponse);
+  rpc GetManyByTenantId(GetManyByTenantIdRequest) returns (GetManyByTenantIdResponse);
   rpc GetTagsByProjectId(GetTagsByProjectIdRequest) returns (GetTagsByProjectIdResponse);
   rpc GetManyByBoardId(GetManyTasksByBoardIdRequest) returns (GetManyTasksByBoardIdResponse);
   rpc GetById(GetTaskByIdRequest) returns (TaskAggregateDto);
   rpc Create(CreateTaskRequest) returns (TaskAggregateDto);
   rpc Update(UpdateTaskRequest) returns (TaskAggregateDto);
   rpc Delete(DeleteTaskRequest) returns (google.protobuf.Empty);
+}
+
+message GenerateCsvResponse {
+  string file_content = 1;
+  string file_name = 2;
+}
+
+message GetManyByTenantIdRequest {
+  string tenant_id = 1;
+}
+
+message GetManyByTenantIdResponse {
+  int32 total_count = 1;
 }
 
 message GetTagsByProjectIdRequest {

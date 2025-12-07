@@ -15,7 +15,7 @@ public class ProjectMessagesConsumer(ApplicationDbContext dbContext, IPublishEnd
 
         var boards = new List<Board>();
         
-        for(var i = 1; i <= 10; i++)
+        for(var i = 1; i <= 1000; i++)
         {
             var board = new Board
             {

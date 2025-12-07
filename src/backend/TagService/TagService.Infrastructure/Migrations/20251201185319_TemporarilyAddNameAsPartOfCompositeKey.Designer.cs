@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TagService.Infrastructure.Data;
@@ -11,9 +12,11 @@ using TagService.Infrastructure.Data;
 namespace TagService.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201185319_TemporarilyAddNameAsPartOfCompositeKey")]
+    partial class TemporarilyAddNameAsPartOfCompositeKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace TagService.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasMaxLength(7)
@@ -47,12 +47,15 @@ namespace TagService.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<Guid?>("ProjectId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.HasKey("Id", "TenantId", "Name", "ProjectId");
+                    b.HasKey("Id", "TenantId", "Name");
 
                     b.HasIndex("Id", "TenantId", "Name")
                         .IsUnique()
