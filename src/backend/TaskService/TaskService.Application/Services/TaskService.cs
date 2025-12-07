@@ -20,6 +20,7 @@ public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor ht
         var tasks = await dbContext.Tasks
             .Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
             .Include(x => x.TaskTags)
+            .Take(1000)
             .ToListAsync(context.CancellationToken);
 
         return new GetManyTasksByBoardIdResponse()

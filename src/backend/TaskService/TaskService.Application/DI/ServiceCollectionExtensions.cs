@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddMassTransit(x =>
         {
             x.AddConsumer<TenantProvisioningConsumer>();
+            x.AddConsumer<BoardMessagesConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
@@ -26,6 +27,16 @@ public static class ServiceCollectionExtensions
                 cfg.ReceiveEndpoint("task-service__tenant-provisioning-messages-queue", e =>
                 {
                     e.ConfigureConsumer<TenantProvisioningConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
+                });
+                
+                cfg.ReceiveEndpoint("task-service__board-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<BoardMessagesConsumer>(context);
 
                     e.UseMessageRetry(r =>
                     {

@@ -19,6 +19,8 @@ public static class ServiceCollectionExtensions
         
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<IdentityMessagesConsumer>();
+
             x.AddConsumer<TenantProvisioningConsumer>();
             
             x.UsingRabbitMq((context, cfg) =>
@@ -32,6 +34,16 @@ public static class ServiceCollectionExtensions
                 cfg.ReceiveEndpoint("project-service__tenant-provisioning-messages-queue", e =>
                 {
                     e.ConfigureConsumer<TenantProvisioningConsumer>(context);
+
+                    e.UseMessageRetry(r =>
+                    {
+                        r.Interval(3, TimeSpan.FromSeconds(5));
+                    });
+                });
+                
+                cfg.ReceiveEndpoint("project-service__identity-messages-queue", e =>
+                {
+                    e.ConfigureConsumer<IdentityMessagesConsumer>(context);
 
                     e.UseMessageRetry(r =>
                     {
