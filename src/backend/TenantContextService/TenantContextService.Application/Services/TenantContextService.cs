@@ -112,6 +112,7 @@ public class TenantContextService(
             applicationDbContext.TenantDbs.AddRange(tenantDbs);
 
             await applicationDbContext.SaveChangesAsync();
+            
         await Parallel.ForEachAsync(tenantDbs,
             new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = context.CancellationToken },
             async (tenantDb, ct) =>

@@ -8,13 +8,13 @@ public class TagEntityTypeConfiguration : IEntityTypeConfiguration<TagEntity>
 {
     public void Configure(EntityTypeBuilder<TagEntity> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => new { x.Id, x.TenantId, x.Name, x.ProjectId });
 
-        builder.HasIndex(x => new { x.TenantId, x.Name })
+        builder.HasIndex(x => new { x.Id, x.TenantId, x.Name })
             .IsUnique()
             .HasFilter("\"ProjectId\" IS NULL");
 
-        builder.HasIndex(x => new { x.TenantId, x.ProjectId, x.Name })
+        builder.HasIndex(x => new { x.Id, x.TenantId, x.ProjectId, x.Name })
             .IsUnique()
             .HasFilter("\"ProjectId\" IS NOT NULL");
 

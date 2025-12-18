@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OrganizationService.Domain.Entities;
 using OrganizationService.Domain.Enums;
@@ -9,7 +10,7 @@ using TenantProvisioning.Messages;
 
 namespace OrganizationService.Application.Consumers;
 
-public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint)
+public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint, IMemoryCache memoryCache)
     : IConsumer<TenantDatabaseCreationRequested>
 {
     public async Task Consume(ConsumeContext<TenantDatabaseCreationRequested> context)
@@ -30,6 +31,10 @@ public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logg
             ServiceName = context.Message.ServiceName,
             DbConnectionString = context.Message.DbConnectionString,
         };
+
+        var cacheKey = $"tenantcontext:{context.Message.TenantId}:{context.Message.ServiceName}";
+        
+        memoryCache.Set(cacheKey, tenantContext, TimeSpan.FromDays(1));
 
         await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
 

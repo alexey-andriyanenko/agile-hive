@@ -12,22 +12,97 @@ namespace TaskService.Application.Services;
 
 public class TaskService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor) : Contracts.TaskService.TaskServiceBase
 {
+        public override async Task<GetManyTasksByTenantIdResponse> GetManyByTenantId(GetManyTasksByTenantIdRequest request, ServerCallContext context)
+    {
+        var tasksCount = await dbContext.Tasks
+            .Where(t => t.TenantId == Guid.Parse(request.TenantId))
+            .CountAsync(context.CancellationToken);
+
+        return new GetManyTasksByTenantIdResponse()
+        {
+            TotalCount = tasksCount,
+        };
+    }
+    
+    public override async Task<GenerateCsvResponse> GenerateCsv(Empty request, ServerCallContext context)
+    {
+        var tasks = await dbContext.Tasks.ToListAsync(context.CancellationToken);
+        
+        var byTenantId = tasks
+            .GroupBy(t => t.TenantId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var csv = "TenantId,ProjectId,BoardId,BoardColumnId\n";
+        
+        foreach (var tenantGroup in byTenantId)
+        {
+            var byProjectId = tenantGroup.Value
+                .GroupBy(t => t.ProjectId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+            foreach (var projectGroup in byProjectId)  
+            {
+                var byBoardId = projectGroup.Value
+                    .GroupBy(t => t.BoardId)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+                foreach (var boardGroup in byBoardId)
+                {
+                    var byBoardColumnId = boardGroup.Value
+                        .GroupBy(t => t.BoardColumnId)
+                        .ToDictionary(g => g.Key, g => g.ToList());
+                    foreach (var boardColumnGroup in byBoardColumnId)
+                    {
+                        csv += $"{tenantGroup.Key},{projectGroup.Key},{boardGroup.Key},{boardColumnGroup.Key}\n";
+                    }
+                }
+            }
+        }
+        
+        return new GenerateCsvResponse()
+        {
+            FileName = "output.csv",
+            FileContent = csv
+        };
+    }
+     
     public override async Task<GetManyTasksByBoardIdResponse> GetManyByBoardId(GetManyTasksByBoardIdRequest request, ServerCallContext context)
     {
         var tenantId = Guid.Parse(request.TenantId);
         var projectId = Guid.Parse(request.ProjectId);
         var boardId = Guid.Parse(request.BoardId);
-        var tasks = await dbContext.Tasks
+        var totalCount = await dbContext.Tasks
             .Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
-            .Include(x => x.TaskTags)
-            .Take(1000)
-            .ToListAsync(context.CancellationToken);
+            .CountAsync(context.CancellationToken);
+
+        var tasksQuery = dbContext.Tasks.AsQueryable();
+
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            tasksQuery = tasksQuery.Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId)
+                .Include(x => x.TaskTags)
+                .Skip(request.Page * request.PageSize)
+                .Take(request.PageSize);
+        }
+        else
+        {
+            tasksQuery = tasksQuery.Where(t => t.TenantId == tenantId && t.ProjectId == projectId && t.BoardId == boardId && 
+                                       (EF.Functions.ILike(t.Title, $"%{request.Search}%") || 
+                                        EF.Functions.ILike(t.DescriptionAsPlainText!, $"%{request.Search}%")))
+                .Include(x => x.TaskTags)
+                .Skip(request.Page * request.PageSize)
+                .Take(request.PageSize);
+        }
+        
+        var tasks = await tasksQuery.ToListAsync(context.CancellationToken);
 
         return new GetManyTasksByBoardIdResponse()
         {
-            Tasks = { tasks.Select(t => t.ToDto()) }
+            Tasks = { tasks.Select(t => t.ToDto()) },
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount
         };
     }
+
 
     public override async Task<TaskDto> GetById(GetTaskByIdRequest request, ServerCallContext context)
     {

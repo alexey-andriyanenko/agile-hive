@@ -25,7 +25,16 @@ namespace TagService.Infrastructure.Migrations
             modelBuilder.Entity("TagService.Domain.Entities.TagEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Color")
@@ -38,29 +47,18 @@ namespace TagService.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<Guid?>("ProjectId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "TenantId", "Name", "ProjectId");
 
-                    b.HasIndex("TenantId", "Name")
+                    b.HasIndex("Id", "TenantId", "Name")
                         .IsUnique()
                         .HasFilter("\"ProjectId\" IS NULL");
 
-                    b.HasIndex("TenantId", "ProjectId", "Name")
+                    b.HasIndex("Id", "TenantId", "ProjectId", "Name")
                         .IsUnique()
                         .HasFilter("\"ProjectId\" IS NOT NULL");
 

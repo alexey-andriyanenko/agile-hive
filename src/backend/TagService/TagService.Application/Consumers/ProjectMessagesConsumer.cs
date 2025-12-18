@@ -1,25 +1,45 @@
 ﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using ProjectMessages.Messages;
 using TagService.Domain.Entities;
+using TagService.Infrastructure;
 using TagService.Infrastructure.Data;
 
 namespace TagService.Application.Consumers;
 
 public class ProjectMessagesConsumer(
+    TenantContextService.Contracts.TenantContextService.TenantContextServiceClient tenantContextServiceClient,
     ApplicationDbContext dbContext,
-    IPublishEndpoint publishEndpoint
+    IPublishEndpoint publishEndpoint,
+    IMemoryCache memoryCache
     ) : IConsumer<ProjectCreationSucceededMessage>
 {
+    private const string ServiceNameConst = "TagService";
+    
     public async Task Consume(ConsumeContext<ProjectCreationSucceededMessage> context)
     {
-        var tenantContextResult = await tenantContextServiceClient.GetTenantContextAsync(new TenantContextService.Contracts.GetTenantContextRequest()
+        var message = context.Message;
+        var cacheKey = $"tenantcontext:{message.OrganizationId}:{ServiceNameConst}";
+        
+        var tenantContextResult = await memoryCache.GetOrCreateAsync(cacheKey, async entry =>
         {
-            TenantId = context.Message.OrganizationId.ToString(),
-            ServiceName = "TagService"
-        }).ResponseAsync;
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+            var resp = await tenantContextServiceClient.GetTenantContextAsync(new TenantContextService.Contracts.GetTenantContextRequest()
+            {
+                TenantId = message.OrganizationId.ToString(),
+                ServiceName = ServiceNameConst
+            }).ResponseAsync;
+            return new TenantContext() 
+            {
+                TenantId = message.OrganizationId,
+                DbConnectionString = resp.DbConnectionString,
+                ServiceName = ServiceNameConst
+            };;
+        });
         
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseNpgsql(tenantContextResult.DbConnectionString);
+        optionsBuilder.UseNpgsql(tenantContextResult!.DbConnectionString);
         
         var tenantContext = new TenantContext()
         {
@@ -29,9 +49,7 @@ public class ProjectMessagesConsumer(
         };
         
         await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
-
-        var message = context.Message;
-
+        
         var predefinedTags = GetPredefinedProjectTags(message.OrganizationId, message.ProjectId);
 
         db.Tags.AddRange(predefinedTags);

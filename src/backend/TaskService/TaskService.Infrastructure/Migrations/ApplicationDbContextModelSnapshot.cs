@@ -81,6 +81,9 @@ namespace TaskService.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("jsonb");
 
+                    b.Property<string>("DescriptionAsPlainText")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
@@ -97,6 +100,8 @@ namespace TaskService.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DescriptionAsPlainText");
 
                     b.HasIndex("Title");
 

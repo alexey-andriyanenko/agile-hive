@@ -22,7 +22,6 @@ import type {
 } from "src/board-module/models";
 
 class TaskApiService {
-
   public async getTaskById(data: GetTaskByIdRequest): Promise<GetTaskByIdResponse> {
     const response = await appHttpClient
       .get<TaskResponseModel>(
@@ -40,7 +39,7 @@ class TaskApiService {
       .get<{
         tasks: TaskResponseModel[];
       }>(`/organizations/${data.organizationId}/projects/${data.projectId}/tasks/by-board`)
-      .setSearchParams({ boardId: data.boardId })
+      .setSearchParams({ boardId: data.boardId, search: data.search ?? "" })
       .send();
 
     return {

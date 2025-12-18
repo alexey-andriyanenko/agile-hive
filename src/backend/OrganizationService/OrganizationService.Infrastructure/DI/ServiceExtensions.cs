@@ -59,6 +59,8 @@ public static class ServiceExtensions
             });
         services.AddAuthorization();
 
+        services.AddMemoryCache();
+        
         services.AddScoped<TenantContext>();
 
         services.AddGrpcClient<UserService.UserServiceClient>(options =>

@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using ProjectMessages.Messages;
 using ProjectService.Application.Extensions;
@@ -10,7 +11,7 @@ using TenantProvisioning.Messages;
 
 namespace ProjectService.Application.Consumers;
 
-public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint)
+public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint, IMemoryCache memoryCache)
     : IConsumer<TenantDatabaseCreationRequested>
 {
     public async Task Consume(ConsumeContext<TenantDatabaseCreationRequested> context)
@@ -32,6 +33,15 @@ public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logg
             DbConnectionString = context.Message.DbConnectionString,
         };
 
+        var cacheKey = $"tenantcontext:{context.Message.TenantId}:{context.Message.ServiceName}";
+        
+        memoryCache.Set(cacheKey, new TenantContext()
+        {
+            TenantId = context.Message.TenantId,
+            ServiceName = context.Message.ServiceName,
+            DbConnectionString = context.Message.DbConnectionString
+        }, TimeSpan.FromDays(1));
+            
         await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
 
         logger.LogInformation("Applying migrations for service {ServiceName} and tenant {TenantId}", context.Message.ServiceName, context.Message.TenantId);

@@ -57,6 +57,8 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization();
         services.AddHttpContextAccessor();
         services.AddScoped<TenantContext>();
+        
+        services.AddMemoryCache();
 
         services.AddTransient<AuthHeaderHandler>();
         services.AddScoped<TokenProvider>();

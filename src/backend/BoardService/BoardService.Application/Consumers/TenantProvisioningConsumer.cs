@@ -2,12 +2,13 @@
 using BoardService.Infrastructure.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using TenantProvisioning.Messages;
 
 namespace BoardService.Application.Consumers;
 
-public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint) : IConsumer<TenantDatabaseCreationRequested>
+public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logger, IPublishEndpoint publishEndpoint, IMemoryCache memoryCache) : IConsumer<TenantDatabaseCreationRequested>
 {
     public async Task Consume(ConsumeContext<TenantDatabaseCreationRequested> context)
     {
@@ -20,13 +21,17 @@ public class TenantProvisioningConsumer(ILogger<TenantProvisioningConsumer> logg
         
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseNpgsql(context.Message.DbConnectionString);
-
+        
         var tenantContext = new TenantContext()
         {
             TenantId = context.Message.TenantId,
             ServiceName = context.Message.ServiceName,
             DbConnectionString = context.Message.DbConnectionString,
         };
+
+        var cacheKey = $"tenantcontext:{context.Message.TenantId}:{context.Message.ServiceName}";
+        
+        memoryCache.Set(cacheKey, tenantContext, TimeSpan.FromDays(1));
 
         await using var db = new ApplicationDbContext(optionsBuilder.Options, tenantContext);
 

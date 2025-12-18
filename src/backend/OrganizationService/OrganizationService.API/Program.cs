@@ -27,6 +27,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.UseMiddleware<TenantMiddleware>();
 
 using (var scope = app.Services.CreateScope())

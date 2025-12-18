@@ -22,6 +22,8 @@ public static class ServiceCollectionExtensions
         
         services.AddHttpContextAccessor();
 
+        services.AddMemoryCache();
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

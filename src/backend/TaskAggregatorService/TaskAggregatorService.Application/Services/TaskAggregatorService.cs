@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.Xml;
-using BoardService.Contracts;
+﻿using BoardService.Contracts;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using ProjectUserService.Contracts;
@@ -16,6 +15,31 @@ public class TaskAggregatorService(
     ProjectUserService.Contracts.ProjectUserService.ProjectUserServiceClient projectUserServiceClient
 ) : TaskAggregateService.TaskAggregateServiceBase
 {
+    public override async Task<GenerateCsvResponse> GenerateCsv(Empty request, ServerCallContext context)
+    {
+        var result = await taskServiceClient.GenerateCsvAsync(new Google.Protobuf.WellKnownTypes.Empty()).ResponseAsync;
+
+        return new GenerateCsvResponse()
+        {
+            FileContent = result.FileContent,
+            FileName = result.FileName
+        };
+    }
+
+    public override async Task<GetManyByTenantIdResponse> GetManyByTenantId(GetManyByTenantIdRequest request, ServerCallContext context)
+    {
+        var result = await taskServiceClient.GetManyByTenantIdAsync(
+            new TaskService.Contracts.GetManyTasksByTenantIdRequest
+            {
+                TenantId = request.TenantId,
+            }).ResponseAsync;
+
+        return new GetManyByTenantIdResponse()
+        {
+            TotalCount = result.TotalCount
+        };
+    }
+    
     public override async Task<GetManyTasksByBoardIdResponse> GetManyByBoardId(GetManyTasksByBoardIdRequest request,
         ServerCallContext context)
     {
@@ -28,7 +52,10 @@ public class TaskAggregatorService(
             {
                 TenantId = request.TenantId,
                 ProjectId = request.ProjectId,
-                BoardId = request.BoardId
+                BoardId = request.BoardId,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Search = request.Search
             }).ResponseAsync;
     
         var assigneeIds = tasksResponse.Tasks

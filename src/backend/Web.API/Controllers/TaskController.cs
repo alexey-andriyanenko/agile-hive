@@ -11,6 +11,16 @@ namespace Web.API.Controllers;
 [Authorize(Policy = "TenantAccess")]
 public class TaskController(TaskAggregateService.TaskAggregateServiceClient taskAggregateServiceClient)
 {
+    [HttpGet]
+    public async Task<GetManyByTenantIdResponse> GetManyByTenantIdAsync([FromRoute] Guid organizationId,
+        [FromRoute] Guid projectId)
+    {
+        return await taskAggregateServiceClient.GetManyByTenantIdAsync(new GetManyByTenantIdRequest()
+        {
+            TenantId = organizationId.ToString(),
+        }).ResponseAsync;
+    }
+    
     [HttpGet("{taskId:guid}")]
     public async Task<Dtos.Task.TaskDto> GetByIdAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
@@ -31,13 +41,19 @@ public class TaskController(TaskAggregateService.TaskAggregateServiceClient task
     [HttpGet("by-board")]
     public async Task<Results.Task.GetManyTasksByBoardIdResponse> GetManyByBoardAsync([FromRoute] Guid organizationId,
         [FromRoute] Guid projectId,
-        [FromQuery] Guid boardId)
+        [FromQuery] Guid boardId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 100,
+        [FromQuery] string? search = null)
     {
         var response = await taskAggregateServiceClient.GetManyByBoardIdAsync(new GetManyTasksByBoardIdRequest()
         {
             TenantId = organizationId.ToString(),
             ProjectId = projectId.ToString(),
-            BoardId = boardId.ToString()
+            BoardId = boardId.ToString(),
+            Page = page,
+            PageSize = pageSize,
+            Search = search ?? string.Empty
         }).ResponseAsync;
 
         return new Results.Task.GetManyTasksByBoardIdResponse()

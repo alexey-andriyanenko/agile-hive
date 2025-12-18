@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using TenantContextService.Contracts;
 
@@ -6,8 +7,10 @@ namespace BoardService.Infrastructure;
 
 public class TenantMiddleware(RequestDelegate next)
 {
+    private const string ServiceName = "BoardService";
+    
     public async Task InvokeAsync(HttpContext context, TenantContext tenantContext,
-        TenantContextService.Contracts.TenantContextService.TenantContextServiceClient orgClient, IConfiguration cfg)
+        TenantContextService.Contracts.TenantContextService.TenantContextServiceClient orgClient, IConfiguration cfg, IMemoryCache memoryCache)
     {
         if (context.Request.Headers.TryGetValue("x-tenant-id", out var tenantHeader))
         {
@@ -17,13 +20,27 @@ public class TenantMiddleware(RequestDelegate next)
             {
                 tenantContext.TenantId = tenantId;
 
-                var tenantContextResult = await orgClient.GetTenantContextAsync(new GetTenantContextRequest()
-                {
-                    TenantId = tenantContext.TenantId.ToString(),
-                    ServiceName = "BoardService"
-                }).ResponseAsync;
+                var cacheKey = $"tenantcontext:{tenantId}:{ServiceName}";
 
-                tenantContext.DbConnectionString = tenantContextResult.DbConnectionString;
+                var tenantContextResult = await memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+
+                    var resp = await orgClient.GetTenantContextAsync(new GetTenantContextRequest()
+                    {
+                        TenantId = tenantId.ToString(),
+                        ServiceName = ServiceName
+                    }).ResponseAsync;
+
+                    return new TenantContext()
+                    {
+                        TenantId = tenantId,
+                        DbConnectionString = resp.DbConnectionString,
+                        ServiceName = ServiceName
+                    };
+                });
+
+                tenantContext.DbConnectionString = tenantContextResult!.DbConnectionString;
             }
         }
         else

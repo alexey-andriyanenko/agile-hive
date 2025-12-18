@@ -9,6 +9,8 @@ import "google/protobuf/timestamp.proto";
 import "task-types.proto";
 
 service TaskService {
+  rpc GenerateCsv(google.protobuf.Empty) returns (GenerateCsvResponse);
+  rpc GetManyByTenantId(GetManyTasksByTenantIdRequest) returns (GetManyTasksByTenantIdResponse);
   rpc GetManyByBoardId(GetManyTasksByBoardIdRequest) returns (GetManyTasksByBoardIdResponse);
   rpc GetById(GetTaskByIdRequest) returns (task.types.TaskDto);
   rpc Create(CreateTaskRequest) returns (task.types.TaskDto);
@@ -16,14 +18,33 @@ service TaskService {
   rpc Delete(DeleteTaskRequest) returns (google.protobuf.Empty);
 }
 
+message GetManyTasksByTenantIdRequest {
+  string tenant_id = 1;
+}
+
+message GetManyTasksByTenantIdResponse {
+  int32 total_count = 1;
+}
+
+message GenerateCsvResponse {
+  string file_content = 1;
+  string file_name = 2;
+}
+
 message GetManyTasksByBoardIdRequest {
   string tenant_id = 1;
   string project_id = 2;
   string board_id = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+  optional string search = 6;
 }
 
 message GetManyTasksByBoardIdResponse {
   repeated task.types.TaskDto tasks = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
 }
 
 message GetTaskByIdRequest {

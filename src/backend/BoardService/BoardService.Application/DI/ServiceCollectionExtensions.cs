@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
       services.AddMassTransit(x =>
       {
          x.AddConsumer<TenantProvisioningConsumer>();
+         x.AddConsumer<ProjectMessagesConsumer>();
             
          x.UsingRabbitMq((context, cfg) =>
          {
@@ -33,22 +34,7 @@ public static class ServiceCollectionExtensions
                   r.Interval(3, TimeSpan.FromSeconds(5));
                });
             });
-         });
-      });
-
-      services.AddMassTransit(x =>
-      {
-         x.AddConsumer<ProjectMessagesConsumer>();
-
-         x.UsingRabbitMq((context, cfg) =>
-         {
-            cfg.Host("localhost", "/", h =>
-            {
-               h.Username("guest");
-               h.Password("guest");
-            });
-
-                
+            
             cfg.ReceiveEndpoint("board-service__project-messages-queue", e =>
             {
                e.ConfigureConsumer<ProjectMessagesConsumer>(context);
@@ -60,7 +46,7 @@ public static class ServiceCollectionExtensions
             });
          });
       });
-      
+
       return services;
    } 
 }
